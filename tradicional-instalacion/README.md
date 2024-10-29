@@ -8,9 +8,17 @@ passwd
 ### Crear usuario odoo:
 ```bash
 sudo adduser odoo
+```
+```bash
 sudo usermod -aG sudo odoo
+```
+```bash
 su odoo
+```
+```bash
 cd ~
+```
+```bash
 sudo apt update
 ```
  
@@ -22,17 +30,28 @@ sudo apt install openssh-server fail2ban python3-pip python3-dev libxml2-dev lib
 ### Download and install wkhtmltopdf:
 ```bash
  wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.jammy_amd64.deb
+ ```
+ ```bash
  sudo dpkg -i wkhtmltox_0.12.6.1-2.jammy_amd64.deb
+ ```
+ ```bash
  sudo apt-get install -f
 ```
 
 ### Now, install and configure PostgreSQL database:
 ```bash
   sudo apt install postgresql -y
-  sudo -i -u postgres createuser $(whoami)
+  ```
+   ```bash
   sudo su postgres
+  ```
+   ```bash
   psql
+  ```
+   ```bash
   CREATE ROLE odoo WITH LOGIN PASSWORD 'odoo' CREATEDB;
+  ```
+   ```bash
   \q
   exit
 
@@ -41,6 +60,8 @@ sudo apt install openssh-server fail2ban python3-pip python3-dev libxml2-dev lib
 ### Git onfiguramos
 ```bash
   git config --global user.name saymonset
+  ```
+   ```bash
   git config --global user.email saymon_set@hotmail.com.com
 
 ```
@@ -48,6 +69,8 @@ sudo apt install openssh-server fail2ban python3-pip python3-dev libxml2-dev lib
 ### Create one directory per instance:
 ```bash
  mkdir -p ~/odoo-dev/projectname
+ ```
+  ```bash
  cd ~/odoo-dev/projectname
 
 ```
@@ -67,12 +90,18 @@ sudo apt install openssh-server fail2ban python3-pip python3-dev libxml2-dev lib
 ### Clone Odoo and install the requirements:
 ```bash
   git clone -b 17.0 --single-branch --depth 1 https://github.com/odoo/odoo.git src/odoo
+  ```
+   ```bash
   env/bin/pip3 install -r src/odoo/requirements.txt
 
 ```
 
 ### Save the following shell script as bin/odoo:
 # The name file is odoo alone
+ ```bash
+ vi bin/odoo
+ ```
+ # Page this in new file call odoo
 ```bash
     #!/bin/sh
     ROOT=$(dirname "$0")/..
@@ -80,7 +109,8 @@ sudo apt install openssh-server fail2ban python3-pip python3-dev libxml2-dev lib
     ODOO="$ROOT/src/odoo/odoo-bin"
     $PYTHON $ODOO -c "$ROOT/projectname.cfg" "$@"
     exit $?
-
+```
+ ```bash
 $ chmod +x bin/odoo
 ```
 
@@ -115,9 +145,11 @@ $ chmod +x bin/odoo
 
 
 ### Create conf file in src/odoo/odoo.cfg :
-```
-vi src/odoo/odoo.cfg
 
+ ```bash
+vi src/odoo/odoo.cfg
+```
+ ```bash
 [options]
 addons_path = /home/odoo/odoo-dev/projectname/src/odoo/addons,/home/odoo/odoo-dev/projectname/local
 admin_passwd = 1 
@@ -186,14 +218,16 @@ websocket_rate_limit_delay = 0.2
 without_demo = False
 workers = 0
 x_sendfile = False
-   
 ```
 
 ### run odoo :
-```
+ ```bash
 source env/bin/activate
-
+```
+ ```bash
  cd src/odoo
+ ```
+  ```bash
  ./odoo-bin -d saymondb -c odoo.cfg 
-
+```
 
