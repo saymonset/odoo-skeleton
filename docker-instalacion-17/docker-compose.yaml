@@ -3,7 +3,7 @@ version: '3.1'
 services:
   web:
     image: "odoo:${VERSION}"
-    container_name: "odoo-18"
+    container_name: "odoo-${VERSION}"
     user: root
     depends_on:
       - db
@@ -21,7 +21,7 @@ services:
 
   db:
     image: postgres:14
-    container_name: "odoo-db"
+    container_name: "odoo-db${VERSION}"
     environment:
       - POSTGRES_DB=postgres
       - POSTGRES_PASSWORD=123456  # Set the password directly here
