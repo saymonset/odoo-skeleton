@@ -54,6 +54,7 @@
                                 <field name="hostel_floors"/>
                                 <field name="active"/>
                                 <field name="type"/>
+                                <field name="rector"/>
                                 <field name="hostel_rating"/>
                                 <field name="other_info"/>
                                 <field name="ref_doc_id"/>

@@ -15,8 +15,8 @@ class Hostel(models.Model):
     city = fields.Char('City')
     state_id = fields.Many2one("res.country.state", string='State')
     country_id = fields.Many2one('res.country', string='Country')
-    phone = fields.Char('Phone',required=True)
-    mobile = fields.Char('Mobile',required=True)
+    phone = fields.Char('Phone',required=1)
+    mobile = fields.Char('Mobile',required=1)
     email = fields.Char('Email')
     hostel_floors = fields.Integer(string="Total Floors")
     image = fields.Binary('Hostel Image')
@@ -34,6 +34,8 @@ class Hostel(models.Model):
                                  )
     category_id = fields.Many2one('hostel.category')
     ref_doc_id = fields.Reference(selection='_referencable_models', string='Reference Document')
+    rector = fields.Many2one("res.partner", "Rector",
+        help="Select hostel rector")
 
     @api.model
     def _referencable_models(self):
