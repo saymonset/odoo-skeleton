@@ -17,9 +17,6 @@ Description related to Hostel.
         'security/groups.xml',
         'security/ir.model.access.csv',
         'views/hostel_room.xml',
+        'views/hostel_room_category_view.xml'
     ],
-    # This demo data files will be loaded if db initialize with demo data (commented becaues file is not added in this example)
-    # 'demo': [
-    #     'demo.xml'
-    # ],
 }

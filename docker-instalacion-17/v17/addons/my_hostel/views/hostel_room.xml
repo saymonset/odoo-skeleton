@@ -19,6 +19,8 @@
                 <header>
                     <button name="make_available" string="Make Available" type="object"/>
                     <button name="make_closed"  string="Make Closed" type="object"/>
+                    <button name="log_all_room_members"  string="Log Members" type="object"/>
+                    <button name="create_categories" string="Create Categories" type="object"/>
                     <field name="state" widget="statusbar"/>
                 </header>
                 <group>
