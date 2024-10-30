@@ -69,6 +69,10 @@ class HostelRoom(models.Model):
         record = self.env['hostel.room.category'].create(parent_category_val)
         return True
 
+    def update_room_no(self):
+        self.ensure_one()
+        self.room_no = "RM002"
+
 
 class HostelRoomMember(models.Model):
 
