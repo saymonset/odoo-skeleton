@@ -15,7 +15,12 @@ Efficiently manage the entire residential facility in the school
     "data": [
         "security/hostel_security.xml",
         "security/ir.model.access.csv",
+        "data/data.xml",
         "views/hostel.xml",
+        "views/hostel_room.xml",
+        "views/hostel_amenities.xml",
+        "views/hostel_student.xml",
+        "views/hostel_categ.xml",
     ],
     # This demo data files will be loaded if db initialize with demo data (commented because file is not added in this example)
     # 'demo': [

@@ -7,6 +7,7 @@
                 <tree string="Hostel">
                     <field name="name"/>
                     <field name="hostel_code"/>
+                    <field name="hostel_floors"/>
                     <field name="mobile"/>
                 </tree>
             </field>
@@ -30,6 +31,7 @@
                                 </table>
                             </h3>
                         </div>
+                        <field name="image" widget="image" class="oe_avatar"/>
                         <group>
                             <group>
                                 <label for="street" string="Address"/>
@@ -37,21 +39,27 @@
                                     <field name="street" placeholder="Street..." class="o_address_street"/>
                                     <field name="street2" placeholder="Street 2..." class="o_address_street"/>
                                     <field name="city" placeholder="City" class="o_address_city"/>
-                                  
-                                    <field name="zip" placeholder="ZIP" class="o_address_zip"/>
-                                    <label for="country_id" string="Country Hola Sayumon"/> <!-- Add this line -->
-                                    <field name="country_id" placeholder="Country" 
-                                    class="o_address_country" options='{"no_open": True, "no_create": True}'/>
-                                    <label for="state_id" string="Estado update1"/> <!-- Add this line -->
                                     <field name="state_id" class="o_address_state" placeholder="State" 
                                     options='{"no_open": True}'/>
+                                    <field name="zip" placeholder="ZIP" class="o_address_zip"/>
+                                    <field name="country_id" placeholder="Country" 
+                                    class="o_address_country" options='{"no_open": True, "no_create": True}'/>
                                 </div>
-                            </group>
-                            <group>
                                 <field name="phone" widget="phone"/>
                                 <field name="mobile" widget="phone"/>
                                 <field name="email" widget="email" context="{'gravatar_image': True}"/>
                             </group>
+                            <group>
+                                <field name="category_id"/>
+                                <field name="hostel_floors"/>
+                                <field name="active"/>
+                                <field name="type"/>
+                                <field name="hostel_rating"/>
+                                <field name="other_info"/>
+                            </group>
+                        </group>
+                        <group>
+                            <field name="description"/>
                         </group>
                     </sheet>
                 </form>
