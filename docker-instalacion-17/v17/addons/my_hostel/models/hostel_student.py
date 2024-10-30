@@ -28,6 +28,7 @@ class HostelStudent(models.Model):
         help="Activate/Deactivate hostel record")
     room_id = fields.Many2one("hostel.room", "Room",
         help="Select hostel room")
+    hostel_id = fields.Many2one("hostel.hostel", related='room_id.hostel_id')
     status = fields.Selection([("draft", "Draft"),
         ("reservation", "Reservation"), ("pending", "Pending"),
         ("paid", "Done"),("discharge", "Discharge"), ("cancel", "Cancel")],

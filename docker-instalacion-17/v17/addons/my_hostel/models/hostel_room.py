@@ -12,11 +12,7 @@ class HostelRoom(models.Model):
     def _compute_check_availability(self):
         """Method to check room availability"""
         for rec in self:
-            print('------------')
-            print(f"Estudiantes por habitación: {rec.student_per_room}")
-            print(f"Número de estudiantes asignados: {len(rec.student_ids.ids)}")
             rec.availability = rec.student_per_room - len(rec.student_ids.ids)
-            print('---------end---')
 
     name = fields.Char(string="Room Name", required=True)
     room_no = fields.Char("Room No.", required=True)
@@ -33,7 +29,7 @@ class HostelRoom(models.Model):
     student_per_room = fields.Integer("Student Per Room", required=True,
         help="Students allocated per room")
     availability = fields.Float(compute="_compute_check_availability",
-        store=True, string="Availability", help="Room availability in hostel SAYMONSSS  ")
+        store=True, string="Availability", help="Room availability in hostel")
 
     _sql_constraints = [
        ("room_no_unique", "unique(room_no)", "Room number must be unique!")]
