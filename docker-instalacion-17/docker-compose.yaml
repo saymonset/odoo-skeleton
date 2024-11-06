@@ -15,7 +15,10 @@ services:
     volumes:
       - "odoo-web-data:/var/lib/odoo"
       - "./v${VERSION}/config/odoo.conf:/etc/odoo/odoo.conf"
-      - "./v${VERSION}/addons:/mnt/extra-addons"
+      - "./v${VERSION}/extra-addons:/mnt/extra-addons"
+      #- "./v${VERSION}/odoo-sources:/usr/lib/python3/dist-packages/odoo/addons"  # Mapeo de fuentes de Odoo
+      #- "./v17/odoo_addons:/usr/lib/python3/dist-packages/odoo/addons" 
+      #                            /usr/lib/python3/dist-packages/odoo/addons
     environment:
       - POSTGRES_PASSWORD=123456  # Set the password directly here
 
@@ -33,7 +36,7 @@ services:
       - odoo_network
     volumes:
       - odoo-db-data:/var/lib/postgresql/data/pgdata
-      - "./v${VERSION}/pgdata:/var/lib/postgresql/data/pgdata"
+      #- "./v${VERSION}/pgdata:/var/lib/postgresql/data/pgdata"
 
 volumes:
   odoo-web-data:
