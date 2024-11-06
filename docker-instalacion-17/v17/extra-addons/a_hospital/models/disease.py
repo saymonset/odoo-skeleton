@@ -1,5 +1,7 @@
 from odoo import models, fields, api
 from odoo import _
+from odoo.exceptions import UserError
+#from odoo.tools.translate import _
 
 
 class Disease(models.Model):
@@ -77,7 +79,11 @@ class Disease(models.Model):
             if room.is_allowed_transition(room.state, new_state):
                 room.state = new_state
             else:
-                continue
+                #continue
+                message = _('Moving from %s to %s is not allowed') % (room.state, new_state)
+                raise UserError(message)
+
+ 
 
     def make_available(self):
         self.change_state('available')

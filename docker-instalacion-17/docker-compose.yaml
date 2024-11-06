@@ -23,7 +23,7 @@ services:
       - POSTGRES_PASSWORD=123456  # Set the password directly here
 
   db:
-    image: postgres:15
+    image: postgres:14
     container_name: "odoo-db${VERSION}"
     environment:
       - POSTGRES_DB=postgres
