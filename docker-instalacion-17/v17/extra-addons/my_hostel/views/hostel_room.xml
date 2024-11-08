@@ -19,6 +19,9 @@
                 <header>
                     <button name="make_available" string="Make Available" type="object"/>
                     <button name="make_closed"  string="Make Closed" type="object"/>
+                    <button name="log_all_room_members"  string="Log Members" type="object"/>
+                    <button name="create_categories" string="Create Categories" type="object"/>
+                    <button name="update_room_no" string="Update Room No" type="object"/>
                     <field name="state" widget="statusbar"/>
                 </header>
                 <group>
@@ -28,6 +31,7 @@
                     </group>
                     <group>
                         <field name="description"/>
+                        <field name="member_ids" widget="many2many_tags"/>
                     </group>
                 </group>
             </form>

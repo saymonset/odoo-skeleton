@@ -16,6 +16,7 @@
     },
 
     'data': [
+         'data/data.xml',
         'security/a_hospital_groups.xml',
         'security/ir.model.access.csv',
         'security/a_hospital_security.xml',

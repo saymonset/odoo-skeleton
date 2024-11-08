@@ -21,6 +21,10 @@ services:
       #                            /usr/lib/python3/dist-packages/odoo/addons
     environment:
       - POSTGRES_PASSWORD=123456  # Set the password directly here
+    command: >
+      sh -c "pip3 install -U debugpy && /usr/bin/python3 -m debugpy --listen 0.0.0.0:3001 --wait-for-client /entrypoint.sh odoo"  
+    # command: >
+    #   sh -c "pip3 install -U debugpy && /entrypoint.sh odoo"  
 
   db:
     image: postgres:14

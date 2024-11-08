@@ -84,7 +84,18 @@ class Disease(models.Model):
                 raise UserError(message)
 
  
-
+#
+    def log_all_room_members(self):
+        hostel_room_obj = self.env['a_hospital.doctor']  # This is an empty recordset of model hostel.room.member
+        all_members = hostel_room_obj.search([])
+        print("ALL MEMBERS:", all_members)
+        categ1 = {
+            'name': 'Child category 1',
+            'description': 'Description for child 1'
+        }
+        record = self.env['a_hospital.specialty'].create(categ1)
+        return True
+    
     def make_available(self):
         self.change_state('available')
 
