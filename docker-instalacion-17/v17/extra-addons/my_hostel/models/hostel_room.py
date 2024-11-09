@@ -1,6 +1,10 @@
 from odoo import fields, models, api, _
 from odoo.exceptions import ValidationError
 
+import logging
+
+_logger = logging.getLogger(__name__)
+
 
 class HostelRoom(models.Model):
 
@@ -43,3 +47,36 @@ class HostelRoom(models.Model):
     def action_remove_room_members(self):
         for student in self.student_ids:
             student.with_context(is_hostel_room=True).action_remove_room()
+    def action_category_with_amount(self):
+        if self.room_category_id:
+            self.env.cr.execute("""
+                SELECT
+                    hrc.name,
+                    hrc.amount
+                FROM
+                    hostel_room AS hostel_room
+                JOIN
+                    hostel_room_category AS hrc ON hrc.id = hostel_room.room_category_id
+                WHERE hostel_room.room_category_id = %(cate_id)s;""", 
+                {'cate_id': self.room_category_id.id})
+            result = self.env.cr.fetchall()
+            _logger.warning("Hostel Room With Amount: %s", result)
+            return result
+        else:
+            # Manejo de caso donde room_category_id es None
+            _logger.warning("Hostel Room With Amount: %s", [])
+            return []
+        
+    # def action_category_with_amount(self):
+    #     self.env.cr.execute("""
+    #         SELECT
+    #             hrc.name,
+    #             hrc.amount
+    #         FROM
+    #             hostel_room AS hostel_room
+    #         JOIN
+    #             hostel_room_category as hrc ON hrc.id = hostel_room.room_category_id
+    #         WHERE hostel_room.room_category_id = %(cate_id)s;""", 
+    #         {'cate_id': self.room_category_id.id})
+    #     result = self.env.cr.fetchall()
+        _logger.warning("Hostel Room With Amount: %s", result)
