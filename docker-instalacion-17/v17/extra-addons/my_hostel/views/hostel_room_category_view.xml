@@ -7,7 +7,7 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <menuitem name="Hostel Room Categories" id="hostel_room_category_menu" parent="hostel_base_menu" action="hostel_room_category_action"/>
+    <menuitem name="Hostel Room Categories" id="hostel_room_category_menu" parent="my_hostel.hostel_configuration" action="hostel_room_category_action"/>
 
     <!-- Form View -->
     <record id="hostel_room_category_view_form" model="ir.ui.view">
@@ -19,6 +19,7 @@
                     <group>
                         <field name="name"/>
                         <field name="description"/>
+                        <field name="amount"/>
                     </group>
                     <group>
                         <field name="parent_id"/>
