@@ -20,6 +20,11 @@
             <field name="arch" type="xml">
                 <form string="Student">
                     <header>
+                        <button name="return_room"
+                            string="Return Room"
+                            type="object"
+                            class="btn-primary"
+                        />
                         <button name="action_assign_room"
                             string="Assign Room"
                             type="object"

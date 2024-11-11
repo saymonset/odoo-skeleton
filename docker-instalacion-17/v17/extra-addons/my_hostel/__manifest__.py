@@ -16,6 +16,7 @@ Efficiently manage the entire residential facility in the school
         "security/hostel_security.xml",
         "security/ir.model.access.csv",
         "data/categ_data.xml",
+        "wizard/assign_room_student.xml",
         "views/hostel.xml",
         "views/hostel_room.xml",
         "views/hostel_amenities.xml",
