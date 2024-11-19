@@ -1,42 +1,52 @@
-from odoo import fields, models
+# -*- coding: utf-8 -*-
+import logging
+
+from odoo import api, fields, models, _
+from odoo.exceptions import UserError
+
+_logger = logging.getLogger(__name__)
 
 
-class Hostel(models.Model):
-    _name = 'hostel.hostel'
-    _description = "Information about hostel"
-    _order = "id desc, name"
-    _rec_name = 'hostel_code'
+class HostelRoom(models.Model):
 
-    name = fields.Char(string="hostel Name", required=True)
-    hostel_code = fields.Char(string="Code", required=True)
-    street = fields.Char('Street')
-    street2 = fields.Char('Street2')
-    zip = fields.Char('Zip', change_default=True)
-    city = fields.Char('City')
-    state_id = fields.Many2one("res.country.state", string='State')
-    country_id = fields.Many2one('res.country', string='Country')
-    phone = fields.Char('Phone',required=1)
-    mobile = fields.Char('Mobile',required=1)
-    email = fields.Char('Email')
-    hostel_floors = fields.Integer(string="Total Floors")
-    image = fields.Binary('Hostel Image')
-    active = fields.Boolean("Active", default=True,
-        help="Activate/Deactivate hostel record")
-    type = fields.Selection([("male", "Boys"), ("female", "Girls"),
-        ("common", "Common")], "Type", help="Type of Hostel",
-        required=True, default="common")
+    _name = 'hostel.room'
+    _description = "Information about hostel Room"
+
+    name = fields.Char(string="Hostel Name", required=True)
+    room_no = fields.Char(string="Room Number", required=True)
     other_info = fields.Text("Other Information",
-        help="Enter more information")
+                             help="Enter more information")
     description = fields.Html('Description')
-    hostel_rating = fields.Float('Hostel Average Rating', 
-                                # digits=(14, 4) # Method 1: Optional precision (total, decimals),
-                                 digits='Rating Value' # Method 2
-                                 )
-    category_id = fields.Many2one('hostel.category')
+    room_rating = fields.Float('Hostel Average Rating', digits=(14, 4))
+    state = fields.Selection([
+        ('draft', 'Unavailable'),
+        ('available', 'Available'),
+        ('closed', 'Closed')],
+        'State', default="draft")
+    hostel_room_category_id = fields.Many2one(
+        'hostel.room.category',
+        string='Parent Category',
+        ondelete='restrict',
+        index=True
+    )
 
-    def name_get(self):
-        result = []
-        for record in self:
-            rec_name = "%s (%s)" % (record.name, record.hostel_code)
-            result.append((record.id, rec_name))
-        return result
+    @api.model
+    def is_allowed_transition(self, old_state, new_state):
+        allowed = [('draft', 'available'),
+                   ('available', 'closed'),
+                   ('closed', 'draft')]
+        return (old_state, new_state) in allowed
+
+    def change_state(self, new_state):
+        for room in self:
+            if room.is_allowed_transition(room.state, new_state):
+                room.state = new_state
+            else:
+                message = _('Moving from %s to %s is not allowed') % (room.state, new_state)
+                raise UserError(message)
+
+    def make_available(self):
+        self.change_state('available')
+
+    def make_closed(self):
+        self.change_state('closed')
