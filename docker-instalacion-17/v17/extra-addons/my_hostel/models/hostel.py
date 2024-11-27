@@ -10,6 +10,7 @@ _logger = logging.getLogger(__name__)
 class HostelRoom(models.Model):
 
     _name = 'hostel.room'
+    _inherit = ['mail.thread']
     _description = "Information about hostel Room"
 
     name = fields.Char(string="Hostel Name", required=True)
