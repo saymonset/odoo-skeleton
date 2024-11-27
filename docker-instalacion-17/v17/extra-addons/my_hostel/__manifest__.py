@@ -9,12 +9,11 @@ Long description
     "author": "Serpent Consulting Services Pvt. Ltd.",
     "category": "Uncategorized",
     "website": "http://www.serpentcs.com",
-    "depends": ['mail'],
+    "depends": ['base'],
     "license": "AGPL-3",
     'data': [
         'security/groups.xml',
         'security/ir.model.access.csv',
-        'views/hostel_room_category_view.xml',
         'views/hostel_room.xml',
     ],
 }
