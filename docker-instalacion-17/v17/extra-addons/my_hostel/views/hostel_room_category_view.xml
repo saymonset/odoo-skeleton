@@ -16,18 +16,40 @@
         <field name="model">hostel.room.category</field>
         <field name="arch" type="xml">
             <form>
-                <group>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button type="object" class="oe_stat_button" icon="fa-pencil-square-o" name="action_open_related_hostel_room">
+                            <div class="o_form_field o_stat_info">
+                                <span class="o_stat_value">
+                                    <field name="related_hostel_room"/>
+                                </span>
+                                <span class="o_stat_text">Hostel Room</span>
+                            </div>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
                     <group>
-                        <field name="name"/>
-                        <field name="description"/>
+                        <group>
+                            <field name="description"/>
+                        </group>
+                        <group>
+                            <field name="parent_id"/>
+                        </group>
                     </group>
                     <group>
-                        <field name="parent_id"/>
+                        <field name="child_ids"/>
+                        <field name="hostel_room_ids" widget="many2many_tags"/>
                     </group>
-                </group>
-                <group>
-                    <field name="child_ids"/>
-                </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                </div>
             </form>
         </field>
     </record>
