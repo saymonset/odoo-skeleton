@@ -4,7 +4,7 @@
     <record id='hostel_room_category_action' model='ir.actions.act_window'>
         <field name="name">Hostel Room Categories</field>
         <field name="res_model">hostel.room.category</field>
-        <field name="view_mode">tree,kanban,calendar,graph,pivot,form</field>
+        <field name="view_mode">tree,kanban,calendar,graph,pivot,activity,form</field>
     </record>
 
     <menuitem id="menu_custom_hostel_room" name="Hostel Room" web_icon="my_hostel,static/description/icon.png"/>
@@ -45,6 +45,23 @@
         </field>
     </record>
 
+ <!-- Activity View -->
+    <record id="hostel_room_category_view_activity" model="ir.ui.view">
+        <field name="name">Hostel Room Categories Activity</field>
+        <field name="model">hostel.room.category</field>
+        <field name="arch" type="xml">
+            <activity string="Hostel Room Category">
+                <templates>
+                    <div t-name="activity-box">
+                        <div>
+                            <field name="name" display="full"/>
+                            <field name="parent_id" muted="1" display="full"/>
+                        </div>
+                    </div>
+                </templates>
+            </activity>
+        </field>
+    </record>
     <!-- Form View -->
     <record id="hostel_room_category_view_form" model="ir.ui.view">
         <field name="name">Hostel Room Categories Form</field>
