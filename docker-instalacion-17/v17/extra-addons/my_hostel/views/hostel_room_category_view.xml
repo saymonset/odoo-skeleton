@@ -4,20 +4,18 @@
     <record id='hostel_room_category_action' model='ir.actions.act_window'>
         <field name="name">Hostel Room Categories</field>
         <field name="res_model">hostel.room.category</field>
-        <field name="view_mode">tree,kanban,form</field>
+        <field name="view_mode">tree,kanban,calendar,graph,pivot,form</field>
     </record>
 
     <menuitem id="menu_custom_hostel_room" name="Hostel Room" web_icon="my_hostel,static/description/icon.png"/>
     <menuitem name="Hostel Room Categories" id="hostel_room_category_menu" parent="menu_custom_hostel_room" action="hostel_room_category_action"/>
-
-    
 
     <!-- Kanban View -->
     <record id="hostel_room_category_view_kanban" model="ir.ui.view">
         <field name="name">Hostel Room Categories kanban</field>
         <field name="model">hostel.room.category</field>
         <field name="arch" type="xml">
-             <kanban class="o_kanban_mobile" sample="1" default_group_by="parent_id">
+            <kanban class="o_kanban_mobile" sample="1" default_group_by="parent_id">
                 <field name="name"/>
                 <field name="description"/>
                 <templates>
@@ -46,7 +44,7 @@
             </kanban>
         </field>
     </record>
-    
+
     <!-- Form View -->
     <record id="hostel_room_category_view_form" model="ir.ui.view">
         <field name="name">Hostel Room Categories Form</field>
@@ -76,6 +74,10 @@
                         <group>
                             <field name="parent_id"/>
                         </group>
+                        <group>
+                            <field name="date_assign"/>
+                            <field name="date_end"/>
+                        </group>
                     </group>
                     <group>
                         <field name="child_ids"
@@ -97,13 +99,49 @@
                         </field>
                     </group>
                 </sheet>
-                <div class="o_attachment_preview"/>
+                <div class="o_attachment_preview" invisible="not hostel_room_ids" options="{'types': ['image', 'pdf'], 'order': 'desc'}"/>
                 <div class="oe_chatter">
                     <field name="message_follower_ids" widget="mail_followers"/>
                     <field name="message_ids" widget="mail_thread"/>
                     <field name="activity_ids" widget="mail_activity"/>
                 </div>
             </form>
+        </field>
+    </record>
+
+    <!-- Graph View -->
+    <record id="hostel_room_category_view_graph" model="ir.ui.view">
+        <field name="name">Hostel Room Categories Graph</field>
+        <field name="model">hostel.room.category</field>
+        <field name="arch" type="xml">
+            <graph type="bar">
+                <field name="parent_id"/>
+                <field name="child_ids"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Pivot View -->
+    <record id="hostel_room_category_view_pivot" model="ir.ui.view">
+        <field name="name">Hostel Room Categories Pivot</field>
+        <field name="model">hostel.room.category</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="parent_id" type="row"/>
+                <field name="name" type="col"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Calendar View -->
+    <record id="hostel_room_category_view_calendar" model="ir.ui.view">
+        <field name="name">Hostel Room Categories Calendar</field>
+        <field name="model">hostel.room.category</field>
+        <field name="arch" type="xml">
+            <calendar date_start="date_assign" date_stop="date_end" color="parent_id">
+                <field name="name" />
+                <field name="parent_id" />
+            </calendar>
         </field>
     </record>
 
