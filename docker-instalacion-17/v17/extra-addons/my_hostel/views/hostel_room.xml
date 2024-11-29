@@ -1,90 +1,137 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-
-    <!-- Form View -->
-    <record id="hostel_room_view_form" model="ir.ui.view">
-        <field name="name">Hostel Room Form</field>
+    <record id="view_hostel_room_tree" model="ir.ui.view">
+        <field name="name">hostel.room.tree</field>
         <field name="model">hostel.room</field>
         <field name="arch" type="xml">
-            <form>
-                <sheet>
-                    <header>
-                        <button name="make_available" string="Make Available" type="object"/>
-                        <button name="make_closed"  string="Make Closed" type="object"/>
-                        <button type="action" name="%(my_hostel.hostel_room_category_action)d" string="Open Hotel Room Category" />
-                        <field name="state" widget="statusbar"/>
-                    </header>
-                    <group string="Content" name="my_content">
-                        <group>
-                            <field name="name" />
-                            <field name="room_no"/>
-                        </group>
-                        <group>
-                            <field name="description"/>
-                        </group>
-                    </group>
-                    <notebook>
-                        <page string="Other Information" name="other_information">
-                            <field name="other_info" widget="html"/>
-                        </page>
-                    </notebook>
-                </sheet>
-                <div class="o_attachment_preview" invisible="state != 'draft'"/>
-            </form>
-        </field>
-    </record>
-
-    <!-- Tree(list) View -->
-    <record id="hostel_room_view_tree" model="ir.ui.view">
-        <field name="name">Hostel Room List</field>
-        <field name="model">hostel.room</field>
-        <field name="arch" type="xml">
-            <tree>
+            <tree string="Room">
                 <field name="name"/>
                 <field name="room_no"/>
-                <field name="state"/>
+                <field name="floor_no"/>
+                 <field name="stage_id"/>
             </tree>
         </field>
     </record>
 
-    <!-- Search view -->
-    <record id="hostel_room_view_search" model="ir.ui.view">
+    <record id="view_hostel_room_form" model="ir.ui.view">
+        <field name="name">hostel.room.form</field>
         <field name="model">hostel.room</field>
         <field name="arch" type="xml">
-            <search>
-                <field name="name"/>
-                <field name="room_no"/>
-                <field name="state"/>
-                <searchpanel>
-                    <field name="state" expand="1" select="multi" icon="fa-check-square-o" enable_counters="1"/>
-                </searchpanel>
-            </search>
+            <form string="Room">
+                <header>
+                    <field name="stage_id" widget="statusbar" options="{'clickable': '1', 'fold_field': 'fold'}"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="room_no"/>
+                            <field name="hostel_id" required="1"/>
+                            <field name="floor_no"/>
+                        </group>
+                        <group>
+                            <field name="student_per_room"/>
+                            <field name="availability"/>
+                            <field name="rent_amount"/>
+                            <field name="currency_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page name="room_students" string="Students">
+                            <field name="student_ids"/>
+                        </page>
+                        <page name="hostel_amenities" string="Room Amenities">
+                            <group>
+                                <field name="hostel_amenities_ids" widget="many2many_tags"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
         </field>
     </record>
 
-    <record id="action_hostel_room" model="ir.actions.act_window">
-        <field name="name">All Hostel Room</field>
+    <record id="hostel_room_view_form_minimal" model="ir.ui.view">
+        <field name="name">Hostel room Form</field>
+        <field name="model">hostel.room</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="name"/>
+                    <field name="room_no"/>
+                    <field name="hostel_id" required="1"/>
+                    <field name="floor_no"/>
+                    <field name="student_per_room"/>
+                    <field name="hostel_amenities_ids" widget="many2many_tags"
+                            options="{'color_field': 'color', 'no_create_edit': True}"/>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <!-- Kanban View -->
+    <record id="hostel_room_view_kanban" model="ir.ui.view">
+        <field name="name">Hostel room Kanban</field>
+        <field name="model">hostel.room</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="stage_id" on_create="quick_create" quick_create_view="my_hostel.hostel_room_view_form_minimal">
+                <field name="stage_id"/>
+                <field name="color"/>
+                <progressbar field="popularity" colors='{"low": "success", "medium": "warning", "high": "danger"}'/>
+                <templates>
+                    <t t-name="kanban-menu" groups="base.group_user">
+                        <a t-if="widget.editable" role="menuitem" type="edit" class="dropdown-item">Edit</a>
+                        <a t-if="widget.deletable" role="menuitem" type="delete" class="dropdown-item">Delete</a>
+                        <ul class="oe_kanban_colorpicker" data-field="color"/>
+                        <div role="separator" class="dropdown-divider"></div>
+                    </t>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="{{'oe_kanban_color_' + kanban_getcolor(record.color.raw_value) }} oe_kanban_card oe_kanban_global_click oe_semantic_html_override">
+                            <div class="oe_kanban_card oe_kanban_global_click">
+                                <strong class="o_kanban_record_title">
+                                    <field name="name"/>
+                                </strong>
+                                <div class="text-muted">
+                                    <i class="fa fa-building">    </i>
+                                    <field name="hostel_id" />
+                                </div>
+                                <span class="oe_kanban_list_many2many">
+                                    <field name="hostel_amenities_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                                </span>
+                                <div>
+                                    <field name="popularity" widget="priority"/>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_hostel_room">
+        <field name="name">Room</field>
+        <field name="type">ir.actions.act_window</field>
         <field name="res_model">hostel.room</field>
-        <field name="search_view_id" ref="hostel_room_view_search" />
-        <field name="view_mode">tree,form</field>
-        <field name="context">{'tree_view_ref': 'my_hostel.hostel_room_view_tree', 'lang': 'fr_FR','default_lang': 'fr_FR', 'active_test': False, 'default_room_rating': 1.0}</field>
-        <field name="domain">[('state', 'in', ['draft', 'available'])]</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+        <field name="view_id" ref="view_hostel_room_form"/>
+         <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Create Room.
+            </p>
+         </field>
     </record>
 
-    <record id="action_hostel_room_tree" model="ir.actions.act_window.view">
-        <field name="act_window_id" ref="action_hostel_room" />
-        <field name="view_id" ref="hostel_room_view_tree" />
-        <field name="view_mode">tree</field>
-        <field name="sequence" eval="1"/>
+    <record id="action_hostel_room_view_kanban" model="ir.actions.act_window.view">
+        <field name="sequence" eval="0"/>
+        <field name="view_mode">kanban</field>
+        <field name="view_id" ref="hostel_room_view_kanban"/>
+        <field name="act_window_id" ref="action_hostel_room"/>
     </record>
 
-    <record id="action_hostel_room_form" model="ir.actions.act_window.view">
-        <field name="act_window_id" ref="action_hostel_room" />
-        <field name="view_id" ref="hostel_room_view_form" />
-        <field name="view_mode">form</field>
-        <field name="sequence" eval="2"/>
-    </record>
-
-    <menuitem id="menu_all_hostel_room" parent="menu_custom_hostel_room" action="action_hostel_room" sequence="10" groups="" />
-
+    <menuitem id="hostel_room_menu" name="Hostel Room" parent="my_hostel.hostel_main_menu"
+        action="my_hostel.action_hostel_room" groups="my_hostel.group_hostel_manager"
+        sequence="2"/>
 </odoo>
