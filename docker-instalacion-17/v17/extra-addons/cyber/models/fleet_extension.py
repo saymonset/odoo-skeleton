@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 from odoo import api, fields, models
+from odoo.exceptions import UserError
+from odoo.tools.translate import _
 
 class FleetVehicle(models.Model):
     _inherit = 'fleet.vehicle'  # Inherit from the existing fleet vehicle model
@@ -24,7 +26,8 @@ class FleetVehicle(models.Model):
             if room.is_allowed_transition(room.state, new_state):
                 room.state = new_state
             else:
-                continue
+                 message = _('Moving from %s to %s is not allowed') % (room.state, new_state)
+                 raise UserError(message)
 
     def make_available(self):
         self.change_state('available')
