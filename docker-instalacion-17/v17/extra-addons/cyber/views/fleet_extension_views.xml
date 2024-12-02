@@ -5,6 +5,14 @@
             <field name="model">fleet.vehicle</field>
             <field name="inherit_id" ref="fleet.fleet_vehicle_view_form"/>
             <field name="arch" type="xml">
+              <!-- Eliminar el botón "Apply New Driver" -->
+                <xpath expr="//button[@name='action_accept_driver_change']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <!-- Eliminar el campo state_id -->
+                <xpath expr="//field[@name='state_id']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
                <xpath expr="//header" position="inside">
                     <button name="make_available" string="Make Available saymon" type="object"/>
                     <button name="make_closed"  string="Make Closed saymon" type="object"/>
