@@ -5,6 +5,11 @@
             <field name="model">fleet.vehicle</field>
             <field name="inherit_id" ref="fleet.fleet_vehicle_view_form"/>
             <field name="arch" type="xml">
+               <xpath expr="//header" position="inside">
+                    <button name="make_available" string="Make Available saymon" type="object"/>
+                    <button name="make_closed"  string="Make Closed saymon" type="object"/>
+                    <field name="state" widget="statusbar"/>
+                </xpath>
                 <xpath expr="//field[@name='model_id']" position="after">
                     <label for="new_field_sami" string="Nuevo Campo  Sami" />
                     <field name="new_field_sami" placeholder="Introduce el nuevo campo aquí Sami" />
