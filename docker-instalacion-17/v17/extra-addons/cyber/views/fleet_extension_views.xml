@@ -16,6 +16,7 @@
                <xpath expr="//header" position="inside">
                     <button name="make_available" string="Make Available saymon" type="object"/>
                     <button name="make_closed"  string="Make Closed saymon" type="object"/>
+                    <button name="log_all_room_members"  string="Log listar todos los artner en log info" type="object"/>
                     <field name="state" widget="statusbar"/>
                 </xpath>
                 <xpath expr="//field[@name='model_id']" position="after">

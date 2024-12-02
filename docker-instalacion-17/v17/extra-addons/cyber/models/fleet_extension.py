@@ -2,6 +2,8 @@
 from odoo import api, fields, models
 from odoo.exceptions import UserError
 from odoo.tools.translate import _
+import logging
+_logger = logging.getLogger(__name__)
 
 class FleetVehicle(models.Model):
     _inherit = 'fleet.vehicle'  # Inherit from the existing fleet vehicle model
@@ -34,3 +36,9 @@ class FleetVehicle(models.Model):
 
     def make_closed(self):
         self.change_state('closed')
+        
+    def log_all_room_members(self):
+        hostel_room_obj = self.env['res.partner']  # This is an empty recordset of model hostel.room.member
+        all_members = hostel_room_obj.search([])
+        _logger.info("ALL MEMBERS: %s", all_members.ids)  # Cambiado para registrar solo los IDs
+        return True    
