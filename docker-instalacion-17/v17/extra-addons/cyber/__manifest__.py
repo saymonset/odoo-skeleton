@@ -17,6 +17,7 @@ Description related to Cyber.
         # 'security/ir.model.access.csv',
         'views/fleet_extension_views.xml',
         'views/cyber_category_views.xml',
+        'views/hostel_room_views.xml',
     ],
     # This demo data files will be loaded if db initialize with demo data (commented becaues file is not added in this example)
     # 'demo': [
