@@ -23,6 +23,8 @@ class CyberCategory(models.Model):
         'cyber.room', 'cyber_room_category_id',
         string='Cyber Room')
     related_hostel_room = fields.Integer(compute='_compute_related_hostel_room')
+    date_end = fields.Datetime(string='Ending Date', index=True, copy=False)
+    date_assign = fields.Datetime(string='Assigning Date', copy=False,)
 
     def _compute_related_hostel_room(self):
         for record in self:
