@@ -4,12 +4,34 @@
     <record id='cyber_category_action' model='ir.actions.act_window'>
         <field name="name">Cyber Categories</field>
         <field name="res_model">cyber.category</field>
-        <field name="view_mode">tree,kanban,calendar,form</field>
+        <field name="view_mode">tree,kanban,calendar,graph,pivot,form</field>
     </record>
 
     <menuitem name="Cyber Categories zzzsaymons0" id="cyber_category_menu" parent="fleet.fleet_vehicles" action="cyber_category_action"/>
 
+    <!-- Graph View -->
+    <record id="hostel_room_category_view_graph" model="ir.ui.view">
+        <field name="name">Hostel Room Categories Graph</field>
+        <field name="model">hostel.room.category</field>
+        <field name="arch" type="xml">
+            <graph type="bar">
+                <field name="parent_id"/>
+                <field name="child_ids"/>
+            </graph>
+        </field>
+    </record>
 
+    <!-- Pivot View -->
+    <record id="hostel_room_category_view_pivot" model="ir.ui.view">
+        <field name="name">Hostel Room Categories Pivot</field>
+        <field name="model">hostel.room.category</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="parent_id" type="row"/>
+                <field name="name" type="col"/>
+            </pivot>
+        </field>
+    </record>
     <!-- Kanban View -->
     <record id="cyber_room_category_view_kanban" model="ir.ui.view">
         <field name="name">saymon cyber Room Categories kanban</field>
