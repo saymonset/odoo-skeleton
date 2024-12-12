@@ -4,29 +4,87 @@
     <record id='cyber_category_action' model='ir.actions.act_window'>
         <field name="name">Cyber Categories</field>
         <field name="res_model">cyber.category</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">tree,kanban,form</field>
     </record>
 
-    <menuitem name="Cyber Categories" id="cyber_category_menu" parent="fleet.menu_root" action="cyber_category_action"/>
+    <menuitem name="Cyber Categories zzzsaymons0" id="cyber_category_menu" parent="fleet.fleet_vehicles" action="cyber_category_action"/>
 
+
+    <!-- Kanban View -->
+    <record id="cyber_room_category_view_kanban" model="ir.ui.view">
+        <field name="name">saymon cyber Room Categories kanban</field>
+        <field name="model">cyber.category</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile" sample="1" default_group_by="parent_id">
+                <field name="name"/>
+                <field name="description"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_global_click">
+                            <div class="row mb4">
+                                <div class="col-6 o_kanban_record_headings">
+                                    <strong>
+                                        <span>
+                                            <field name="name"/>
+                                        </span>
+                                    </strong>
+                                </div>
+                                <div class="col-6 text-end">
+                                    <strong><i role="img" title="description"/> <t t-esc="record.description.value"/></strong>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <span><field name="parent_id"/></span>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
     <!-- Form View -->
     <record id="cyber_category_view_form" model="ir.ui.view">
         <field name="name">Cyber Categories Form</field>
         <field name="model">cyber.category</field>
         <field name="arch" type="xml">
-            <form>
-                <group>
+             <form>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button type="object" class="oe_stat_button" icon="fa-pencil-square-o" name="action_open_related_hostel_room">
+                            <div class="o_form_field o_stat_info">
+                                <span class="o_stat_value">
+                                    <field name="related_hostel_room"/>
+                                </span>
+                                <span class="o_stat_text">Cyber Room</span>
+                            </div>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
                     <group>
-                        <field name="name"/>
-                        <field name="description"/>
+                        <group>
+                            <field name="description"/>
+                        </group>
+                        <group>
+                            <field name="parent_id"/>
+                        </group>
                     </group>
                     <group>
-                        <field name="parent_id"/>
+                        <field name="child_ids"/>
+                        <field name="cyber_room_ids" widget="many2many_tags"/>
                     </group>
-                </group>
-                <group>
-                    <field name="child_ids"/>
-                </group>
+                </sheet>
+                <div class="o_attachment_preview" invisible="not cyber_room_ids" options="{'types': ['image', 'pdf'], 'order': 'desc'}"/>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                </div>
             </form>
         </field>
     </record>

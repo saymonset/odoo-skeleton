@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Form View -->
+    <record id="view_solicitud_form" model="ir.ui.view">
+        <field name="name">solicitud.form</field>
+        <field name="model">cyber.solicitud</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="estado" widget="statusbar"/>
+                          <field name="cliente_id" placeholder="Cliente" 
+                                    class="o_address_country" options='{"no_open": True, "no_create": True}'/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+  
+    <!-- Tree(list) View -->
+    <record id="view_solicitud_tree" model="ir.ui.view">
+        <field name="name">solicitud.tree</field>
+        <field name="model">cyber.solicitud</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="estado"/>
+                <field name="cliente_id" placeholder="Cliente" 
+                                    class="o_address_country" options='{"no_open": True, "no_create": True}'/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Search view -->
+    <record id="view_solicitud_search" model="ir.ui.view">
+        <field name="model">cyber.solicitud</field>
+        <field name="arch" type="xml">
+            <search>
+                  <field name="estado" widget="statusbar"/>
+                  <field name="cliente_id" placeholder="Cliente" 
+                                    class="o_address_country" options='{"no_open": True, "no_create": True}'/>
+
+            </search>
+        </field>
+    </record>
+
+    <record id="action_cyber_solicitud_client" model="ir.actions.act_window">
+        <field name="name">solicitud</field>
+        <field name="res_model">cyber.solicitud</field>
+        <field name="search_view_id" ref="view_solicitud_search" />
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_cyber_solicitud_tree" model="ir.actions.act_window.view">
+        <field name="act_window_id" ref="action_cyber_solicitud_client" />
+        <field name="view_id" ref="view_solicitud_tree" />
+        <field name="view_mode">tree</field>
+        <field name="sequence" eval="1"/>
+    </record>
+
+    <record id="action_cyber_solicitud_client_form" model="ir.actions.act_window.view">
+        <field name="act_window_id" ref="action_cyber_solicitud_client" />
+        <field name="view_id" ref="view_solicitud_form" />
+        <field name="view_mode">form</field>
+        <field name="sequence" eval="2"/>
+    </record>
+
+    <menuitem name="solicitud cyber Jesus" id="cyber_solicitud_menu" parent="fleet.fleet_vehicles" action="action_cyber_solicitud_client"/>
+
+</odoo>
