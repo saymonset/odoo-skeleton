@@ -8,7 +8,7 @@ class CyberCategory(models.Model):
     _description = "Cyber Category"
 
     name = fields.Char('Category')
-    description = fields.Text('Description')
+    description = fields.Text('Description saymkns', groups='cyber.group_cyber_manager')
     parent_id = fields.Many2one(
         'cyber.category',
         string='Parent Category',

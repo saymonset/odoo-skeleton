@@ -13,8 +13,9 @@ Description related to Cyber.
     "depends": ['base','fleet'],  # Inherit from the existing Flota module
     "license": "AGPL-3",
     'data': [
-         'security/groups.xml',
-         'security/ir.model.access.csv',
+        'security/security_rules.xml',
+        'security/groups.xml',
+        'security/ir.model.access.csv',
         'views/fleet_extension_views.xml',
         'views/cyber_category_views.xml',
         'views/hostel_room_views.xml',
