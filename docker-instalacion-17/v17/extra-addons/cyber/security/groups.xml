@@ -1,7 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="group_cyber_manager" model="res.groups">
-        <field name="name">Cyber Manager</field>
-        <field name="users" eval="[(4, ref('base.user_admin'))]"/>
+
+     <record id="group_cyber_user" model="res.groups">
+        <field name="name">User from xx cyber</field>
+        <field name="category_id" ref="base.module_category_cyber"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
     </record>
-</odoo>
+    <record id="group_cyber_manager" model="res.groups">
+        <field name="name">Cyber zzz Manager</field>
+        <field name="category_id" ref="base.module_category_cyber"/>
+        <field name="implied_ids" eval="[(4, ref('group_cyber_user'))]"/>
+         <field name="users" eval="[(4, ref('base.user_admin'))]"/> 
+    </record>
+
+
+
+
+</odoo>    

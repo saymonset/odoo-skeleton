@@ -1,0 +1,14 @@
+<!-- <odoo>
+    <record id="rule_cyber_room_user" model="ir.rule">
+        <field name="name">Cyber Room User Rule</field>
+        <field name="model_id" ref="model_cyber_room"/>
+        <field name="domain_force">[(user_id, '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+    <record id="rule_cyber_solicitud_user" model="ir.rule">
+        <field name="name">Cyber solicitud Rule</field>
+        <field name="model_id" ref="model_cyber.solicitud"/>
+        <field name="domain_force">[(user_id, '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+</odoo> -->

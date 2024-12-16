@@ -7,12 +7,12 @@
         <field name="view_mode">tree,kanban,calendar,graph,pivot,activity,form</field>
     </record>
 
-    <menuitem name="Cyber Categories zzzsaymons0" id="cyber_category_menu" parent="fleet.fleet_vehicles" action="cyber_category_action"/>
+    <menuitem name="Cyber Categories saymons0" id="cyber_category_menu" parent="fleet.menu_root" action="cyber_category_action"/>
 
     <!-- Graph View -->
     <record id="hostel_room_category_view_graph" model="ir.ui.view">
-        <field name="name">Hostel Room Categories Graph</field>
-        <field name="model">hostel.room.category</field>
+        <field name="name"> Categories Graph</field>
+        <field name="model">cyber.category</field>
         <field name="arch" type="xml">
             <graph type="bar">
                 <field name="parent_id"/>
@@ -38,9 +38,9 @@
         </field>
     </record>
     <!-- Pivot View -->
-    <record id="hostel_room_category_view_pivot" model="ir.ui.view">
+    <record id="cyber_category_view_pivot" model="ir.ui.view">
         <field name="name">Hostel Room Categories Pivot</field>
-        <field name="model">hostel.room.category</field>
+        <field name="model">cyber.category</field>
         <field name="arch" type="xml">
             <pivot>
                 <field name="parent_id" type="row"/>

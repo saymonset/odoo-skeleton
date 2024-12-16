@@ -1,3 +1,6 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_hostel,hostel.room.user,model_hostel_room,,1,0,0,0
-access_hostel_manager,hostel.room.manager,model_hostel_room,group_hostel_manager,1,1,1,1
+acl_cyber_room,cyber_room_default,model_cyber_room,base.group_user,1,1,1,1
+acl_cyber_room_manager,cyber_room_manager,model_cyber_room,cyber.group_cyber_manager,1,1,1,1
+acl_cyber_category,cyber_category_default,model_cyber_category,base.group_user,1,0,0,0
+acl_cyber_category_manager,cyber_category_manager,model_cyber_category,cyber.group_cyber_manager,1,0,0,0
+

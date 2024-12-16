@@ -8,13 +8,13 @@ Manage Cyber
 Description related to Cyber.
     """,  # Supports reStructuredText(RST) format
     "author": "Serpent Consulting Services Pvt. Ltd.",
-    "category": "Tools",
+    "category": "cyber",
     "website": "http://www.serpentcs.com",
     "depends": ['base','fleet'],  # Inherit from the existing Flota module
     "license": "AGPL-3",
     'data': [
-        # 'security/groups.xml',
-        # 'security/ir.model.access.csv',
+         'security/groups.xml',
+         'security/ir.model.access.csv',
         'views/fleet_extension_views.xml',
         'views/cyber_category_views.xml',
         'views/hostel_room_views.xml',
