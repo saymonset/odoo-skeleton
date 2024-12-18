@@ -7,7 +7,7 @@
         <field name="view_mode">tree,kanban,calendar,graph,pivot,activity,form</field>
     </record>
 
-    <menuitem name="Cyber Categories saymons0" id="cyber_category_menu" parent="fleet.menu_root" action="cyber_category_action"/>
+    <menuitem name="Cyber Categories security " id="cyber_category_menu" parent="fleet.menu_root" action="cyber_category_action"/>
 
     <!-- Graph View -->
     <record id="hostel_room_category_view_graph" model="ir.ui.view">

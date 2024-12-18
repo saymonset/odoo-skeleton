@@ -4,3 +4,4 @@ from . import cyber_category
 from . import cyber_room
 from . import cyber_client
 from . import cyber_solicitud
+from . import res_config_settings
