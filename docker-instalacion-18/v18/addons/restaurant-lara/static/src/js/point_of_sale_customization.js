@@ -1,3 +1,4 @@
+/** @odoo-module **/
 import { Component } from "@odoo/owl";
 import { ProductScreen } from  "@point_of_sale/app/screens/product_screen/product_screen";
 import { usePos } from "@point_of_sale/app/store/pos_hook";
@@ -23,25 +24,22 @@ export class PosDiscountButton extends Component {
 }
 
 
-// ProductScreen.addControlButton({
-//     component: PosDiscountButton,
-//     condition: function () {
-//         return true;
-//     },
-// });
+
+// Parchear ControlButtons para agregar el botón de descuento
+patch(ControlButtons.prototype, {
+    async onClick() {
+        this.dialog.add(AlertDialog, {
+            title: _t("Custom Alert saymon "),
+            body: _t("Choose the alert type Sonnyra"),
+        });
+      
+    },
+});
+
+// Parchear ControlButtons para agregar el botón de descuento
 
 
-// Parchear el componente ControlButtons para agregar el nuevo botón
-// patch(ControlButtons.prototype, "CustomControlButtons", {
-//     setup() {
-//         this._super(); // Llama al método original
-//         this.controlButtons.push({
-//             component: PosDiscountButton,
-//             condition: () => true, // Puedes agregar condiciones específicas si es necesario
-//         });
-//     },
-// });
-
+ 
 patch(ControlButtons.prototype, {
     async onClickPopup() {
         this.dialog.add(AlertDialog, {
