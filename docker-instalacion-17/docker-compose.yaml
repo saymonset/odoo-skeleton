@@ -30,16 +30,16 @@ services:
     image: postgres:14
     container_name: "odoo-db${VERSION}"
     environment:
-      - POSTGRES_DB=postgres
+      - POSTGRES_DB=odoodb
       - POSTGRES_PASSWORD=123456  # Set the password directly here
       - POSTGRES_USER=odoo
-      - PGDATA=/var/lib/postgresql/data/pgdata
+      - PGDATA=/var/lib/postgresql14/data/pgdata
     ports:
       - "${VERSION}433:5432"
     networks:
       - odoo_network
     volumes:
-      - odoo-db-data:/var/lib/postgresql/data/pgdata
+      - odoo-db-data:/var/lib/postgresql14/data/pgdata
       #- "./v${VERSION}/pgdata:/var/lib/postgresql/data/pgdata"
 
 volumes:

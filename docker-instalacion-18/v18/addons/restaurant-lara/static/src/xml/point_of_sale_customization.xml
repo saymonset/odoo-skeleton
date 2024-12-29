@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+ <!-- <t t-name="PosDiscountButton">
+        <span class="control-button btn btn-light rounded-0 fw-bolder"
+              t-on-click="() => this.onClick()">
+            <i class="fa fa-gift"></i>
+            <span>5%</span>
+            <span>Discount</span>
+        </span>
+    </t> -->
+     <t t-name="PosDiscountButtonxxxxx" t-inherit="point_of_sale.ControlButtons" t-inherit-mode="extension">
+        <xpath expr="//t[@t-if='props.showRemainingButtons']/div/OrderlineNoteButton" position="after">
+             <button class="btn btn-secondary btn-lg py-5" t-on-click="() => this.onClickPopup()">
+                 <i class="fa fa-pencil-square me-1" role="img" aria-label="Custom Alert" title="Custom Alert"/>Custom PopUp
+             </button>
+        </xpath>
+    </t>
+<!-- 
+     <t t-name="PosDiscountButton" t-inherit="point_of_sale.PaymentScreen" t-inherit-mode="extension">
+      <xpath expr="//div[hasclass('payment-controls')]" position="inside">
+            <span class="control-button btn btn-light rounded-0 fw-bolder"
+                t-on-click="() => this.onClick()">
+                <i class="fa fa-gift"></i>
+                <span>5%</span>
+                <span>Discount</span>
+            </span>
+        </xpath>
+        
+    </t> -->
+    <t t-name="custom_pos_button"  t-inherit="point_of_sale.ControlButtons" t-inherit-mode="extension">
+       
+       <xpath expr="//button" position="after">
+            <span class="control-button btn btn-light rounded-0 fw-bolder"
+                t-on-click="() => this.onClick()">
+                <i class="fa fa-gift"></i>
+                <span>5%</span>
+                <span>Discount saymonxxcd</span>
+            </span>
+        </xpath>
+    </t>
+
+</templates>

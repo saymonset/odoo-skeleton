@@ -27,7 +27,6 @@
                             <field name="other_info" widget="html"/>
                         </page>
                     </notebook>
-                     <div class="o_attachment_preview" invisible="state != 'draft'"/>
                 </sheet>
             </form>
         </field>
@@ -83,6 +82,6 @@
         <field name="sequence" eval="2"/>
     </record>
 
-    <menuitem name="Hotels saymons Luna!" id="cyber_hostel_menu" parent="fleet.menu_root" action="action_hostel_room"/>
+    <menuitem name="Hotels saymons" id="cyber_hostel_menu" parent="fleet.menu_root" action="action_hostel_room"/>
 
 </odoo>
