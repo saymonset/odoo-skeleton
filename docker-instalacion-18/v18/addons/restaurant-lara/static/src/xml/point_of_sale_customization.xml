@@ -27,6 +27,7 @@
         </xpath>
         
     </t> -->
+    
     <t t-name="custom_pos_button"  t-inherit="point_of_sale.ControlButtons" t-inherit-mode="extension">
        
        <xpath expr="//button" position="after">

@@ -1,5 +1,20 @@
 /** @odoo-module **/
-import { Component, mount, xml, whenReady, useState } from "@odoo/owl";
+import {    Component,
+            mount,
+            xml,
+            whenReady,
+            useState,
+            onWillStart,
+            onMounted,
+            onWillUnmount,
+            onWillUpdateProps,
+            onPatched,
+            onWillPatch,
+            onWillRender,
+            onRendered,
+            onError,
+            onWillDestroy,
+        } from "@odoo/owl";
 odoo.define('restaurant-lara.component', [], function (require) {
     "use strict";
 
@@ -32,6 +47,36 @@ odoo.define('restaurant-lara.component', [], function (require) {
                     'You are awesome too'
                 ];
                 this.state = useState({ currentIndex: 0 });
+                onWillStart(async () => {
+                    console.log('CALLED:> willStart');
+                });
+                onWillRender(() => {
+                    console.log('CALLED:> willRender');
+                });
+                onRendered(() => {
+                    console.log('CALLED:> Render');
+                });
+                onMounted(() => {
+                    console.log('CALLED:> Mounted');
+                });
+                onWillUnmount(() => {
+                    console.log('CALLED:> WillUnmount');
+                });
+                onWillUpdateProps(() => {
+                    console.log('CALLED:> WillUpdateProps');
+                });
+                onWillPatch(() => {
+                    console.log('CALLED:> WillPatch');
+                });
+                onPatched(() => {
+                    console.log('CALLED:> Patched');
+                });
+                onWillDestroy(() => {
+                    console.log('CALLED:> WillDestroy');
+                });
+                onError(() => {
+                    console.log('CALLED:> Error');
+                });
             }
             onRemove(ev) {
                 ev.target.closest("div").remove(); // Elimina el contenedor del componente
