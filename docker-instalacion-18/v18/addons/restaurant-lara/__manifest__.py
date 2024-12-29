@@ -22,6 +22,9 @@ Manage Restaurant
             'restaurant-lara/static/src/xml/point_of_sale_customization.xml',
             'restaurant-lara/static/src/js/point_of_sale_customization.js'
         ],
+        'web.assets_backend': [
+            'restaurant-lara/static/src/js/component.js',
+        ],
         
     },
     # This demo data files will be loaded if db initialize with demo data (commented because file is not added in this example)
