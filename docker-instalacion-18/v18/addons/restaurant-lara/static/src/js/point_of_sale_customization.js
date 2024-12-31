@@ -12,14 +12,15 @@ export class PosDiscountButton extends Component {
     static template = "PosDiscountButton";
 
     setup() {
-        this.pos = usePos();
+      //  this.pos = usePos();
     }
 
     async onClick() {
-        const order = this.pos.get_order();
-        if (order.selected_orderline) {
-            order.selecbted_orderline.set_discount(5);
-        }
+        alert('Eres una bestia!')
+        // const order = this.pos.get_order();
+        // if (order.selected_orderline) {
+        //     order.selecbted_orderline.set_discount(5);
+        // }
     }
 }
 
@@ -28,10 +29,11 @@ export class PosDiscountButton extends Component {
 // Parchear ControlButtons para agregar el botón de descuento
 patch(ControlButtons.prototype, {
     async onClick() {
-        this.dialog.add(AlertDialog, {
-            title: _t("Custom Alert saymon "),
-            body: _t("Choose the alert type Sonnyra"),
-        });
+         // Create an instance of PosDiscountButton
+         const discountButton = new PosDiscountButton();
+         await discountButton.onClick(); // Call the onClick method of the discount button
+
+    
       
     },
 });
