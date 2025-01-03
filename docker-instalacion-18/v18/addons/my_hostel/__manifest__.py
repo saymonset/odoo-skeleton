@@ -29,6 +29,7 @@
             'my_hostel/static/src/scss/field_widget.scss',
             'my_hostel/static/src/js/field_widget.js',
             'my_hostel/static/src/xml/field_widget.xml',
+             'my_hostel/static/src/js/component.js',
         ],
      },
 
