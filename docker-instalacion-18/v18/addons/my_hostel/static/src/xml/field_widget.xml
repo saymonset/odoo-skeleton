@@ -154,10 +154,16 @@
             </t>
         </div>
     </t>
-    <t t-name="CategInformationCustom" t-inherit="my_hostel.CategInformation"
+    <t t-name="CategInformationCustom" t-inherit="CategInformation"
         t-inherit-mode="extension">
         <xpath expr='//t[@t-if="value == 1"]' position="before">
             <i class="fa fa-info-circle" aria-hidden="true"></i>
+        </xpath>
+         <xpath expr="//div" position="inside">
+            <div class="text-center" 
+                 style="color:gray;background: white;padding:3px;padding: 5px;border-radius: 5px;">
+                Total Booked Rooms: <t t-esc="widget.categoryInfo[value] or 0"/>
+            </div>
         </xpath>
     </t>
 </templates>

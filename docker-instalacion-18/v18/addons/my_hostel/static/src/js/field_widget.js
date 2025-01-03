@@ -1,12 +1,17 @@
 /** @odoo-module */
-
-import { Component, useRef } from "@odoo/owl";
+import { Component, onWillStart , onWillUpdateProps, useRef} from "@odoo/owl";
 import { registry } from "@web/core/registry";
 import { renderToElement } from "@web/core/utils/render";
 
 export class CategColorField extends Component {
     setup() {
         this.totalColors = [1,2,3,4,5,6];
+        onWillStart(() => {
+            this.loadCategInformation();
+        });
+        onWillUpdateProps(() => {
+            this.loadCategInformation();
+        });
         super.setup();
     }
     clickPill(value) {
@@ -22,6 +27,24 @@ export class CategColorField extends Component {
             value: data.value,
             widget: this
         }).outerHTML; // Convert the rendered element to HTML string
+    }
+
+    async loadCategInformation() {
+        var self = this;
+        self.categoryInfo = {};
+        var resModel = self.env.model.root.resModel;
+        var domain = [];
+        var fields = ['category'];
+        var groupby = ['category'];
+        const categInfoPromise = await self.env.services.orm.readGroup(
+            resModel,
+            domain,
+            fields,
+            groupby
+        );
+        categInfoPromise.map((info) => {
+            self.categoryInfo[info.category] = info.category_count;
+        });
     }
 }
 CategColorField.template = "CategColorField";
