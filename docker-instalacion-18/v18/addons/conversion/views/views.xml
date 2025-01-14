@@ -1,0 +1,60 @@
+<odoo>
+  <data>
+    <!-- explicit list view definition -->
+<!--
+    <record model="ir.ui.view" id="/home/odoo/odoo-dev/projectname/local/sonnyra.list">
+      <field name="name">/home/odoo/odoo-dev/projectname/local/sonnyra list</field>
+      <field name="model">/home/odoo/odoo-dev/projectname/local/sonnyra./home/odoo/odoo-dev/projectname/local/sonnyra</field>
+      <field name="arch" type="xml">
+        <list>
+          <field name="name"/>
+          <field name="value"/>
+          <field name="value2"/>
+        </list>
+      </field>
+    </record>
+-->
+
+    <!-- actions opening views on models -->
+<!--
+    <record model="ir.actions.act_window" id="/home/odoo/odoo-dev/projectname/local/sonnyra.action_window">
+      <field name="name">/home/odoo/odoo-dev/projectname/local/sonnyra window</field>
+      <field name="res_model">/home/odoo/odoo-dev/projectname/local/sonnyra./home/odoo/odoo-dev/projectname/local/sonnyra</field>
+      <field name="view_mode">list,form</field>
+    </record>
+-->
+
+    <!-- server action to the one above -->
+<!--
+    <record model="ir.actions.server" id="/home/odoo/odoo-dev/projectname/local/sonnyra.action_server">
+      <field name="name">/home/odoo/odoo-dev/projectname/local/sonnyra server</field>
+      <field name="model_id" ref="model_/home/odoo/odoo-dev/projectname/local/sonnyra_/home/odoo/odoo-dev/projectname/local/sonnyra"/>
+      <field name="state">code</field>
+      <field name="code">
+        action = {
+          "type": "ir.actions.act_window",
+          "view_mode": "list,form",
+          "res_model": model._name,
+        }
+      </field>
+    </record>
+-->
+
+    <!-- Top menu item -->
+<!--
+    <menuitem name="/home/odoo/odoo-dev/projectname/local/sonnyra" id="/home/odoo/odoo-dev/projectname/local/sonnyra.menu_root"/>
+-->
+    <!-- menu categories -->
+<!--
+    <menuitem name="Menu 1" id="/home/odoo/odoo-dev/projectname/local/sonnyra.menu_1" parent="/home/odoo/odoo-dev/projectname/local/sonnyra.menu_root"/>
+    <menuitem name="Menu 2" id="/home/odoo/odoo-dev/projectname/local/sonnyra.menu_2" parent="/home/odoo/odoo-dev/projectname/local/sonnyra.menu_root"/>
+-->
+    <!-- actions -->
+<!--
+    <menuitem name="List" id="/home/odoo/odoo-dev/projectname/local/sonnyra.menu_1_list" parent="/home/odoo/odoo-dev/projectname/local/sonnyra.menu_1"
+              action="/home/odoo/odoo-dev/projectname/local/sonnyra.action_window"/>
+    <menuitem name="Server to list" id="/home/odoo/odoo-dev/projectname/local/sonnyra" parent="/home/odoo/odoo-dev/projectname/local/sonnyra.menu_2"
+              action="/home/odoo/odoo-dev/projectname/local/sonnyra.action_server"/>
+-->
+  </data>
+</odoo>

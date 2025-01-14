@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_/home/odoo/odoo-dev/projectname/local/sonnyra_/home/odoo/odoo-dev/projectname/local/sonnyra,/home/odoo/odoo-dev/projectname/local/sonnyra./home/odoo/odoo-dev/projectname/local/sonnyra,model_/home/odoo/odoo-dev/projectname/local/sonnyra_/home/odoo/odoo-dev/projectname/local/sonnyra,base.group_user,1,1,1,1
