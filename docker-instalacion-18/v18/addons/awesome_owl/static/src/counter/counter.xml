@@ -6,6 +6,11 @@
          <p>Sonnyra a: <t t-esc="props.a"/></p>
          <p>Sonnyra b: <t t-esc="props.b"/></p>
           <button class="btn btn-primary" t-on-click="increment">Increment saymons</button>
+           <span type="button"
+          class="p-2"
+          t-on-click="() => this.props.callback(state.value)">
+          Enviar al papa
+         </span>
 
     </t>
 
