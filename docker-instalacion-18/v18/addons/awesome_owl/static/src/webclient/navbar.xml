@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+
+<t t-name="awesome_owl.Navbar">
+  <div class="o-navbar text-white d-flex align-items-center">
+
+    <span class="flex-grow-1"/>
+    <span class="badge bg-dark p-2 m-1">
+      <t t-out="props.currentApp"/> 
+    </span>
+  </div>
+</t>
+
+</templates>

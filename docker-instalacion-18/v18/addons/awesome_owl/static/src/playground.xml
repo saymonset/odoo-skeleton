@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <templates xml:space="preserve">
 
+   
     <t t-name="awesome_owl.playground">
+      <Navbar currentApp="'saymons and saymons'"/>
+      <TodoList/>
         <div class="p-3">
             getValueFromChild:  <p><t t-esc="state.valueParent"/></p>
         </div>
          <p>Counter: <Counter callback.bind="getValueFromChild" a="state.a" b="'string'"/></p>
-         <p>Counter: <Counter  callback.bind="getValueFromChild" a="state.a" b="'number'"/></p>
-         <p>Counter: <Counter  callback.bind="getValueFromChild" a="state.a" b="'float'"/></p>
-
     </t>
 
 </templates>
