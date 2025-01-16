@@ -3,6 +3,8 @@
 
     <t t-name="awesome_owl.counter">
          <p>Sonnyra Counter: <t t-esc="state.value"/></p>
+         <p>Sonnyra a: <t t-esc="props.a"/></p>
+         <p>Sonnyra b: <t t-esc="props.b"/></p>
           <button class="btn btn-primary" t-on-click="increment">Increment saymons</button>
 
     </t>

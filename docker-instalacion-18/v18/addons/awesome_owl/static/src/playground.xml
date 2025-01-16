@@ -5,9 +5,9 @@
         <div class="p-3">
             hello world
         </div>
-         <p>Counter: <Counter/></p>
-         <p>Counter: <Counter/></p>
-         <p>Counter: <Counter/></p>
+         <p>Counter: <Counter  a="state.a" b="'string'"/></p>
+         <p>Counter: <Counter  a="state.a" b="'number'"/></p>
+         <p>Counter: <Counter  a="state.a" b="'float'"/></p>
 
     </t>
 
