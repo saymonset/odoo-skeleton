@@ -3,11 +3,11 @@
 import { Component,  useState } from "@odoo/owl";
 import { Counter } from './counter/counter'
 import { Navbar } from './webclient/navbar'
-import { TodoList } from './todoo/todo_list'
+import { Todoo } from './todoo/todoo'
 
 export class Playground extends Component {
     static template = "awesome_owl.playground";
-    static components = { Counter, Navbar, TodoList };
+    static components = { Counter, Navbar, Todoo };
     state = useState({ a: "fromparent", valueParent:0 });
 
 

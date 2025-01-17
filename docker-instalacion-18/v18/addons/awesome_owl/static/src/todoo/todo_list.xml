@@ -3,6 +3,7 @@
 
 <t t-name="awesome_owl.TodoList">
   <div class="o-todolist border m-1 p-2">    
+   <h3><t t-esc="props.name"/></h3>
      <input type="text" placeholder="Add a todo"  
       class="form-control mb-3" 
       t-on-keyup="addTodo"
