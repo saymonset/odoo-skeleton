@@ -11,6 +11,7 @@ export class Playground extends Component {
     state = useState({ a: "fromparent", valueParent:0 });
 
 
+
     getValueFromChild(value) {
         console.log('Hola desde el padre');
         this.state.valueParent = value;

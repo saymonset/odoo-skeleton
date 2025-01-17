@@ -2,20 +2,19 @@
 <templates xml:space="preserve">
 
 <t t-name="awesome_owl.TodoList">
-  <div class="o-todolist border m-1 p-2">    
-   <h3><t t-esc="props.name"/></h3>
-     <input type="text" placeholder="Add a todo"  
+   <div class="o-todolist border m-1 p-2">    
+    <h3><t t-esc="props.list.name"/></h3>
+    <input type="text" placeholder="Add a todo" t-ref="input"
       class="form-control mb-3" 
-      t-on-keyup="addTodo"
-      t-ref="input"/>
+      t-on-keyup="addTodo"/>
     <div class="m-2">
-      <t t-foreach="state.todos" t-as="todo" t-key="todo.id">
-       <TodoItem todo="todo" 
-                 toggle.bind="toggleTodo" 
-                 remove.bind="removeTodo" />
+      <t t-foreach="props.list.todos" t-as="todo" t-key="todo.id">
+        <TodoItem todo="todo" />
       </t>
     </div>
   </div>
 </t>
 
 </templates>
+
+ 
