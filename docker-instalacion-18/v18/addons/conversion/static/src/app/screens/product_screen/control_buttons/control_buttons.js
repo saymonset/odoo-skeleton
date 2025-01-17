@@ -1,5 +1,5 @@
 import {patch} from "@web/core/utils/patch";
-import { ControlButtons } from "@point_of_sale/app/screens/product_screen/control_buttons/control_buttons";
+import { Orderline } from "@point_of_sale/app/generic_components/orderline/orderline";
 import { CustomButton } from "./custom_button/custom_button";
 
 // You can do this
@@ -8,9 +8,9 @@ import { CustomButton } from "./custom_button/custom_button";
 //     CustomButton
 // }
 // Or this
-patch(ControlButtons, {
+patch(Orderline, {
     components: {
-        ...ControlButtons.components,
+        ...Orderline.components,
         CustomButton,
     },
 });
