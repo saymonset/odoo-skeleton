@@ -14,22 +14,27 @@
     'website': 'http://www.serpentcs.com',
 
     # Dependancies
-    'depends': ['web', 'base'],
+    'depends': ['web', 'base', 'website'],
 
     # Views
     'data': [
         "security/hostel_security.xml",
         "security/ir.model.access.csv",
+        'views/custom_template.xml',
         "views/hostel.xml",
         "views/hostel_room.xml",
         "views/hostel_student.xml",
     ],
         'assets': {
+        'web.assets_frontend': [
+                'my_hostel/static/src/scss/hostel.scss',
+                'my_hostel/static/src/js/hostel.js',
+        ],
         'web.assets_backend': [
-            'my_hostel/static/src/scss/field_widget.scss',
-            'my_hostel/static/src/js/field_widget.js',
-            'my_hostel/static/src/xml/field_widget.xml',
-             'my_hostel/static/src/js/component.js',
+                'my_hostel/static/src/scss/field_widget.scss',
+                'my_hostel/static/src/js/field_widget.js',
+                'my_hostel/static/src/xml/field_widget.xml',
+                'my_hostel/static/src/js/component.js',
         ],
      },
 

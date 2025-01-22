@@ -7,7 +7,7 @@ import { templates } from "@web/core/assets";
 const config = {
     templates,
     dev: true,
-    name: "Owl Tutorial",
+    name: "TODO Tutorial",
 };
 
 // Mount the Playground component when the document.body is ready
