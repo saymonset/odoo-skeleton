@@ -18,6 +18,9 @@ class Hostel(models.Model):
     phone = fields.Char('Phone',required=1)
     mobile = fields.Char('Mobile',required=1)
     email = fields.Char('Email')
+    image = fields.Binary('Hostel Image')
+    description = fields.Html('Description')
+    hostel_rating = fields.Float('Hostel Average Rating', digits=(14, 4))
 
     def name_get(self):
         result = []

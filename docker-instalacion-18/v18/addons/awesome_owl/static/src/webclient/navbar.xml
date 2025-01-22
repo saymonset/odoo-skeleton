@@ -20,3 +20,4 @@
 </t>
 
 </templates>
+ <!-- <Navbar apps="apps" currentApp="state.currentApp.id" selectApp.bind="selectApp"/> -->

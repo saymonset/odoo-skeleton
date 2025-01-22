@@ -6,7 +6,7 @@ import { Navbar } from './webclient/navbar'
 import { Todoo } from './todoo/todoo'
 
 export class Playground extends Component {
-    static template = "awesome_owl.playground";
+    static template = "awesome_owl.playgroundCopy";
     static components = { Counter, Navbar, Todoo };
     state = useState({ a: "fromparent", valueParent:0 });
 

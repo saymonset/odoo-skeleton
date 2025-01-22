@@ -31,6 +31,7 @@
                                 </table>
                             </h3>
                         </div>
+                          <field name="image" widget="image" class="oe_avatar"/>
                         <group>
                             <group>
                                 <label for="street" string="Address"/>
@@ -47,6 +48,11 @@
                                 <field name="phone" widget="phone"/>
                                 <field name="mobile" widget="phone"/>
                                 <field name="email" widget="email" context="{'gravatar_image': True}"/>
+                                    <field name="hostel_rating"/>
+                                
+                            </group>
+                            <group>
+                              <field name="description"/>
                             </group>
                         </group>
                     </sheet>

@@ -230,4 +230,14 @@ source env/bin/activate
   ```bash
  ./odoo-bin -d saymondb -c odoo.cfg 
 ```
+#Correr para depurar
+Instale primero estas dos librerias
+```
+pip3 install inotify
+
+pip3 install watchdog
+```
+```
+ ./odoo-bin -d saymondb -c odoo.cfg  --dev=all
+```
 

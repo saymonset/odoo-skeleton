@@ -7,8 +7,10 @@
         New List
       </button>
     </t>
-    <t t-foreach="store.lists" t-as="list" t-key="list.id">
-      <TodoList list="list"/>
+     <t t-set-slot="default">
+        <t t-foreach="store.lists" t-as="list" t-key="list.id">
+          <TodoList list="list"/>
+        </t>
     </t>
   </Layout>
 </t>

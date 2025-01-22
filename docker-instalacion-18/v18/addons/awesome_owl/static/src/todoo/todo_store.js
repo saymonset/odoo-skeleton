@@ -3,7 +3,7 @@
 import { useEnv, useState } from "@odoo/owl";
 
 export class TodoStore {
-  static nextId = 1;
+  static nextId = 0;
 
   constructor() {
     this.lists = [];
