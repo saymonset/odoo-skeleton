@@ -5,11 +5,11 @@ class Hostel(models.Model):
     _name = 'hostel.hostel'
     _description = "Information about hostel"
     _order = "id desc, name"
-    _rec_name = 'hostel_code'
+    _rec_name = 'email'
 
     name = fields.Char(string="hostel Name", required=True)
     hostel_code = fields.Char(string="Code", required=True)
-    street = fields.Char('Street')
+    street = fields.Char('Street todos saymons')
     street2 = fields.Char('Street2')
     zip = fields.Char('Zip', change_default=True)
     city = fields.Char('City')
