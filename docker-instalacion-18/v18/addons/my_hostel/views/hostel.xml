@@ -1,8 +1,7 @@
 <odoo>
     <data>
-
-        <record id="view_hostel_tree" model="ir.ui.view">
-            <field name="name">hostel.hostel.tree</field>
+        <record id="view_hostel_list" model="ir.ui.view">
+            <field name="name">hostel.hostel.list</field>
             <field name="model">hostel.hostel</field>
             <field name="arch" type="xml">
                 <list string="Hostel">
@@ -31,7 +30,6 @@
                                 </table>
                             </h3>
                         </div>
-                          <field name="image" widget="image" class="oe_avatar"/>
                         <group>
                             <group>
                                 <label for="street" string="Address"/>
@@ -45,14 +43,11 @@
                                     <field name="country_id" placeholder="Country" 
                                     class="o_address_country" options='{"no_open": True, "no_create": True}'/>
                                 </div>
+                            </group>
+                            <group>
                                 <field name="phone" widget="phone"/>
                                 <field name="mobile" widget="phone"/>
                                 <field name="email" widget="email" context="{'gravatar_image': True}"/>
-                                    <field name="hostel_rating"/>
-                                
-                            </group>
-                            <group>
-                              <field name="description"/>
                             </group>
                         </group>
                     </sheet>
