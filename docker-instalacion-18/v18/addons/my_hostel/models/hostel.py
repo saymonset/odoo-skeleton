@@ -32,6 +32,7 @@ class Hostel(models.Model):
                                 # digits=(14, 4) # Method 1: Optional precision (total, decimals),
                                  digits='Rating Value' # Method 2
                                  )
+    category_id = fields.Many2one('hostel.category')
 
     @api.depends('hostel_code')
     def _compute_display_name(self):
