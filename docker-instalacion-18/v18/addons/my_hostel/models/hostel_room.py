@@ -7,7 +7,13 @@ class HostelRoom(models.Model):
     _name = "hostel.room"
     _description = "Hostel Room Information"
     _rec_name = "room_no"
-
+    
+    @api.depends("student_per_room", "student_ids")
+    def _compute_check_availability(self):
+        """Method to check room availability"""
+        for rec in self:
+            rec.availability = rec.student_per_room - len(rec.student_ids.ids)
+            
     name = fields.Char(string="Room Name", required=True)
     room_no = fields.Char("Room No.", required=True)
     floor_no = fields.Integer("Floor No.", default=1, help="Floor Number")
@@ -23,7 +29,10 @@ class HostelRoom(models.Model):
         "hostel_room_amenities_rel", "room_id", "amenitiy_id",
         string="Amenities", domain="[('active', '=', True)]",
         help="Select hostel room amenities") 
-    
+    student_per_room = fields.Integer("Student Per Room", required=True,
+        help="Students allocated per room")
+    availability = fields.Float(compute="_compute_check_availability",
+        store=True, string="Availability", help="Room availability in hostel")
     _sql_constraints = [
        ("room_no_unique", "unique(room_no)", "Room number must be unique!")]
 
