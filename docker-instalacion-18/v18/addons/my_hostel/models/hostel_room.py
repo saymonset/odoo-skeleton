@@ -26,12 +26,9 @@ class HostelRoom(models.Model):
     student_ids = fields.One2many("hostel.student", "room_id",
         string="Students", help="Enter students")
     hostel_amenities_ids = fields.Many2many("hostel.amenities",
+        "hostel_room_amenities_rel", "room_id", "amenitiy_id",
         string="Amenities", domain="[('active', '=', True)]",
-        help="Select hostel room amenities")
-    # hostel_amenities_ids = fields.Many2many("hostel.amenities",
-    #     "hostel_room_amenities_rel", "room_id", "amenitiy_id",
-    #     string="Amenities", domain="[('active', '=', True)]",
-    #     help="Select hostel room amenities") 
+        help="Select hostel room amenities") 
     student_per_room = fields.Integer("Student Per Room", required=True,
         help="Students allocated per room")
     availability = fields.Float(compute="_compute_check_availability",

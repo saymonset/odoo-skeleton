@@ -6,6 +6,7 @@ class HostelStudent(models.Model):
     _name = "hostel.student"
     _description = "Hostel Student Information"
     
+    partner_id = fields.Many2one('res.partner', ondelete='cascade')
     @api.depends("admission_date", "discharge_date")
     def _compute_check_duration(self):
         """Method to check duration"""
