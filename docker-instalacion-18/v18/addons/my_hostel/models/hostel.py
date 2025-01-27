@@ -33,9 +33,22 @@ class Hostel(models.Model):
                                  digits='Rating Value' # Method 2
                                  )
     category_id = fields.Many2one('hostel.category')
+    ref_doc_id = fields.Reference(selection='_referencable_models', string='Reference Document')
+
+    @api.model
+    def _referencable_models_of_books_odoo_17(self):
+        models = self.env['ir.model'].search([('field_id.name', '=', 'message_ids')])
+        return [(x.model, x.name) for x in models]
+    @api.model
+    def _referencable_models(self):
+        # Busca todos los modelos que tienen un campo llamado 'message_ids'
+        fields = self.env['ir.model.fields'].search([('name', '=', 'message_ids')])
+        models = fields.mapped('model_id')  # Obtiene los modelos relacionados
+        return [(model.model, f"{model.name} saymons") for model in models]
 
     @api.depends('hostel_code')
     def _compute_display_name(self):
+        
         for record in self:
             name = record.name
             if record.hostel_code:
