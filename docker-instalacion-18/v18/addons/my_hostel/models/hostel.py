@@ -34,6 +34,8 @@ class Hostel(models.Model):
                                  )
     category_id = fields.Many2one('hostel.category')
     ref_doc_id = fields.Reference(selection='_referencable_models', string='Reference Document')
+    rector = fields.Many2one("res.partner", "Rector",
+        help="Select hostel rector")
 
     @api.model
     def _referencable_models_of_books_odoo_17(self):
