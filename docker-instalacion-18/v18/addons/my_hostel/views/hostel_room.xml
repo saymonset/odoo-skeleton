@@ -18,6 +18,11 @@
             <field name="model">hostel.room</field>
             <field name="arch" type="xml">
                 <form string="Room">
+                <header>
+                    <button name="make_available" string="Make Available" type="object"/>
+                    <button name="make_closed"  string="Make Closed" type="object"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
                     <sheet>
                          <group>
                             <group>
