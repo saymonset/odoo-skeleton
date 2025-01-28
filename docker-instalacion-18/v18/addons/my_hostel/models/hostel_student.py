@@ -45,6 +45,7 @@ class HostelStudent(models.Model):
             "floor_no": 1,
             "room_category_id": self.env.ref("my_hostel.single_room_categ").id,
             "hostel_id": self.hostel_id.id,
+            "student_per_room":17,
         })
         if room_rec:
             self.room_id = room_rec.id
