@@ -137,4 +137,8 @@ class HostelRoom(models.Model):
         """Method to check room availability"""
         for rec in self:
             rec.availability = rec.student_per_room - len(rec.student_ids.ids)
+            
+    def action_remove_room_members(self):
+        for student in self.student_ids:
+            student.with_context(is_hostel_room=True).action_remove_room()
    

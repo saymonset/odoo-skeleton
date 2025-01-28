@@ -63,3 +63,7 @@ class HostelStudent(models.Model):
                 duration = (stu.discharge_date - stu.admission_date).days
                 if duration != stu.duration:
                     stu.discharge_date = (stu.admission_date + timedelta(days=stu.duration)).strftime('%Y-%m-%d')
+                    
+    def action_remove_room(self):
+        if self.env.context.get("is_hostel_room"):
+            self.room_id = False

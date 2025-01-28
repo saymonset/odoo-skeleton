@@ -19,6 +19,11 @@
             <field name="arch" type="xml">
                 <form string="Room">
                 <header> 
+                     <button name="action_remove_room_members"
+                            string="Remove Room Members"
+                            type="object"
+                            class="btn-primary"
+                        />
                     <button name="make_available" string="Make Available" type="object"/>
                     <button name="make_closed"  string="Make Closed" type="object"/>
                     <button name="log_all_room_members"  string="Log Members" type="object"/>
