@@ -1,3 +1,4 @@
+from odoo import fields, models
 class HostelRoomMember(models.Model):
     _name = 'hostel.room.member'
     _inherits = {'res.partner': 'partner_id'}
