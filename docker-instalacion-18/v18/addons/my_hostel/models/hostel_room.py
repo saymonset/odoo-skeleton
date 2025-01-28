@@ -42,6 +42,7 @@ class HostelRoom(models.Model):
         ('available', 'Available'),
         ('closed', 'Closed')],
         'State', default="draft")
+    remarks = fields.Text('Remarks')
     
     @api.model
     def is_allowed_transition(self, old_state, new_state):
@@ -127,3 +128,14 @@ class HostelRoom(models.Model):
     @api.model
     def get_member_names(self, all_rooms):
         return all_rooms.mapped('member_ids.name')
+    
+     # Sorting recordset
+    def sort_room(self):
+        all_rooms = self.search([])
+        rooms_sorted = self.sort_rooms_by_rating(all_rooms)
+        _logger.info('Rooms before sorting: %s', all_rooms)
+        _logger.info('Rooms after sorting: %s', rooms_sorted)
+
+    @api.model
+    def sort_rooms_by_rating(self, all_rooms):
+        return all_rooms.sorted(key='room_rating')

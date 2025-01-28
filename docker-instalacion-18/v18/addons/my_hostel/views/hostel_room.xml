@@ -39,6 +39,7 @@
                                 <field name="availability"/>
                                 <field name="rent_amount"/>
                                 <field name="currency_id"/>
+                                <field name="member_ids" widget="many2many_tags"/>
                             </group>
                             <group col="4">
                                 <field name="rent_other_amount"/>
