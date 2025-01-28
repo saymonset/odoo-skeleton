@@ -33,6 +33,7 @@
                                 <field name="room_no"/>
                                 <field name="hostel_id" required="1"/>
                                 <field name="floor_no"/>
+                                <field name="room_category_id"/>
                             </group>
                             <group>
                                 <field name="student_per_room"/>
