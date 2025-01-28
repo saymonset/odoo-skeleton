@@ -138,6 +138,9 @@ class HostelRoom(models.Model):
         for rec in self:
             rec.availability = rec.student_per_room - len(rec.student_ids.ids)
             
+    #  new_context = self.env.context.copy()
+    #  new_context.update({'is_hostel_room': True})
+    #  student.with_context(new_context)
     def action_remove_room_members(self):
         for student in self.student_ids:
             student.with_context(is_hostel_room=True).action_remove_room()
