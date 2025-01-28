@@ -98,3 +98,7 @@ class HostelRoom(models.Model):
         # Total 3 records (1 parent and 2 child) will be created in hostel.room.category model
         record = self.env['hostel.room.category'].create(parent_category_val)
         return True
+
+    def update_room_no(self):
+        self.ensure_one()
+        self.room_no = "RM002"
