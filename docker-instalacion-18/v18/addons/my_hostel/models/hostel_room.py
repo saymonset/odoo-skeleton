@@ -1,6 +1,8 @@
+import logging
 from odoo import fields, models, api, _
 from odoo.exceptions import ValidationError, UserError
 
+_logger = logging.getLogger(__name__)
 
 class HostelRoom(models.Model):
 
@@ -34,6 +36,7 @@ class HostelRoom(models.Model):
     availability = fields.Float(compute="_compute_check_availability",
         store=True, string="Availability", help="Room availability in hostel")
     room_rating = fields.Float('Hostel Average Rating', digits=(14, 4))
+    member_ids = fields.Many2many('hostel.room.member', string='Members')
     state = fields.Selection([
         ('draft', 'Unavailable'),
         ('available', 'Available'),
@@ -102,3 +105,25 @@ class HostelRoom(models.Model):
     def update_room_no(self):
         self.ensure_one()
         self.room_no = "RM002"
+        
+    def find_room(self):
+        domain = [
+            '|',
+                '&', ('name', 'ilike', 'Room Name'),
+                     ('category_id.name', '=', 'Category Name'),
+                '&', ('name', 'ilike', 'Second Room Name'),
+                     ('category_id.name', '=', 'Second Category Name')
+        ]
+        Rooms = self.search(domain)
+        _logger.info('Room found: %s', Rooms)
+        return True
+    
+        # Traversing recordset
+    def mapped_rooms(self):
+        all_rooms = self.search([])
+        room_authors = self.get_member_names(all_rooms)
+        _logger.info('Room Members: %s', room_authors)
+
+    @api.model
+    def get_member_names(self, all_rooms):
+        return all_rooms.mapped('member_ids.name')
