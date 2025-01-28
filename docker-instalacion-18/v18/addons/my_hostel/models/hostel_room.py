@@ -162,12 +162,16 @@ class HostelRoom(models.Model):
                 WHERE hostel_room.room_category_id = %(cate_id)s;""", 
                 {'cate_id': self.room_category_id.id})
             result = self.env.cr.fetchall()
+            _logger.warning("---------saymon 1-------------------")
             _logger.warning("Hostel Room With Amount: %s", result)
+            _logger.warning("---------saymon 2-------------------")
             return result
         else:
             # Manejo de caso donde room_category_id es None
             _logger.warning("Hostel Room With Amount: %s", [])
             return []
+        
+        _logger.warning("---------Fin-------------------")
         
     # def action_category_with_amount(self):
     #     self.env.cr.execute("""
