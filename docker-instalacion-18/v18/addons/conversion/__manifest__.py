@@ -15,7 +15,7 @@ Long description of module's purpose
     'version': '18.0',
 
     # any module necessary for this one to work correctly
-    'depends': ['base'],
+    'depends': ['base','point_of_sale'],
 
     # always loaded
     "data": [
@@ -23,6 +23,11 @@ Long description of module's purpose
         "security/ir.model.access.csv",
         "views/converssion_views.xml",
     ],
+     "assets": {
+        "point_of_sale._assets_pos": [
+            "conversion/static/src/**/*",
+        ],
+    },
     # only loaded in demonstration mode
     'demo': [
     ],
