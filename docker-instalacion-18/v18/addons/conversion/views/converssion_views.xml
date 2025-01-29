@@ -5,7 +5,11 @@
             <field name="model">conversion.conversion</field>
             <field name="arch" type="xml">
                 <list string="conversion">
-                    <field name="name"/>
+                     <field name="name"/>
+                    <field name="dateCurrency"/>
+                     <field name="currency_id"/>
+                     <field name="rent_amount"/>
+                     <field name="dateCurrency"/>
                 </list>
             </field>
         </record>
@@ -22,6 +26,12 @@
                                     <tr>
                                         <td style="padding-right:10px;"><field name="name" required="1" 
                                         placeholder="Name" /></td>
+                                        <td style="padding-right:10px;"><field name="dateCurrency" required="1" 
+                                        placeholder="dateCurrency" /></td>
+                                        <td style="padding-right:10px;"><field name="rent_amount"/></td>
+                                        <td style="padding-right:10px;"> <field name="currency_id"/></td>
+                                        
+                                       
                                     </tr>
                                 </table>
                             </h3>

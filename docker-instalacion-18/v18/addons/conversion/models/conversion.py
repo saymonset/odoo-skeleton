@@ -1,17 +1,18 @@
 # -*- coding: utf-8 -*-
 
 from odoo import models, fields, api
-
+from datetime import timedelta
+from odoo.exceptions import UserError
 
 class conversion(models.Model):
     _name = 'conversion.conversion'
     _description = 'conversion'
     _order = 'id desc'
 
-    name = fields.Char(string="Name")  # Campo tipo string
+    name = fields.Char(string="Name", default="Valor  del Dolar")  # Campo tipo string
     dateCurrency = fields.Date(string="Currency Date")  # Campo tipo fecha
    # mount = fields.Float(string="Amount", digits=(16, 2))  # Campo tipo float con dos decimales
-    #currency_id = fields.Many2one('res.currency', string='Tipo de moneda')
-    #rent_amount = fields.Monetary('Rent Amount', help="Enter rent amount per month", string='Tipo de moneda') 
+    currency_id = fields.Many2one('res.currency', string='Tipo de moneda', default=lambda self: self.env.company.currency_id.id)
+    rent_amount = fields.Monetary('Rent Amount', help="Enter rent amount per month") 
 
 
