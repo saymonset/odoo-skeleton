@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <data>
-        <record id="view_hostel_room_list" model="ir.ui.view">
-            <field name="name">hostel.room.list</field>
+
+        <record id="view_hostel_room_tree" model="ir.ui.view">
+            <field name="name">hostel.room.tree</field>
             <field name="model">hostel.room</field>
             <field name="arch" type="xml">
                 <list string="Room">
                     <field name="name"/>
                     <field name="room_no"/>
-                    <field name="floor_no"/>
                 </list>
             </field>
         </record>
@@ -18,53 +18,19 @@
             <field name="model">hostel.room</field>
             <field name="arch" type="xml">
                 <form string="Room">
-                <header> 
-                     <button name="action_remove_room_members"
-                            string="Remove Room Members"
-                            type="object"
-                            class="btn-primary"
-                        />
-                    <button name="action_category_with_amount"
-                            string="Log Category With Amount"
-                            type="object"
-                            class="btn-primary"
-                        />
-                    <button name="make_available" string="Make Available" type="object"/>
-                    <button name="make_closed"  string="Make Closed" type="object"/>
-                    <button name="log_all_room_members"  string="Log Members" type="object"/>
-                    <button name="create_categories" string="Create Categories" type="object"/>
-                    <button name="update_room_no" string="Update Room No" type="object"/>
-                    <field name="state" widget="statusbar"/>
-                </header>
                     <sheet>
-                         <group>
+                        <group>
                             <group>
+                                <field name="image" widget="image" class="oe_avatar oe_left"/>
                                 <field name="name"/>
                                 <field name="room_no"/>
+                                <field name="category" widget="category_color"/>
                                 <field name="hostel_id" required="1"/>
-                                <field name="floor_no"/>
-                                <field name="room_category_id"/>
                             </group>
-                            <group>
-                                <field name="student_per_room"/>
-                                <field name="availability"/>
-                                <field name="rent_amount"/>
-                                <field name="currency_id"/>
-                                <field name="member_ids" widget="many2many_tags"/>
-                            </group>
-                            <group col="4">
-                                <field name="rent_other_amount"/>
-                                <field name="currency_other_id"/>
-                          </group>
                         </group>
                         <notebook>
                             <page name="room_studnets" string="Studnets">
                                 <field name="student_ids"/>
-                            </page>
-                            <page name="hostel_amenities" string="Room Amenities">
-                                <group>
-                                    <field name="hostel_amenities_ids" widget="many2many_tags"/>
-                                </group>
                             </page>
                         </notebook>
                     </sheet>

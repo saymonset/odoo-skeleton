@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <data>
-        <record id="view_hostel_student_list" model="ir.ui.view">
-            <field name="name">hostel.student.list</field>
+
+        <record id="view_hostel_student_tree" model="ir.ui.view">
+            <field name="name">hostel.student.tree</field>
             <field name="model">hostel.student</field>
             <field name="arch" type="xml">
                 <list string="Students">
@@ -19,14 +20,6 @@
             <field name="model">hostel.student</field>
             <field name="arch" type="xml">
                 <form string="Student">
-                    <header>
-                        <button name="action_assign_room"
-                            string="Assign Room"
-                            type="object"
-                            class="btn-primary"
-                        />
-                        <field name="status" widget="statusbar" options="{'clickable': '1'}"/>
-                    </header>
                     <sheet>
                         <group>
                             <group>
@@ -40,7 +33,6 @@
                                 <field name="admission_date"/>
                                 <field name="discharge_date"/>
                                 <field name="duration"/>
-                                <field name="hostel_id"/>
                             </group>
                         </group>
                     </sheet>

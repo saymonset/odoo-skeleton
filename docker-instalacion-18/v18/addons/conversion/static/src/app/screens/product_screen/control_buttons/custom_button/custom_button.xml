@@ -5,7 +5,8 @@
             <i class="fa fa-smiley-o me-1" />
             <span> </span>
             <span>Custom Button: <t t-esc="state.price"/> X <t t-esc="this.state.rate"/> </span>
-             <t t-esc="state.value"/>
+             <span> <t t-esc="state.value"/>  </span>
+             <span> Reef: <t t-esc="state.ref"/>  </span>
         </button>
        
     </t>
