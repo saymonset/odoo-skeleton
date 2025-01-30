@@ -1,7 +1,7 @@
 /** @odoo-module **/
 
 import { _t } from "@web/core/l10n/translation";
-import { Component, useState, onWillStart , onWillUpdateProps, useRef, useService } from "@odoo/owl";
+import { Component, useState, onRendered , onWillUpdateProps, onWillStart, useRef, useService } from "@odoo/owl";
 import { TagsList } from "@web/core/tags_list/tags_list";
 //import { useService } from "@odoo/owl"; // Importar el servicio
 
@@ -14,22 +14,61 @@ export class CustomButton extends Component {
     static components = { TagsList };
 
     setup() {
-        this.state = useState({ value: 1, price: this.props.line.price, currencyRate: 1, rate :1, ref:0 });
+        
+        
+        this.state = useState({ value: 1, price: 0 , currencyRate: 1, rate :1, ref:0 });
         //   // Obtener el tipo de cambio
         this.getCurrencyRate(this.props.line.currency_id).then(rate => {
             this.state.rate = rate;
             console.log("Currency Rate:", this.state.currencyRate);
         });
-   
+
         this.loadLastConversion().then((ref)=>{
                 this.state.ref = ref;
             });;
-     
-        //this.loadLastConversion();
-     
-        super.setup();
+
+        onWillStart(async () => {
+            console.log('CALLED:> willStart');
+           
+        });    
+
+        onRendered(() => {
+            this.updatePrice(this.props.line.price);
+            console.log('CALLED:> Render');
+        });    
+
+        onWillUpdateProps((nextProps) => {
+            console.log('CALLED:> WillUpdateProps');
+            if (nextProps.line.price !== this.props.line.price) {
+                console.log("Cantidad actualizada:", nextProps.line.price);
+                this.updatePrice(nextProps.line.price); // Actualiza el precio
+            }
+        });  
+        
        
+
+        super.setup();
     }
+    // Método para actualizar el precio basado en la cantidad
+    updatePrice(newPrice) {
+        // Usar una expresión regular para extraer el número
+        let numericPart = this.onlyNumber(newPrice);
+        // Multiplicar el número por 60
+        let result = numericPart / this.state.ref ;
+        this.state.price = result ; // Calcula el nuevo precio basado en la cantidad y el tipo de cambio
+
+        console.log("Nuevo precio:", this.state.price);
+    }
+
+     // Método para actualizar el precio basado en la cantidad
+     onlyNumber(mountWithCurrency) {
+        // Usar una expresión regular para extraer el número
+        let numericPart = parseFloat(mountWithCurrency.match(/[\d.]+/)[0]);
+        // Multiplicar el número por 60
+       return numericPart;
+    }
+
+
 
     async loadLastConversion() {
         var self = this;
@@ -59,6 +98,7 @@ export class CustomButton extends Component {
     }
  
     async getCurrencyRate(currencyId) {
+      
         var self = this;
         // Usar el ORM para obtener el tipo de cambio
         const result = await self.env.services.orm.searchRead('res.currency.rate', [['currency_id', '=', 1]], ['rate'], { limit: 1 });
