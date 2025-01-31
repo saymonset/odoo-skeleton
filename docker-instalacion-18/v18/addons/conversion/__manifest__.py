@@ -24,6 +24,9 @@ Long description of module's purpose
         "views/converssion_views.xml",
     ],
      "assets": {
+        'point_of_sale.assets': [
+            'conversion/static/src/**/*',
+        ],
         "point_of_sale._assets_pos": [
             "conversion/static/src/**/*",
         ],
@@ -31,5 +34,8 @@ Long description of module's purpose
     # only loaded in demonstration mode
     'demo': [
     ],
+    'installable': True,
+    'application': False,
+    'auto_install': False,
 }
 
