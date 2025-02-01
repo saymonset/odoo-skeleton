@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="conversion.CustomOrderWidget">
+            <span class="value">
+                <t t-esc="state.totalQuantity"/> 
+            </span>
+            <span class="value">
+                <span t-esc="formatMonetary(state.taxTotals.order_sign * state.taxTotals.order_total, {currencyId: state.taxTotals.currency_id})"
+                                  class="total"/>
+            </span>
+            
+
+    </t>
+</templates>

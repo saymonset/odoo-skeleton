@@ -20,7 +20,7 @@ export class CustomButton extends Component {
         //   // Obtener el tipo de cambio
         this.getCurrencyRate(this.props.line.currency_id).then(rate => {
             this.state.rate = rate;
-            console.log("Currency Rate:", this.state.currencyRate);
+         //   console.log("Currency Rate:", this.state.currencyRate);
         });
 
         this.loadLastConversion().then((ref)=>{
@@ -28,19 +28,19 @@ export class CustomButton extends Component {
             });;
 
         onWillStart(async () => {
-            console.log('CALLED:> willStart');
+           // console.log('CALLED:> willStart');
            
         });    
 
         onRendered(() => {
             this.updatePrice(this.props.line.price);
-            console.log('CALLED:> Render');
+          //  console.log('CALLED:> Render');
         });    
 
         onWillUpdateProps((nextProps) => {
-            console.log('CALLED:> WillUpdateProps');
+           // console.log('CALLED:> WillUpdateProps');
             if (nextProps.line.price !== this.props.line.price) {
-                console.log("Cantidad actualizada:", nextProps.line.price);
+               // console.log("Cantidad actualizada:", nextProps.line.price);
                 this.updatePrice(nextProps.line.price); // Actualiza el precio
             }
         });  

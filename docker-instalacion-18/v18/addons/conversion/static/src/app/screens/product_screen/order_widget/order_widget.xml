@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates id="template" xml:space="preserve">
-    <t t-name="pos_item_counter.OrderWidget" 
+    <t  
        t-inherit="point_of_sale.OrderWidget"
        t-inherit-mode="extension"
-       owl="1">
+      >
          <xpath expr="//div[contains(@class, 'd-flex') and contains(@class, 'justify-content-between')]/span[@class='total']" position="replace">
-            Total Quantity Mamones:
-                    <span class="value">
-                        <t t-esc="TotalQuantity"/> 
-                    </span>
+           <CustomOrderWidget t-props="{ lines:lines , taxTotals:taxTotals}"/>
         </xpath>
     </t>
 </templates>
+
+   

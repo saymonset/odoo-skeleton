@@ -1,0 +1,60 @@
+/** @odoo-module **/
+import { _t } from "@web/core/l10n/translation";
+import { Component, useState, onRendered , onWillUpdateProps, onWillStart, useRef, useService } from "@odoo/owl";
+import { TagsList } from "@web/core/tags_list/tags_list";
+import { formatMonetary } from "@web/views/fields/formatters";
+export class CustomOrderWidget extends Component {
+    static template = "conversion.CustomOrderWidget";
+     // Definir las propiedades que recibirá el componente
+     static props = {
+        lines: { type: Array, element: Object, optional: true },
+        taxTotals: { type: Object, optional: true },
+    };
+    static components = { TagsList };
+
+    setup() {
+        this.formatMonetary = formatMonetary;
+        this.state = useState({ totalQuantity: 14, taxTotals:this.props.taxTotals });
+        //   // Obtener el tipo de cambio
+        this.getTotalQuantity(this.props.lines);
+
+        onRendered(() => {
+            this.getTotalQuantity(this.props.lines);
+            this.state.taxTotals = this.props.taxTotals;
+        }); 
+    
+        onWillUpdateProps((nextProps) => {
+            console.log("Props actualizadas:", nextProps);
+
+            // Si `lines` cambia, recalcular la cantidad total
+            if (nextProps.lines !== this.props.lines) {
+                this.getTotalQuantity(nextProps.lines);
+            }
+
+            // Si `taxTotals` cambia, actualizar el estado
+            if (nextProps.taxTotals !== this.props.taxTotals) {
+                this.state.taxTotals = nextProps.taxTotals;
+            }
+        });  
+
+        super.setup();
+    }
+    
+    // Método para calcular la cantidad total
+    getTotalQuantity(lines) {
+        let totalQuantity = 0;
+        lines?.forEach((line) => {
+            totalQuantity += line.price;
+        });
+        this.state.totalQuantity = totalQuantity;
+        console.log("Cantidad total calculada:", totalQuantity);
+    }
+    updatePrice(lines) {
+        var totalQuantity = 0;
+        lines?.forEach(line => this.state.totalQuantity += line.price);
+        return totalQuantity
+     }
+
+ 
+
+}
