@@ -14,7 +14,7 @@ export class CustomOrderWidget extends Component {
 
     setup() {
         this.formatMonetary = formatMonetary;
-        this.state = useState({ totalQuantity: 14, taxTotals:this.props.taxTotals });
+        this.state = useState({ totalQuantity: 14, taxTotals:this.props.taxTotals, ref:0 });
         //   // Obtener el tipo de cambio
         this.getTotalQuantity(this.props.lines);
 
@@ -22,6 +22,10 @@ export class CustomOrderWidget extends Component {
             this.getTotalQuantity(this.props.lines);
             this.state.taxTotals = this.props.taxTotals;
         }); 
+
+        this.loadLastConversion().then((ref)=>{
+            this.state.ref = ref;
+        });;
     
         onWillUpdateProps((nextProps) => {
             console.log("Props actualizadas:", nextProps);
@@ -55,6 +59,29 @@ export class CustomOrderWidget extends Component {
         return totalQuantity
      }
 
+     async loadLastConversion() {
+        var self = this;
+        var resModel = 'conversion.conversion'; // Nombre del modelo
+        var domain = []; // Sin filtros, para obtener todos los registros
+        var fields = ['id', 'name', 'dateCurrency', 'currency_id', 'rent_amount']; // Campos que deseas recuperar
+        var order = 'id desc'; // Ordenar por ID en orden descendente para obtener el último registro
+        // Realizar la consulta al modelo
+    const lastRecord = await self.env.services.orm.searchRead(
+            resModel,
+            domain,
+            fields,
+            { limit: 1, order: order } // Limitar a 1 registro y ordenar por ID descendente
+        );
+        // Verificar si se obtuvo un registro
+        if (lastRecord.length > 0) {
+            console.log('Último registro:', lastRecord[0]);
+            return lastRecord[0].rent_amount; // Retornar el último registro
+        } else {
+            console.log('No se encontraron registros.');
+            return null; // No hay registros
+        }
+    }
+ 
  
 
 }

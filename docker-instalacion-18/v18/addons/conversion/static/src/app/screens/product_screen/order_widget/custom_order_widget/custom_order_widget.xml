@@ -2,7 +2,9 @@
 <templates id="template" xml:space="preserve">
     <t t-name="conversion.CustomOrderWidget">
             <span class="value">
-                <t t-esc="state.totalQuantity"/> 
+               Ref: 
+               <span t-esc="formatMonetary(state.taxTotals.order_sign * (state.taxTotals.order_total / state.ref), {currencyId: state.taxTotals.currency_id})"
+                                  class="total"/>
             </span>
             <span class="value">
                 <span t-esc="formatMonetary(state.taxTotals.order_sign * state.taxTotals.order_total, {currencyId: state.taxTotals.currency_id})"

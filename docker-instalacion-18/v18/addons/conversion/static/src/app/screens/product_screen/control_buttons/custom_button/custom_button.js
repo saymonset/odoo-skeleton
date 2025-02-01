@@ -76,7 +76,6 @@ export class CustomButton extends Component {
         var domain = []; // Sin filtros, para obtener todos los registros
         var fields = ['id', 'name', 'dateCurrency', 'currency_id', 'rent_amount']; // Campos que deseas recuperar
         var order = 'id desc'; // Ordenar por ID en orden descendente para obtener el último registro
-    
         // Realizar la consulta al modelo
     const lastRecord = await self.env.services.orm.searchRead(
             resModel,
@@ -84,15 +83,12 @@ export class CustomButton extends Component {
             fields,
             { limit: 1, order: order } // Limitar a 1 registro y ordenar por ID descendente
         );
-    
         // Verificar si se obtuvo un registro
         if (lastRecord.length > 0) {
             console.log('Último registro:', lastRecord[0]);
-          
             return lastRecord[0].rent_amount; // Retornar el último registro
         } else {
             console.log('No se encontraron registros.');
-           
             return null; // No hay registros
         }
     }
