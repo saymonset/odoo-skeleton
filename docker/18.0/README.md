@@ -1,18 +1,39 @@
+ # Creamos la red en docker
+ ```
+ docker network create odoo_network
+ ```
  
  # Start a PostgreSQL server
 ###
 ```bash
-  docker run -d -e POSTGRES_USER=odoo -e POSTGRES_PASSWORD=odoo -e POSTGRES_DB=postgres --name db postgres:15
+docker run -p 5433:5432 -d \
+  -e POSTGRES_USER=odoo \
+  -e POSTGRES_PASSWORD=odoo \
+  -e POSTGRES_DB=postgres \
+  --name db \
+  --network odoo_network \
+  postgres:15
 ```  
 
 ### Crear imagen de docker para luegorear el contenedor
 
 ```bash
- docker build -t odooimgsaymon .
+ docker build -t odooimgsaymon:18 .
 ```
+
+
  # Arrancar containerde docker
 ```bash
- docker run -v /Users/simon/opt/odoo/odoo-skeleton/docker/18.0/addons:/mnt/extra-addons  -p 8069:8069 --name odoo18container --link db:db -t odooimgsaymon
+docker run -v /Users/simon/opt/odoo/odoo-skeleton/docker/18.0/addons:/mnt/extra-addons \
+  -p 8069:8069 \
+  --name odoo18container \
+  --network odoo_network \
+  --link db:db \
+  -e HOST=db \
+  -e PORT=5432 \
+  -e USER=odoo \
+  -e PASSWORD=odoo \
+  odooimgsaymon:18
 ```
  # Eliminar container de docker
  ```bash
