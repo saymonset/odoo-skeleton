@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+
+   
+    <t t-name="todo_owl.playgroundCopy">
+      <Navbar currentApp="'saymons and saymons'"/>
+      <Todoo/>
+        <div class="p-3">
+            getValueFromChild:  <p><t t-esc="state.valueParent"/></p>
+        </div>
+         <p>Counter: <Counter callback.bind="getValueFromChild" a="state.a" b="'string'"/></p>
+    </t>
+
+</templates>
+
