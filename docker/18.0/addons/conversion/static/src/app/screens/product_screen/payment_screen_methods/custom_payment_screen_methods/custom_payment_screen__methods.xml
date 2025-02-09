@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="conversion.CustomPaymentScreenMethods">
+            <button class="control-button btn btn-light rounded-0 fw-bolder" t-on-click="() => this.onClick()">
+                <i class="fa fa-smiley-o me-1" />
+                <span> </span>
+                <span>Custom Button saymon nuevo</span>
+            </button>
+                  <t t-foreach="payment_methods_from_config" t-as="paymentMethod" t-key="paymentMethod.id">
+                    <div class="button paymentmethod btn btn-light btn-lg lh-lg flex-fill"
+                        t-att-class="{'opacity-50': this.pos.paymentTerminalInProgress and paymentMethod.use_payment_terminal}"
+                        t-on-click="() => this.addNewPaymentLine(paymentMethod)">
+                        <div class="payment-method-display d-flex align-items-center gap-2 text-wrap text-start lh-sm">
+                            <span>Hols</span>
+                        </div>
+                    </div>
+                </t>
+    </t>
+</templates>
