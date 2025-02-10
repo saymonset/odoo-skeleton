@@ -21,13 +21,12 @@ docker run -p 5433:5432 -d \
  docker build -t odooimgsaymon:18 .
 ```
 
- # Eliminar container de docker
- ```bash
-  docker rm odoo18container 
-  ```
 
  # Arrancar containerde docker
 ```bash
+$ docker run -v /path/to/config:/etc/odoo -p 8069:8069 --name odoo --link db:db -t odoo
+
+
 docker run -v /Users/simon/opt/odoo/odoo-skeleton/docker/18.0/config:/etc/odoo \
   -p 8069:8069 \
   --name odoo18container \
@@ -38,4 +37,20 @@ docker run -v /Users/simon/opt/odoo/odoo-skeleton/docker/18.0/config:/etc/odoo \
   -e USER=odoo \
   -e PASSWORD=odoo \
   odooimgsaymon:18
+
+
+docker run -v /Users/simon/opt/odoo/odoo-skeleton/docker/18.0/addons:/mnt/extra-addons \
+  -p 8069:8069 \
+  --name odoo18container \
+  --network odoo_network \
+  --link db:db \
+  -e HOST=db \
+  -e PORT=5432 \
+  -e USER=odoo \
+  -e PASSWORD=odoo \
+  odooimgsaymon:18
 ```
+ # Eliminar container de docker
+ ```bash
+  docker rm odoo18container 
+  ```
