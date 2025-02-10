@@ -7,20 +7,25 @@
         <field name="model">hostel.room</field>
         <field name="arch" type="xml">
             <form>
-                <header>
-                    <button name="make_available" string="Make Available" type="object"/>
-                    <button name="make_closed"  string="Make Closed" type="object"/>
-                    <field name="state" widget="statusbar"/>
-                </header>
-                <group>
-                    <group>
+                <sheet>
+                    <header>
+                        <button name="make_available" string="Make Available" type="object"/>
+                        <button name="make_closed"  string="Make Closed" type="object"/>
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                    <group string="Content" name="my_content">
                         <field name="name"/>
                         <field name="room_no"/>
                     </group>
                     <group>
                         <field name="description"/>
                     </group>
-                </group>
+                    <notebook>
+                        <page string="Other Information" name="other_information">
+                            <field name="other_info" widget="html"/>
+                        </page>
+                    </notebook>
+                </sheet>
             </form>
         </field>
     </record>
@@ -59,7 +64,7 @@
         <field name="sequence" eval="2"/>
     </record>
 
-    <menuitem id="menu_custom_hostel_room" name="Hostel RoomKK" web_icon="my_hostel,static/description/icon.png"/>
+    <menuitem id="menu_custom_hostel_room" name="Hostel Room" web_icon="my_hostel,static/description/icon.png"/>
     <menuitem id="menu_all_hostel_room" parent="menu_custom_hostel_room" action="action_hostel_room" sequence="10" groups="" />
 
 </odoo>
