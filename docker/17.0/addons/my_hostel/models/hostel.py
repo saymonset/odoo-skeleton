@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
+import logging
+
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
+
+_logger = logging.getLogger(__name__)
 
 
 class HostelRoom(models.Model):
@@ -8,10 +12,10 @@ class HostelRoom(models.Model):
     _name = 'hostel.room'
     _description = "Information about hostel Room"
 
-    name = fields.Char(string="Hostel Room Name", required=True)
+    name = fields.Char(string="Hostel Name", required=True)
     room_no = fields.Char(string="Room Number", required=True)
     other_info = fields.Text("Other Information",
-        help="Enter more information")
+                             help="Enter more information")
     description = fields.Html('Description')
     room_rating = fields.Float('Hostel Average Rating', digits=(14, 4))
     state = fields.Selection([
