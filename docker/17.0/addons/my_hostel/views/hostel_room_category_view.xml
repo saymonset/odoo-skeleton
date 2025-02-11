@@ -4,11 +4,47 @@
     <record id='hostel_room_category_action' model='ir.actions.act_window'>
         <field name="name">Hostel Room Categories</field>
         <field name="res_model">hostel.room.category</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">tree,kanban,form</field>
     </record>
 
     <menuitem id="menu_custom_hostel_room" name="Hostel Room" web_icon="my_hostel,static/description/icon.png"/>
     <menuitem name="Hostel Room Categories" id="hostel_room_category_menu" parent="menu_custom_hostel_room" action="hostel_room_category_action"/>
+
+    <!-- Kanban View -->
+    <record id="hostel_room_category_view_kanban" model="ir.ui.view">
+        <field name="name">Hostel Room Categories kanban</field>
+        <field name="model">hostel.room.category</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile" sample="1">
+                <field name="name"/>
+                <field name="description"/>
+                <field name="parent_id"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_global_click">
+                            <div class="row mb4">
+                                <div class="col-6 o_kanban_record_headings">
+                                    <strong>
+                                        <span>
+                                            <field name="name"/>
+                                        </span>
+                                    </strong>
+                                </div>
+                                <div class="col-6 text-end">
+                                    <strong><i role="img" title="description"/> <t t-esc="record.description.value"/></strong>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <span><field name="parent_id"/></span>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
 
     <!-- Form View -->
     <record id="hostel_room_category_view_form" model="ir.ui.view">
@@ -52,7 +88,7 @@
                             <form>
                                 <sheet>
                                     <group>
-                                        <field name="name"/>
+                                        <field name="name" />
                                         <field name="room_no"/>
                                     </group>
                                 </sheet>
@@ -60,6 +96,7 @@
                         </field>
                     </group>
                 </sheet>
+                <div class="o_attachment_preview" invisible="not hostel_room_ids" options="{'types': ['image', 'pdf'], 'order': 'desc'}"/>
                 <div class="oe_chatter">
                     <field name="message_follower_ids" widget="mail_followers"/>
                     <field name="message_ids" widget="mail_thread"/>
