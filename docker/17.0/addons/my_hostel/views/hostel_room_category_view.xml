@@ -4,7 +4,7 @@
     <record id='hostel_room_category_action' model='ir.actions.act_window'>
         <field name="name">Hostel Room Categories</field>
         <field name="res_model">hostel.room.category</field>
-        <field name="view_mode">tree,kanban,form</field>
+        <field name="view_mode">tree,kanban,calendar,form</field>
     </record>
 
     <menuitem id="menu_custom_hostel_room" name="Hostel Room" web_icon="my_hostel,static/description/icon.png"/>
@@ -74,6 +74,10 @@
                         <group>
                             <field name="parent_id"/>
                         </group>
+                        <group>
+                            <field name="date_assign"/>
+                            <field name="date_end"/>
+                        </group>
                     </group>
                     <group>
                         <field name="child_ids"
@@ -102,6 +106,18 @@
                     <field name="activity_ids" widget="mail_activity"/>
                 </div>
             </form>
+        </field>
+    </record>
+
+    <!-- Calendar View -->
+    <record id="hostel_room_category_view_calendar" model="ir.ui.view">
+        <field name="name">Hostel Room Categories Calendar</field>
+        <field name="model">hostel.room.category</field>
+        <field name="arch" type="xml">
+            <calendar date_start="date_assign" date_stop="date_end" color="parent_id">
+                <field name="name" />
+                <field name="parent_id" />
+            </calendar>
         </field>
     </record>
 
