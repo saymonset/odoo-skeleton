@@ -22,6 +22,7 @@ Long description of module's purpose
         "security/conversion_security.xml",
         "security/ir.model.access.csv",
         "views/converssion_views.xml",
+       
     ],
      "assets": {
         'point_of_sale.assets': [
