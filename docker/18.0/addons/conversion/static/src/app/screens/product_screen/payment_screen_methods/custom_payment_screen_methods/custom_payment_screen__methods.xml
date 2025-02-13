@@ -4,7 +4,7 @@
            
             <span class="amount-saymon">
                 <!-- <t t-esc="env.utils.formatCurrency(line.amount_saymon)" /> -->
-                Hol mundo
+            
             </span>
              
                 
