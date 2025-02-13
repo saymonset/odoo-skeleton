@@ -6,14 +6,20 @@
                     <!-- Aquí puedes modificar o extender el contenido -->
                     <span>Hellos</span>
                   
+                   <!-- Input para ingresar un número -->
+                    <div>
+                        <label for="numberInput">Ingresa un número:</label>
+                        <input type="number" id="numberInput" t-on-input="onInputChange" />
+                        <p>Resultado: <t t-esc="state.result" /></p>
+                    </div>
                       
                     <t t-if="props.paymentLines">
                         <t t-foreach="props.paymentLines" t-as="line" t-key="line.uuid">
                             <div class="custom-line">
-                                <span>hello aquistoy</span>
-                                <t t-esc="line.amount" />,
+                                <!-- <t t-esc="calculateAmountSaymon(line)" />, -->
+                                <!-- <t t-esc="line.amount" />,
                                 <t t-esc="line.amount_saymon" />,
-                                <t t-esc="line.name" />
+                                <t t-esc="line.name" /> -->
                             </div>
                         </t>
                     </t>

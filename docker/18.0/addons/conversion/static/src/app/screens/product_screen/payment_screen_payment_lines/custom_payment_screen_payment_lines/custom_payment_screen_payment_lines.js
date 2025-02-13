@@ -17,6 +17,12 @@ export class CustomPaymentScreenPaymentLines extends Component {
     setup() {
         
         super.setup();
+         // Estado para almacenar el resultado
+         this.state = useState({
+            result: 0, // Resultado inicial
+        });
+
+        
         
           console.log("********Payment lines recibidas:", this.props.paymentLines);
 
@@ -26,9 +32,26 @@ export class CustomPaymentScreenPaymentLines extends Component {
             console.log("******************Props actualizadas:", nextProps);
         });  
     }
+
+      // Función para manejar el evento input
+    onInputChange(event) {
+        const inputValue = parseFloat(event.target.value) || 0; // Captura el valor del input
+        this.state.result = inputValue * 62; // Multiplica el valor por 10 y actualiza el estado
+        this.updateLastPaymentLine(this.state.result); // Manually trigger the update
+    }
     calculateAmountSaymon(line) {
         // Lógica personalizada para calcular el campo en el frontend (si es necesario)
-        return line.get_amount() / 60; // Ejemplo: multiplicar por 1.5
+        return line.get_amount() * 62; // Ejemplo: multiplicar por 1.5
+    }
+
+    updateLastPaymentLine(newValue) {
+        if (this.props.paymentLines && this.props.paymentLines.length > 0) {
+            const lastLine = this.props.paymentLines[this.props.paymentLines.length - 1];
+            lastLine.amount = newValue; // Update the value of the last element
+            console.log("Última línea actualizada:", lastLine);
+        } else {
+            console.warn("No payment lines available to update.");
+        }
     }
     // Sobrescribe el método addNewPaymentLine
     async onClick() {
