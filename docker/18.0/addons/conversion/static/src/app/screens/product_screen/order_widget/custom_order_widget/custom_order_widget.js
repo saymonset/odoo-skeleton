@@ -82,6 +82,31 @@ export class CustomOrderWidget extends Component {
         }
     }
  
+
+    formatWithTwoDecimals(value) {
+        console.log("Valor recibido en formatWithTwoDecimals:", value);
+        try {
+
+            const number = parseFloat(value);
+            if (isNaN(number)) {
+                console.error("El valor no es un número válido:", value);
+                return "0.00"; // Valor predeterminado
+            }
+        // Usar Intl.NumberFormat para formatear con dos decimales
+            const formatter = new Intl.NumberFormat('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+
+            return formatter.format(number);
+                
+        } catch (error) {
+            return value;
+        }
+        
+      //  
+    
+    }
  
 
 }

@@ -23,6 +23,4 @@ export class CustomOrder extends PosOrder {
 registry.category("models").add("order", CustomOrder);
 // Verifica si la clase está registrada
 const registeredOrder = registry.category("models").get("order");
-console.log('--------------------1------------------------------')
-console.log("Clase registrada:", registeredOrder);
-console.log('--------------------2------------------------------')
+
