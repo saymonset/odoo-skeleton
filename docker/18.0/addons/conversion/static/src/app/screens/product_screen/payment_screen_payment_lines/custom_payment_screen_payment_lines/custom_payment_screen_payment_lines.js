@@ -19,7 +19,7 @@ export class CustomPaymentScreenPaymentLines extends Component {
         super.setup();
          // Estado para almacenar el resultado
          this.state = useState({
-            result: 0, // Resultado inicial
+            result: 0,hasData:false, // Resultado inicial
         });
 
         
@@ -27,10 +27,20 @@ export class CustomPaymentScreenPaymentLines extends Component {
           console.log("********Payment lines recibidas:", this.props.paymentLines);
 
         onRendered(() => {
+            this.updateHasData(this.props.paymentLines);
         });
+        
         onWillUpdateProps((nextProps) => {
             console.log("******************Props actualizadas:", nextProps);
+            this.updateHasData(nextProps.paymentLines);
         });  
+    }
+
+    updateHasData(paymentLines = this.props.paymentLines) {
+        this.state.hasData = paymentLines && paymentLines.length > 0;
+        if (!this.state.hasData){
+            this.state.result = 0;
+        }
     }
 
       // Función para manejar el evento input
