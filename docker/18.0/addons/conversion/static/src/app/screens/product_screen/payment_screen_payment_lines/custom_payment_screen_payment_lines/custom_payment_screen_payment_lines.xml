@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="conversion.CustomPaymentScreenPaymentLines">
+           
+                 <div class="paymentlines d-flex flex-column overflow-y-auto gap-1">
+                    <!-- Aquí puedes modificar o extender el contenido -->
+                    <span>Hellos</span>
+                  
+                      
+                    <t t-if="props.paymentLines">
+                        <t t-foreach="props.paymentLines" t-as="line" t-key="line.uuid">
+                            <div class="custom-line">
+                                <span>hello aquistoy</span>
+                                <t t-esc="line.amount" />,
+                                <t t-esc="line.amount_saymon" />,
+                                <t t-esc="line.name" />
+                            </div>
+                        </t>
+                    </t>
+                    <t t-else="">
+                        <div>No payment lines available</div>
+                    </t>
+
+                </div>
+    </t>
+</templates>
