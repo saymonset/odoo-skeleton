@@ -3,18 +3,21 @@
     'name': "My Hostel",  # Module title
     'summary': "Manage Hostel easily",  # Module subtitle phrase
     'description': """
-Long description
+Manage Library
+==============
+Description related to Hostel.
     """,  # Supports reStructuredText(RST) format
     "version": "17.0.1.0.0",
     "author": "Serpent Consulting Services Pvt. Ltd.",
-    "category": "Uncategorized",
+    "category": "Tools",
     "website": "http://www.serpentcs.com",
-    "depends": ['mail'],
+    "depends": ['base'],
     "license": "AGPL-3",
     'data': [
+        'data/data.xml',
         'security/groups.xml',
         'security/ir.model.access.csv',
-        'views/hostel_room_category_view.xml',
         'views/hostel_room.xml',
+        'views/hostel_room_category_view.xml'
     ],
 }

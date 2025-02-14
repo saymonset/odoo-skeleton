@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 import logging
 
-from odoo import api, fields, models, _
+from odoo import api, fields, models
 from odoo.exceptions import UserError
+from odoo.tools.translate import _
 
 _logger = logging.getLogger(__name__)
 
@@ -10,7 +11,6 @@ _logger = logging.getLogger(__name__)
 class HostelRoom(models.Model):
 
     _name = 'hostel.room'
-    _inherit = ['mail.thread']
     _description = "Information about hostel Room"
 
     name = fields.Char(string="Hostel Name", required=True)
@@ -19,17 +19,12 @@ class HostelRoom(models.Model):
                              help="Enter more information")
     description = fields.Html('Description')
     room_rating = fields.Float('Hostel Average Rating', digits=(14, 4))
+    member_ids = fields.Many2many('hostel.room.member', string='Members')
     state = fields.Selection([
         ('draft', 'Unavailable'),
         ('available', 'Available'),
         ('closed', 'Closed')],
         'State', default="draft")
-    hostel_room_category_id = fields.Many2one(
-        'hostel.room.category',
-        string='Parent Category',
-        ondelete='restrict',
-        index=True
-    )
 
     @api.model
     def is_allowed_transition(self, old_state, new_state):
@@ -48,6 +43,21 @@ class HostelRoom(models.Model):
 
     def make_available(self):
         self.change_state('available')
+        return True
 
     def make_closed(self):
         self.change_state('closed')
+
+
+class HostelRoomMember(models.Model):
+
+    _name = 'hostel.room.member'
+    _inherits = {'res.partner': 'partner_id'}
+    _description = "Hostel Room member"
+
+    partner_id = fields.Many2one('res.partner', ondelete='cascade')
+    date_start = fields.Date('Member Since')
+    date_end = fields.Date('Termination Date')
+    member_number = fields.Char()
+    date_of_birth = fields.Date('Date of birth')
+
