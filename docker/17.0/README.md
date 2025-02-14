@@ -30,8 +30,18 @@ docker run -p 5433:5432 -d \
   ALTER USER odoo17 WITH SUPERUSER;
 
  ```
+ # Arrancar archivo configuracion
+ ```bash
+docker run -v /Users/simon/opt/odoo/odoo-skeleton/docker/17.0/config:/etc/odoo \
+-p 17069:8069 \
+--name odoo17container \
+--network odoo_network \
+--link db:db \
+--user 0:0 \
+-t odooimgsaymon:17
 
- # Arrancar containerde docker
+ ```
+ # Arrancar container de docker crudo
 ```bash
 
 docker run -v /Users/simon/opt/odoo/odoo-skeleton/docker/17.0/addons:/mnt/extra-addons \
