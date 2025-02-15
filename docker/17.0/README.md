@@ -30,6 +30,12 @@ docker run -p 5433:5432 -d \
   ALTER USER odoo17 WITH SUPERUSER;
 
  ```
+
+  # Eliminar container de docker
+ ```bash
+  docker rm odoo17container 
+  ```
+
  # Arrancar archivo configuracion
  ```bash
  
@@ -41,25 +47,21 @@ docker run \
 --name odoo17container \
 --network odoo_network \
 --link db:db \
--t odooimgsaymon:17
+-t odooimgsaymon:17  
+ 
 
  ```
- # Arrancar container de docker crudo
+ # Arrancar container para depurar
 ```bash
-
-# docker run -v /Users/simon/opt/odoo/odoo-skeleton/docker/17.0/addons:/mnt/extra-addons \
-#   -p 17069:8069 \
-#   --name odoo17container \
-#   --network odoo_network \
-#   --link db:db \
-#   -e HOST=db \
-#   -e PORT=5432 \
-#   -e USER=odoo17 \
-#   -e PASSWORD=odoo \
-#   -e DATABASE=db_17 \
-#   odooimgsaymon:17
+docker run \
+-v /Users/simon/opt/odoo/odoo-skeleton/docker/17.0/config:/etc/odoo \
+-v /Users/simon/opt/odoo/odoo-skeleton/docker/17.0:/home/odoo/.local/share/Odoo \
+-v /Users/simon/opt/odoo/odoo-skeleton/docker/17.0/extra-addons:/mnt/extra-addons \
+-p 17069:8069 \
+-p 5678:5678 \
+--name odoo17container \
+--network odoo_network \
+--link db:db \
+-t odooimgsaymon:17 \
+python3 -m debugpy --listen 0.0.0.0:5678 --wait-for-client /usr/bin/odoo
 ```
- # Eliminar container de docker
- ```bash
-  docker rm odoo17container 
-  ```

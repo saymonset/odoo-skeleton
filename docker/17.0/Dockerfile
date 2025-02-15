@@ -68,7 +68,8 @@ RUN echo 'deb http://apt.postgresql.org/pub/repos/apt/ jammy-pgdg main' > /etc/a
 
 # Install rtlcss (on Debian buster)
 RUN npm install -g rtlcss
-
+# Instala debugpy
+RUN pip3 install debugpy
 # Install Odoo
 ENV ODOO_VERSION 17.0
 ARG ODOO_RELEASE=20250131
@@ -81,7 +82,7 @@ RUN curl -o odoo.deb -sSL http://nightly.odoo.com/${ODOO_VERSION}/nightly/deb/od
 
 # Copy entrypoint script and Odoo configuration file
 COPY ./entrypoint.sh /
-COPY ./odoo.conf /etc/odoo/
+COPY ./config/odoo.conf /etc/odoo/
 
 # Set permissions and Mount /var/lib/odoo to allow restoring filestore and /mnt/extra-addons for users addons
 RUN chown odoo /etc/odoo/odoo.conf \

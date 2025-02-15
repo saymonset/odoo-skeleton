@@ -1,5 +1,6 @@
-from odoo.tests.common import TransactionCase
+from odoo.tests.common import TransactionCase, tagged
 
+@tagged('-at_install', 'post_install')
 class TestHostelRoomState(TransactionCase):
 
     def setUp(self, *args, **kwargs):
