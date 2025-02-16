@@ -65,3 +65,18 @@ docker run \
 -t odooimgsaymon:17 \
 python3 -m debugpy --listen 0.0.0.0:5678 --wait-for-client /usr/bin/odoo
 ```
+ ```
+ # Arrancar container para test
+```bash
+docker run \
+-v /Users/simon/opt/odoo/odoo-skeleton/docker/17.0/config:/etc/odoo \
+-v /Users/simon/opt/odoo/odoo-skeleton/docker/17.0:/home/odoo/.local/share/Odoo \
+-v /Users/simon/opt/odoo/odoo-skeleton/docker/17.0/extra-addons:/mnt/extra-addons \
+-p 17069:8069 \
+-p 5678:5678 \
+--name odoo17container \
+--network odoo_network \
+--link db:db \
+-t odooimgsaymon:17 \
+--test-enable --stop-after-init \
+--test-tags=/my_hostel -i my_hostel

@@ -1,6 +1,5 @@
-from odoo.tests.common import TransactionCase, tagged
+from odoo.tests.common import TransactionCase
 
-@tagged('-at_install', 'post_install')
 class TestHostelRoomState(TransactionCase):
 
     def setUp(self, *args, **kwargs):
@@ -28,4 +27,4 @@ class TestHostelRoomState(TransactionCase):
         self.test_hostel_room.make_available()
         self.test_hostel_room.make_closed()
         self.assertEqual(
-            self.test_hostel_room.state, 'closed', 'Hostel Room state should changed to closed')
+            self.test_hostel_room.state, 'closeduu', 'Hostel Room state should changed to closed')

@@ -42,7 +42,6 @@ class HostelRoom(models.Model):
                 raise UserError(message)
 
     def make_available(self):
-      
         self.change_state('available')
         return True
 
