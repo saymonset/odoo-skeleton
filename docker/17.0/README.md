@@ -13,7 +13,11 @@ docker run -p 5433:5432 -d \
   --name db \
   --network odoo_network \
   postgres:15
-```  
+```
+# Postgres Instalar en windows
+```bash
+docker run -p 5433:5432 -d -e POSTGRES_USER=odoo -e POSTGRES_PASSWORD=odoo -e POSTGRES_DB=postgres --name db --network odoo_network postgres:15
+```
 
 ### Crear imagen de docker para luegorear el contenedor
 
