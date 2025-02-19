@@ -1,0 +1,12 @@
+ODOO_VERSION=18
+ODOO_CONTAINER_NAME=odoocontainer18
+ODOO_PORT=8069
+DEBUGPY_PORT=8888
+PG_CONTAINER_NAME=pgdb
+PG_VERSION=16.0
+PG_USER=odoo
+PG_PASSWORD=odoo
+PG_PORT=5434
+ODOO_SERVER=./src/odoo-18
+CUSTOM_ADDONS=./extra-addons
+ENTRYPOINT=python3 -m debugpy --listen 0.0.0.0:8888 /opt/odoo/odoo-bin  -c /etc/odoo/odoo.conf -d youtube
