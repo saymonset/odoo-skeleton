@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Precisions -->
+        <record forcecreate="True" id="decimal_point" model="decimal.precision">
+            <field name="name">Rating Value</field>
+            <field name="digits">3</field>
+        </record>
+
+
+        <!-- Temp category to delete, in real case this record created from another module -->
+        <record id="room_category_to_remove" model="hostel.room.category">
+            <field name="name">Single Sharing</field>
+        </record>
+        <record id="room_category_not_remove" model="hostel.room.category">
+            <field name="name">Double Sharing</field>
+        </record>
+
+        <delete model="hostel.room.category" id="room_category_to_remove"/>
+
+    </data>
+</odoo>
