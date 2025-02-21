@@ -9,11 +9,14 @@
      <https://marketplace.visualstudio.com/items?itemName=mvintg.odoo-file>
    - Owl Vision <https://marketplace.visualstudio.com/items?itemName=Odoo.owl-vision>
 
-3. Crear el espacio de trabajo importando el código fuente de Odoo
-4. Configurar y modificar el fichero pyrightconfig.json
+3. Crear el espacio de trabajo importando el código fuente de Odoo. Esta en src
+4. Configurar y modificar el fichero pyrightconfig.json para que apunte a los  fuentes de odoo y hacer debugger
 5. Compilar la imagen de docker con el fichero Dockerfile
-6. Configurar las variables en el .env
-7. Configurar el debug en vscode
+6. Configurar las variables en el .env. Si no existe, esta una copia de env copy, reemplazarla .venv y poner las variables de entorno
+8. ejecutar el docker compose con boton  derecho del raton o:  docker-compose up
+9. Ir a http://localhost:8069/ y loguearsde conmo super usuario en elogin super usuario. 
+ user: admin,  passwd: admin
+
 
 Ejemplo:
 
@@ -28,11 +31,11 @@ Ejemplo:
   },
   "pathMappings": [
     {
-      "localRoot": "${workspaceFolder}/src/odoo/addons",
+      "localRoot": "${workspaceFolder}/src/odoo-18/addons",
       "remoteRoot": "/var/lib/odoo/custom_addons"
     },
     {
-      "localRoot": "<Path Odoo Server>/addons",
+      "localRoot": "${workspaceFolder}/src/odoo-18/addons",
       "remoteRoot": "/var/lib/odoo/odoo/addons"
     }
   ]
