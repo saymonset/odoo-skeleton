@@ -1,0 +1,49 @@
+version: '3.1'
+
+services:
+  web:
+    image: "odoo:${VERSION}"
+    container_name: "odoo-${VERSION}"
+    user: root
+    depends_on:
+      - db
+    ports:
+      - "${VERSION}069:8069"
+      - "${VERSION}072:8072"
+    networks:
+      - odoo_network
+    volumes:
+      - "odoo-web-data:/var/lib/odoo"
+      - "./v${VERSION}/config/odoo.conf:/etc/odoo/odoo.conf"
+      - "./v${VERSION}/extra-addons:/mnt/extra-addons"
+      #- "./v${VERSION}/odoo-sources:/usr/lib/python3/dist-packages/odoo/addons"  # Mapeo de fuentes de Odoo
+      #- "./v17/odoo_addons:/usr/lib/python3/dist-packages/odoo/addons" 
+      #                            /usr/lib/python3/dist-packages/odoo/addons
+    environment:
+      - POSTGRES_PASSWORD=123456  # Set the password directly here
+
+  db:
+    image: postgres:14
+    container_name: "odoo-db${VERSION}"
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_PASSWORD=123456  # Set the password directly here
+      - POSTGRES_USER=odoo
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    ports:
+      - "${VERSION}433:5432"
+    networks:
+      - odoo_network
+    volumes:
+      - odoo-db-data:/var/lib/postgresql/data/pgdata
+      #- "./v${VERSION}/pgdata:/var/lib/postgresql/data/pgdata"
+
+volumes:
+  odoo-web-data:
+    name: "${APP:-myodoo}-web-v${VERSION}"
+  odoo-db-data:
+    name: "${APP:-myodoo}-db-v${VERSION}"
+
+networks:
+  odoo_network:
+    name: odoo_network

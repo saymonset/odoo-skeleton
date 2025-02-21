@@ -1,0 +1,30 @@
+<odoo>
+    <data>
+        <record id="view_fleet_vehicle_form_inherit" model="ir.ui.view">
+            <field name="name">fleet.vehicle.form.inherit</field>
+            <field name="model">fleet.vehicle</field>
+            <field name="inherit_id" ref="fleet.fleet_vehicle_view_form"/>
+            <field name="arch" type="xml">
+              <!-- Eliminar el botón "Apply New Driver" -->
+                <xpath expr="//button[@name='action_accept_driver_change']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <!-- Eliminar el campo state_id -->
+                <xpath expr="//field[@name='state_id']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+               <xpath expr="//header" position="inside">
+                    <button name="make_available" string="Make Available saymon" type="object"/>
+                    <button name="make_closed"  string="Make Closed saymon" type="object"/>
+                    <button name="log_all_room_members"  string="Log listar todos los artner en log info" type="object"/>
+                    <button name="create_categories" string="Create Categories" type="object"/>
+                    <field name="state" widget="statusbar"/>
+                </xpath>
+                <xpath expr="//field[@name='model_id']" position="after">
+                    <label for="new_field_sami" string="Nuevo Campo  Sami" />
+                    <field name="new_field_sami" placeholder="Introduce el nuevo campo aquí Sami" />
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
