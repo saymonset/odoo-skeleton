@@ -1,7 +1,7 @@
  # Execute given commands one by one to install Odoo
  # Creamos la red en docker
  ```
- docker network create odoo_network
+ docker network create odoo_network_${VERSION}
  ```
 ###
 ```bash

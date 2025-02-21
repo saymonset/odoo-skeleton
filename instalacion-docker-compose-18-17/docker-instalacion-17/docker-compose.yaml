@@ -11,43 +11,35 @@ services:
       - "${VERSION}069:8069"
       - "${VERSION}072:8072"
     networks:
-      - odoo_network
+      - odoo_network_17
     volumes:
-      - "odoo-web-data:/var/lib/odoo"
+      - "./v${VERSION}/odoo-web-data:/var/lib/odoo"
       - "./v${VERSION}/config/odoo.conf:/etc/odoo/odoo.conf"
-      - "./v${VERSION}/extra-addons:/mnt/extra-addons"
-      #- "./v${VERSION}/odoo-sources:/usr/lib/python3/dist-packages/odoo/addons"  # Mapeo de fuentes de Odoo
-      #- "./v17/odoo_addons:/usr/lib/python3/dist-packages/odoo/addons" 
-      #                            /usr/lib/python3/dist-packages/odoo/addons
+      - "./v${VERSION}/addons:/mnt/extra-addons"
     environment:
-      - POSTGRES_PASSWORD=123456  # Set the password directly here
-    #command: >
-     # sh -c "pip3 install -U debugpy && /usr/bin/python3 -m debugpy --listen 0.0.0.0:3001 --wait-for-client /entrypoint.sh odoo"  
-    # command: >
-    #   sh -c "pip3 install -U debugpy && /entrypoint.sh odoo"  
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD} # Set the password directly here
 
   db:
-    image: postgres:14
+    image: postgres:15
     container_name: "odoo-db${VERSION}"
     environment:
-      - POSTGRES_DB=odoodb
-      - POSTGRES_PASSWORD=123456  # Set the password directly here
+      - POSTGRES_DB=postgres
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}  # Set the password directly here
       - POSTGRES_USER=odoo
-      - PGDATA=/var/lib/postgresql14/data/pgdata
+      - PGDATA=${PGDATA}
     ports:
-      - "${VERSION}433:5432"
+      - "${VERSION}432:5432"
     networks:
-      - odoo_network
+      - odoo_network_17
     volumes:
-      - odoo-db-data:/var/lib/postgresql14/data/pgdata
-      #- "./v${VERSION}/pgdata:/var/lib/postgresql/data/pgdata"
+      - "./v${VERSION}/pgdata:${PGDATA}"  # Aquí puedes cambiar el nombre del volumen
 
 volumes:
   odoo-web-data:
     name: "${APP:-myodoo}-web-v${VERSION}"
   odoo-db-data:
-    name: "${APP:-myodoo}-db-v${VERSION}"
+    name: "${APP:-myodoo}-db-v${VERSION}-custom"  # Cambia el nombre aquí si lo deseas
 
 networks:
-  odoo_network:
-    name: odoo_network
+  odoo_network_17:
+    driver: bridge

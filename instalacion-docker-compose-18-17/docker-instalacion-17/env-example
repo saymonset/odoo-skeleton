@@ -1,3 +1,5 @@
 APP=doo_app
 VERSION=18
+POSTGRES_PASSWORD=123456
 HOST=ep-still-morning-a5ancq44.us-east-2.aws.neon.tech
+PGDATA=/var/lib/postgresql15/data/pgdata
