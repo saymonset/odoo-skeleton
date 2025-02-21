@@ -1,0 +1,8 @@
+{
+    // "stubPath":"/Users/simon/opt/odoo/src/odoo-stubs-18.0/odoo-stubs",
+    "extraPaths": ["./src/odoo-18",
+                   "./src/odoo-18/addons", 
+                   "./extra-addons"]
+  }
+
+  
