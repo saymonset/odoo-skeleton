@@ -10,6 +10,7 @@
 /src/
 /filestore/
 /logs/
+/instalacion-docker-compose-18-17/docker-instalacion-18/v18/pgdata/
 instalacion-docker-compose-18-17/docker-instalacion-17/v17/pgdata/
 instalacion-docker-compose-18-17/docker-instalacion-18/v18/pgdata/
 instalacion-docker-compose-18-17/docker-instalacion-17/v17/addons
