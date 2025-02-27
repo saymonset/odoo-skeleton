@@ -13,6 +13,8 @@
 
 4. Configurar y modificar el fichero pyrightconfig.json para que apunte a los  fuentes de odoo y hacer debugger
 
+# -------------------------------BEGIN INSTALATION----------------------------------
+
 # Configurar las variables en el .env
   Si no existe, esta una copia de env copy, reemplazarla .venv y poner las variables de entorno.El nombre del nuevo contenedor a crear sera con la imagen que se crea con dockerfile
 
