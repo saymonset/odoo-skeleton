@@ -26,7 +26,6 @@ Long description of module's purpose
     ],
      "assets": {
         'point_of_sale.assets': [
-            'conversion/static/src/custom_order/custom_order.js',
             'conversion/static/src/**/*',
             
         ],

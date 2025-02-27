@@ -13,12 +13,12 @@
 
 4. Configurar y modificar el fichero pyrightconfig.json para que apunte a los  fuentes de odoo y hacer debugger
 
-5. Configurar las variables en el .env
-  Si no existe, esta una copia de env copy, reemplazarla .venv y poner las variables de entorno. El nombre del contenedor sera igual al nombre del nuevo contenedor a crear sera con la imagen que se crea con dockerfile
+# Configurar las variables en el .env
+  Si no existe, esta una copia de env copy, reemplazarla .venv y poner las variables de entorno.El nombre del nuevo contenedor a crear sera con la imagen que se crea con dockerfile
 
-6. Crar imgen con el dockerFile. Dentro de DockerFile busca la instruccion 
-    # Copiar el código fuente de Odoo :  COPY ./src/odoo-18 /opt/odoo
-   # y revisa que esten los fuentes en la carpeta src/odoo-18 ./src/odoo-18 
+# Crear imgen con el dockerFile. Dentro de DockerFile busca la instruccion 
+    #  COPY ./src/odoo-18 /opt/odoo
+   # y revisa que esten los fuentes en la carpeta de tu maquina  ./src/odoo-18 
 
 # Compilar la imagen de docker con el fichero Dockerfile 
    ```bash
