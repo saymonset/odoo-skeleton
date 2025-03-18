@@ -267,15 +267,14 @@ server {
 sudo systemctl restart nginx
 
 --------------------------------------------------------------------
+ 
+ 
+ # Otras Configuraciones pero no es necesaria
 
-nano /etc/odoo-server.conf
+  nano /etc/odoo-server.conf
 
-----
+  proxy_mode = True
+  xmlrpc_interface = 127.0.0.1
+  netrpc_interface = 127.0.0.1
 
-proxy_mode = True
-xmlrpc_interface = 127.0.0.1
-netrpc_interface = 127.0.0.1
-
----
-
-sudo systemctl restart odoo-server
+  sudo systemctl restart odoo-server`

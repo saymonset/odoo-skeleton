@@ -1,6 +1,6 @@
 
 
-
+# Instalamos odoo , postgres y usamos una nueva red en docker-compose
 # Creación de la Red en Docker
 
 Para crear una red en Docker, utiliza el siguiente comando:

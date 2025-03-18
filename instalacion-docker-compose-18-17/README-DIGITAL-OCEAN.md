@@ -1,6 +1,6 @@
 # Instalación en DigitalOcean
 
-## Hacer Backup de la Base de Datos
+## En maquina Local: Hacer Backup de la Base de Datos
 
 ### 1. Entrar al Bash del Contenedor
     ```bash
@@ -73,7 +73,7 @@ Siempre busca conectarte usando **password** en lugar de **SSH**, ya que es meno
 ssh root@xxx.xxx.xxx.xxx
 ```
 
-# Install Odoo 18 on Docker. Por reemplazar esto. No es seguro la fuente
+# Install Odoo 18 on Docker. 
 
 ## 1. Crear Carpeta para Odoo
 ```bash
