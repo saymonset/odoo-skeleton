@@ -1,5 +1,5 @@
  
-# Instalamos ngnix con docker-compose
+# Instalamos nginx con docker-compose
 
 
 
