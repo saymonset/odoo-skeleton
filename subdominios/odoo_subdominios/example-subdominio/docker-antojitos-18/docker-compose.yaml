@@ -1,0 +1,43 @@
+services:
+  web:
+    image: "odoo:${VERSION}"
+    container_name: "odoo-antojitos-${ANTOJITOS_VERSION}"
+    user: root
+    depends_on:
+      - db
+    ports:
+      - "${ANTOJITOS_VERSION}069:8069"
+      - "${ANTOJITOS_VERSION}072:8072"
+    networks:
+      - odoo_network_antojitos
+    volumes:
+      - "./v${VERSION}/odoo-web-data:/var/lib/odoo"
+      - "./v${VERSION}/config/odoo.conf:/etc/odoo/odoo.conf"
+      - "./v${VERSION}/addons:/mnt/extra-addons"
+    environment:
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD} # Set the password directly here
+
+  db:
+    image: postgres:16
+    container_name: "odoo-db${ANTOJITOS_VERSION}"
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}  # Set the password directly here
+      - POSTGRES_USER=odoo
+      - PGDATA=${PGDATA}
+    ports:
+      - "${ANTOJITOS_VERSION}432:5432"
+    networks:
+      - odoo_network_antojitos
+    volumes:
+      - "./v${ANTOJITOS_VERSION}/pgdata:${PGDATA}"
+
+volumes:
+  odoo-web-data:
+    name: "${APP:-myodoo}-web-v${ANTOJITOS_VERSION}"
+  odoo-db-data:
+    name: "${APP:-myodoo}-db-v${ANTOJITOS_VERSION}"
+
+networks:
+  odoo_network_antojitos:
+    name: odoo_network_antojitos
