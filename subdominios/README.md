@@ -2,7 +2,7 @@
 
 ## Instalación de Subdominios con SSL
 
-En la carpeta `odoo_subdominios`, encontrarás la plantilla para instalar subdominios con SSL. No estoy seguro si se está utilizando el archivo `nginx.conf`. Las carpetas y demás archivos son un modelo de cómo deben estar organizados.
+En la carpeta `odoo_subdominios`, encontrarás la plantilla para instalar subdominios con SSL. El archivo `nginx.conf` es de la instalacion que se hizo sin docker yesta detenido el servicio con: sudo systemctl stop nginx. Las carpetas y demás archivos son un modelo de cómo deben estar organizados.
 
 ## Descripción General
 
