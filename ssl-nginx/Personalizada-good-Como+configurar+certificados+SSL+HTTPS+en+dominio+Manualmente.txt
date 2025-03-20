@@ -102,10 +102,20 @@ sudo certbot certonly --agree-tos --email admin@jumpjibe.com --webroot -w /var/l
      curl -I https://acme-v02.api.letsencrypt.org
     ```
 
+### Generar certificados
+
+    # Multiplos subdominios para que soporten ssl
+    ```bash
+     sudo certbot certonly --agree-tos --email admin@jumpjibe.com --webroot -w /var/lib/letsencrypt/ -d jumpjibe.com -d www.jumpjibe.com -d antojitos.jumpjibe.com 
+   ```
+
+   # Un solo dominio se configura para ssl
     ```bash
      sudo certbot certonly --agree-tos --email admin@jumpjibe.com --webroot -w /var/lib/letsencrypt/ -d jumpjibe.com
+    ```
+   
 
-   ```
+  
 
 ##################-FIN-#############################
 
@@ -179,6 +189,7 @@ sudo certbot renew --dry-run
 
 sudo nano /etc/nginx/sites-enabled/jumpjibe.com.conf
 
+# Para un subdominio.. Si wuieres varios subdominios, dirijete a conf-2-subdominios
 ----
 
 # Odoo servers
@@ -261,20 +272,10 @@ server {
     gzip_types text/css text/less text/plain text/xml application/xml application/json application/javascript;
     gzip on;
 }
-
+ 
 ----
 
+ln
+
 sudo systemctl restart nginx
-
---------------------------------------------------------------------
  
- 
- # Otras Configuraciones pero no es necesaria
-
-  nano /etc/odoo-server.conf
-
-  proxy_mode = True
-  xmlrpc_interface = 127.0.0.1
-  netrpc_interface = 127.0.0.1
-
-  sudo systemctl restart odoo-server`
