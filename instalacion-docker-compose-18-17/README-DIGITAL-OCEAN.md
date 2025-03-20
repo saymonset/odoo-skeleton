@@ -4,16 +4,13 @@
 
 ### 1. Entrar al Bash del Contenedor
     ```bash
-    docker exec -it pgdb bash
+    docker exec -it odoo-db18 bash
     ```
 ### 2. Crear el Dump de la Base de Datos
    ```bash
     pg_dump -U odoo youtube > /tmp/backup.sql
   ```
-# Si deseas crear un backup con un nombre específico, puedes usar:    
-   ```bash
-    pg_dump -U odoo youtube > backup_2025_02_25_III.sql
-  ```
+
 
 ### 3. Salir del contenedor
 # 
@@ -24,8 +21,8 @@
 ### 4. Copiar el Backup a tu Máquina Local
  # fuera del contenedor copiamos el backup que esta dentro del contenedor a nuestra maquina local
       ```bash
-      docker cp pgdb:/tmp/backup.sql ./backup.sql
-      docker cp pgdb:/backup_2025_02_25_III.sql ./backup_2025_02_25_III.sql
+      docker cp odoo-db18:/tmp/backup.sql ./backup.sql
+   
       ```
 
 
@@ -42,11 +39,12 @@
 
 ## 1. Copiar el Filestore -> Entramos en el bash del container
   ```bash
-      docker exec -it odoocontainer18 bash
+      docker exec -it odoo-18 bash
   ```
 ## 2. Navegar a la Ruta del Filestore
      ```bash
-     cd  /var/lib/odoo/.local/share/Odoo/filestore
+ 
+      cd  /root/.local/share/Odoo/filestore  
      ```
 ## 3. salir del contenedor
       ```bash
@@ -55,7 +53,7 @@
    
 ## 5. Copiar el Filestore a tu Máquina Local
      ```bash
-     docker cp odoocontainer18:/var/lib/odoo/.local/share/Odoo/filestore/youtube youtubefilestore_II
+    docker cp odoo-18:/root/.local/share/Odoo/filestore/db0 /Users/simon/opt/odoo/cliente/jumpnjibe/filestore/db0
      ```
 
 # Digital Ocean
@@ -136,7 +134,7 @@ rsync -avz docker-instalacion-18 root@143.198.138.195:/root/odoo
 ```
 
 
-# Copiar bd de local al digital ocean
+# Copiar bd desde la maquina local al remoto
 ```bash windows
 scp -rv ./backup_2025_02_25_III.sql root@143.198.138.195:/root
 ```
@@ -144,7 +142,7 @@ scp -rv ./backup_2025_02_25_III.sql root@143.198.138.195:/root
 rsync -avz ./backup_2025_02_25_III.sql root@143.198.138.195:/root
 ```
 
-# copiar filestore de local al digital ocean
+# copiar filestore de maquina local al remoto
   WINDOWS
 ```bash windows
 scp -rv ./filestore root@143.198.138.195:/root
@@ -154,7 +152,7 @@ Para copiar la carpeta en Linux o Mac, utiliza el siguiente comando:
 ```bash Linux
 rsync -avz ./filestore root@143.198.138.195:/root
 ```
-# digitl ocean . Siempre busca con password y no ssh, es menos complicado y usa este password example
+# remoto . Siempre busca con password y no ssh, es menos complicado y usa este password example
 ```bash
 502Bn£L[mMVf
 ```
