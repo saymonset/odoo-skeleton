@@ -1,5 +1,9 @@
-# VSCode + Docker para el desarrollo en Odoo con completado inteligente
+# Video de ayuda para debuguear con odoo
 
+https://www.youtube.com/watch?v=9qy8a5Kuq1Q
+
+# VSCode + Docker para el desarrollo en Odoo con completado inteligente
+0. Create la red:    docker network create odoo_network
 1. Instalar VSCode de su página oficial - <https://code.visualstudio.com>
 2. Instalar extensiones en vscode para la productividad:
 
@@ -8,6 +12,8 @@
    - Odoo Shortcuts
      <https://marketplace.visualstudio.com/items?itemName=mvintg.odoo-file>
    - Owl Vision <https://marketplace.visualstudio.com/items?itemName=Odoo.owl-vision>
+
+2.1. En la carpeta vscode_backup_debug, copiate el archivo launch.json  la carp[eta .vscode. Si no existe .vscode, crea esa carpeta]    
 
 3. Crear el espacio de trabajo importando el código fuente de Odoo. Esta en src
 4. Configurar y modificar el fichero pyrightconfig.json para que apunte a los  fuentes de odoo y hacer debugger
