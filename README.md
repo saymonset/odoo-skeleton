@@ -8,7 +8,7 @@ Este documento proporciona instrucciones para instalar la carpeta `instalacion-d
 - Tener instalado Docker y Docker Compose en el servidor.
 - Un dominio registrado que apunte a la dirección IP de tu servidor.
 
-## Paso 1: Leer el Archivo `README-DIGITAL-OCEAN.md`
+## Paso 1: Ir a la carpeta: instalacion-docker-compose-18-17 y  Leer el Archivo `README-DIGITAL-OCEAN.md`
 
 Antes de proceder con la instalación, es importante revisar el archivo `README-DIGITAL-OCEAN.md` que contiene información esencial sobre la configuración y el uso de Digital Ocean.
 
