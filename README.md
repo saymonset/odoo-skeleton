@@ -1,41 +1,55 @@
-# README para la Instalación de Docker Compose 18-17
+# Video de ayuda para debuguear con odoo
 
-Este documento proporciona instrucciones para instalar la carpeta `instalacion-docker-compose-18-17` en un servidor Digital Ocean y aplicar SSL para un solo dominio.
+https://www.youtube.com/watch?v=9qy8a5Kuq1Q
 
-## Requisitos Previos
+# VSCode + Docker para el desarrollo en Odoo con completado inteligente
+0. Create la red:    docker network create odoo_network
 
-- Tener acceso a un servidor Digital Ocean.
-- Tener instalado Docker y Docker Compose en el servidor.
-- Un dominio registrado que apunte a la dirección IP de tu servidor.
+0.1 5. Compilar la imagen de docker con el fichero Dockerfile.
+Create la imagen con docker file que la necesita docker-compose a l hora de correr.
+Sustituye la version ${ODOO_VERSION} por la que vallas usar
+  docker build -t odoodev:${ODOO_VERSION} .
 
-## Paso 1: Ir a la carpeta: instalacion-docker-compose-18-17 y  Leer el Archivo `README-DIGITAL-OCEAN.md`
+2.1. En la carpeta vscode_backup_debug, copiate el archivo launch.json  la carp[eta .vscode. Si no existe .vscode, crea esa carpeta]    
 
-Antes de proceder con la instalación, es importante revisar el archivo `README-DIGITAL-OCEAN.md` que contiene información esencial sobre la configuración y el uso de Digital Ocean.
+3. Crear el espacio de trabajo importando el código fuente de Odoo. Esta en src
+4. Configurar y modificar el fichero pyrightconfig.json para que apunte a los  fuentes de odoo y hacer debugger
+6. Configurar las variables en el .env. Si no existe, esta una copia de env copy, reemplazarla .venv y poner las variables de entorno
+8. ejecutar el docker compose con boton  derecho del raton o:  docker-compose up
+9. Ir a http://localhost:8069/ y loguearsde conmo super usuario en elogin super usuario. 
+ user: admin,  passwd: admin
 
-```bash
-cat README-DIGITAL-OCEAN.md
+
+Ejemplo:
+
+```json
+{
+  "name": "Docker Odoo Attach",
+  "type": "debugpy",
+  "request": "attach",
+  "connect": {
+    "host": "0.0.0.0",
+    "port": 8888
+  },
+  "pathMappings": [
+    {
+      "localRoot": "${workspaceFolder}/src/odoo-18/addons",
+      "remoteRoot": "/var/lib/odoo/custom_addons"
+    },
+    {
+      "localRoot": "${workspaceFolder}/src/odoo-18/addons",
+      "remoteRoot": "/var/lib/odoo/odoo/addons"
+    }
+  ]
+}
 ```
+-------Otras----------
+1. Instalar VSCode de su página oficial - <https://code.visualstudio.com>
+2. Instalar extensiones en vscode para la productividad:
 
+   - Odoo IDE
+     <https://marketplace.visualstudio.com/items?itemName=trinhanhngoc.vscode-odoo>
+   - Odoo Shortcuts
+     <https://marketplace.visualstudio.com/items?itemName=mvintg.odoo-file>
+   - Owl Vision <https://marketplace.visualstudio.com/items?itemName=Odoo.owl-vision>
 
-## Paso 2: Aplicar SSL para un Solo Dominio
-# Instrucciones para Configurar Certificados SSL
-
-Ve a la carpeta `ssl-nginx` y abre el archivo `Personalizada-good-Como+configurar+certificados+SSL+HTTPS+en+dominio+Manualmente.txt`. Allí encontrarás algunas URL útiles y las instrucciones necesarias en ese archivo.
-
-## Notas
-
-- Asegúrate de seguir todas las instrucciones cuidadosamente.
-- Si tienes alguna duda, consulta las URL proporcionadas en el archivo para obtener más ayuda.
-
-## TIPS
-
-# README para la Transferencia de Archivos Odoo
-
-Este documento proporciona instrucciones sobre cómo transferir archivos de un servidor remoto a un directorio local utilizando el comando `scp`.
-
-## Comando de Transferencia
-
-Para copiar de manera recursiva el directorio `odoo_subdominios` desde el servidor remoto a tu máquina local, utiliza el siguiente comando:
-
-```bash
-scp -r root@5.189.161.7:/root/odoo/odoo_subdominios /Users/simon/opt/odoo/odoo-skeleton
