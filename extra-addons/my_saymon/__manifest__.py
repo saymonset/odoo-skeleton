@@ -10,10 +10,16 @@
     "data": [
         "security/ir.model.access.csv",
         "views/res_partner_view_views.xml",
+        "views/sale_order_view_views.xml",
+        "views/templates.xml",
+        "views/tests_views.xml"
     ],
     'assets': {
               'web.assets_backend': [
-                  'my_saymon/static/src/**/*'
+                'my_saymon/static/src/**/*',
+              ],
+              'web.assets_frontend': [
+                  'my_saymon/static/src/**/*',
               ],
           },
     'application': True,

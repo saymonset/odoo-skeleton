@@ -29,6 +29,16 @@ services:
       - odoo_network_18    
     volumes:
       - pgdb-data:/var/lib/postgresql/data/pgdata
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: saymon_set@hotmail.com    
+      PGADMIN_DEFAULT_PASSWORD: 123456
+    ports:
+      - "8080:80"
+    depends_on:
+      - db        
+
 volumes:
   odoo-web-data:
   pgdb-data:

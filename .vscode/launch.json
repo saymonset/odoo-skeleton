@@ -2,7 +2,14 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Attach to Odoo",
+            "name": "LaunchChrome",
+            "request": "launch",
+            "type":"chrome",
+            "url":"http://localhost:8069",
+            "webRoot": "${workspaceFolder}"
+        },
+        {
+            "name": "Python:Odoo",
             "type": "debugpy",
             "request": "attach",
             "connect": {
