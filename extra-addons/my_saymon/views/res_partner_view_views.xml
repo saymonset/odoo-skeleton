@@ -4,6 +4,7 @@
     <record id="view_res_partner_view_form" model="ir.ui.view">
         <field name="name">view.res_partner_view_visibility.form</field>
         <field name="model">res.partner</field>
+        <!-- account.view_move_form -->
         <field name="inherit_id" ref="base.view_partner_form"/>
         <field name="arch" type="xml">
             <xpath expr="//notebook/page[@name='sales_purchases']/group/group[@name='sale']/field[@name='user_id']"

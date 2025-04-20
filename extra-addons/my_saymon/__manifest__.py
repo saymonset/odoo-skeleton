@@ -6,7 +6,7 @@
     'author': '',
     'website': '',
     'category': '',
-    'depends': ['base', 'web','website_sale'],
+    'depends': ['base', 'web', 'website_sale', 'sale'],
     "data": [
         "security/ir.model.access.csv",
         "views/res_partner_view_views.xml",
