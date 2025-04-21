@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<odoo>
-      <template id="custom_page">
-       <t t-call="website.layout">
-         <h1>Hola mundo</h1>
-         <owl-component name="my_saymon.Item"/>
-       </t>
-    </template>
-</odoo>
