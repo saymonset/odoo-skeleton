@@ -18,4 +18,9 @@ class Sale_order_line(models.Model):
         # Llama al método de actualización de precios en el pedido
         if self.order_id:
             self.order_id.action_update_prices()
+            # Refresca la vista del cliente
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'reload',
+            }
 

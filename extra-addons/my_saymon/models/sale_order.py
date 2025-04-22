@@ -13,55 +13,49 @@ class SaleOrder(models.Model):
     def action_update_prices(self):
         self.ensure_one()
         self.onchange_pricelist_id()
+        # Aquí puedes agregar la lógica para refrescar la vista
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'reload',
+        }
     
     @api.onchange('pricelist_id')
     def onchange_pricelist_id(self):
+        total_ref = 0.0
         for order in self:
+           
+            from_currency = order.pricelist_id.currency_id
+            to_currency = self.env['res.currency'].search([('name', '=', 'USD')], limit=1)
+            
             # Llama al método _recompute_prices para actualizar los precios
             order._recompute_prices()
             
             if order.pricelist_id:
-                # Inicializa el total de referencia
-                isDolar = True;
-                total_ref = 0.0
-                exchange_rate_to_usd = 0.0
-                exchange_rate_from_usd = 0.0
-               
-                # Actualiza los campos de referencia en las líneas de pedido
                 for line in order.order_line:
-                    # Obtiene las monedas de origen y destino
-                    from_currency = order.pricelist_id.currency_id
-                    to_currency = self.env['res.currency'].search([('name', '=', 'USD')], limit=1)
-                    # Obtiene la moneda de la lista de precios
                     currency_id = order.pricelist_id.currency_id
-                    # Obtiene el tipo de cambio para convertir a USD
-                    #exchange_rate_to_usd = self._get_exchange_rate(currency_id)
-                   # exchange_rate_from_usd = self._get_exchange_rate('USD')
                     
-                    # Calcula el precio unitario y subtotal en dólares
                     if currency_id.name != 'USD':
-                        isDolar = False
-                        # Convierte el precio unitario a USD
                         price_unit_in_usd = self.convert_price_to_currency(line.price_unit, from_currency, to_currency)
                         line.price_unit_ref = price_unit_in_usd
                         
-                        # price_unit_in_usd = line.price_unit * (exchange_rate_to_usd / exchange_rate_from_usd)
-                        # line.price_unit_ref = price_unit_in_usd
-                         # Convierte el subtotal a USD
                         price_subtotal_in_usd = self.convert_price_to_currency(line.price_subtotal, from_currency, to_currency)
                         line.price_subtotal_ref = price_subtotal_in_usd
-                        # price_subtotal_in_usd = line.price_subtotal * (exchange_rate_to_usd / exchange_rate_from_usd)
-                        # line.price_subtotal_ref = price_subtotal_in_usd
-                       # line.price_subtotal_ref = line.price_subtotal * (exchange_rate_to_usd / exchange_rate_from_usd)
-                    elif currency_id.name == 'USD':
+                        total_ref += price_subtotal_in_usd
+                        # Asigna el total de referencia al pedido
+                        order.price_total_ref = total_ref
+                    else:
                         line.price_unit_ref = line.price_unit  
-                        line.price_subtotal_ref = line.price_subtotal 
-                    if not isDolar:  
-                        # Suma el subtotal de cada línea para calcular el total de referencia
-                        total_ref += line.price_subtotal_ref
-                if not isDolar:  
-                    # Asigna el total de referencia a price_total_ref
-                    order.price_total_ref = total_ref       
+                        line.price_subtotal_ref = line.price_subtotal
+                        total_ref += line.price_subtotal
+                        # Asigna el total de referencia al pedido
+                        order.price_total_ref = total_ref
+        return {
+                'type': 'ir.actions.client',
+                'tag': 'reload',
+            }
+                
+                
+            
                 
 
     def _recompute_prices(self):
