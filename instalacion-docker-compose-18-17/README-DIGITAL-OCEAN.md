@@ -42,8 +42,12 @@
       docker exec -it odoo-18 bash
   ```
 ## 2. Navegar a la Ruta del Filestore
-     ```bash
- 
+ Esta ruta 
+ ```bash
+      cd /var/lib/odoo/.local/share/Odoo/filestore
+```
+o Esta ruta, una de las dos
+     ```bash 
       cd  /root/.local/share/Odoo/filestore  
      ```
 ## 3. salir del contenedor
@@ -52,8 +56,13 @@
       ```  
    
 ## 5. Copiar el Filestore a tu Máquina Local
+Esta ruta 
+ ```bash
+        docker cp odoo-18:/var/lib/odoo/.local/share/Odoo/filestore/db0 /Users/simon/opt/odoo/cliente/antojitos/2025-04-21/db0
+```
+o Esta ruta, una de las dos
      ```bash
-    docker cp odoo-18:/root/.local/share/Odoo/filestore/db0 /Users/simon/opt/odoo/cliente/jumpnjibe/filestore/db0
+    docker cp odoo-18:/root/.local/share/Odoo/filestore/db0 /Users/simon/opt/odoo/cliente/antojitos/2025-04-21/db0
      ```
 
 # Digital Ocean
@@ -114,13 +123,13 @@ apt install docker-compose -y
 Para copiar la carpeta en Windows, utiliza el siguiente comando:
 
 ```bash
-scp -rv docker-instalacion-18 root@143.110.226.119:/root/odoo
+scp -rv docker-instalacion-18 root@5.189.161.7:/root/odoo
 ```
 
 Linux / Mac
 Para copiar la carpeta en Linux o Mac, utiliza el siguiente comando:
 ```bash
-rsync -avz docker-instalacion-18 root@143.198.138.195:/root/odoo
+rsync -avz docker-instalacion-18 root@5.189.161.7:/root/odoo
 ```
 
 # digitl ocean . Siempre busca con password y no ssh, es menos complicado y usa este password example
@@ -136,21 +145,21 @@ rsync -avz docker-instalacion-18 root@143.198.138.195:/root/odoo
 
 # Copiar bd desde la maquina local al remoto
 ```bash windows
-scp -rv ./backup_2025_02_25_III.sql root@143.198.138.195:/root
+scp -rv ./backup_2025_02_25_III.sql root@5.189.161.7:/root
 ```
 ```bash Linux
-rsync -avz ./backup_2025_02_25_III.sql root@143.198.138.195:/root
+rsync -avz ./backup_2025_02_25_III.sql root@5.189.161.7:/root
 ```
 
 # copiar filestore de maquina local al remoto
   WINDOWS
 ```bash windows
-scp -rv ./filestore root@143.198.138.195:/root
+scp -rv ./filestore root@5.189.161.7:/root
 ```
 Linux / Mac
 Para copiar la carpeta en Linux o Mac, utiliza el siguiente comando:
 ```bash Linux
-rsync -avz ./filestore root@143.198.138.195:/root
+rsync -avz ./filestore root@5.189.161.7:/root
 ```
 # remoto . Siempre busca con password y no ssh, es menos complicado y usa este password example
 ```bash
@@ -211,7 +220,7 @@ exit
 # accedemos para que cree el filestore y luego buscar su path en docker para reemplazarlo por el backup llamado 
 # igual a la bd que se respaldo
 ```bash
-http://143.198.138.195:18069/
+http://5.189.161.7:18069/
 ```
 
 # entramos al otro contenedor a verificar el filestore, si no existe lo creamos y buscamos   en /root/.local/share/Odoo/filestore
@@ -248,7 +257,7 @@ docker cp youtubefilestore_II/. odoo-18:/root/.local/share/Odoo/filestore/db0
 ```
 # accedemos'
 ```bash
-http://143.198.138.195:18069/
+http://5.189.161.7:18069/
 ```
 # En  DNS records actualiza el A para la nueva ip del droplet a jumpjibe
 ```bash
