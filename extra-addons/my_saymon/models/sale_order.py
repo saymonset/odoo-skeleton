@@ -7,7 +7,22 @@ _logger = logging.getLogger(__name__)
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
     
-    price_total_ref = fields.Float(string='Total', digits='Product Price', default=0.0)
+       # Define a computed field for USD currency that cannot be changed
+    currency_ref = fields.Many2one('res.currency', 
+        string='Reference Currency',
+        compute='_compute_currency_ref',
+        store=True)
+
+    #price_total_ref = fields.Float(string='Total', digits='Product Price', default=0.0)
+    price_total_ref = fields.Float(
+        digits='Product Price', default=0.0,
+        string='Total Referencia',
+        compute='_compute_price_total_ref',
+        store=True,
+        currency_field='currency_ref' 
+    )
+    
+    
     
     
     def action_update_prices(self):
@@ -104,3 +119,15 @@ class SaleOrder(models.Model):
             return 1.0  # Valor por defecto si no se encuentra la moneda
  # Cambia esto por la lógica real
     
+    @api.depends('order_line.price_subtotal_ref')
+    def _compute_price_total_ref(self):
+        for order in self:
+            order.price_total_ref = sum(line.price_subtotal_ref for line in order.order_line)
+    
+    @api.depends()
+    def _compute_currency_ref(self):
+        """Always set USD as reference currency"""
+        #usd_currency = self.env.ref('base.USD')
+        usd_currency = self.env['res.currency'].search([('name', '=', 'USD')], limit=1)
+        for line in self:
+            line.currency_ref = usd_currency

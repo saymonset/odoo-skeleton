@@ -1,26 +1,63 @@
 # -*- coding: utf-8 -*-
-import logging
-
 from odoo import models, fields, api, _
-from odoo.exceptions import UserError, ValidationError
+from odoo.exceptions import ValidationError
 
-_logger = logging.getLogger(__name__)
+class SaleOrderLine(models.Model):
+    _inherit = 'sale.order.line'
 
+    # Define a computed field for USD currency that cannot be changed
+    currency_ref = fields.Many2one('res.currency', 
+        string='Reference Currency',
+        compute='_compute_currency_ref',
+        store=True)
 
-class Sale_order_line(models.Model):
-     _inherit = 'sale.order.line'
+    price_unit_ref = fields.Monetary(
+        string='Precio Unitario Ref',
+        compute='_compute_price_unit_ref',
+        store=True,
+        currency_field='currency_ref'  # Changed to use currency_ref
+    )
+    
+    price_subtotal_ref = fields.Monetary(
+        string='Subtotal Ref',
+        compute='_compute_price_subtotal_ref',
+        store=True,
+        currency_field='currency_ref'  # Changed to use currency_ref
+    )
 
-     price_unit_ref = fields.Float(string='Referencia Precio Unitario', digits='Product Price', default=0.0)
-     price_subtotal_ref = fields.Float(string='Referencia Subtotal', digits='Product Price', default=0.0)
-   
-     @api.onchange('product_id', 'product_uom_qty', 'price_unit')
-     def _onchange_order_line(self):
-        # Llama al método de actualización de precios en el pedido
-        if self.order_id:
-            self.order_id.action_update_prices()
-            # Refresca la vista del cliente
-            return {
-                'type': 'ir.actions.client',
-                'tag': 'reload',
-            }
+    @api.depends()
+    def _compute_currency_ref(self):
+        """Always set USD as reference currency"""
+        usd_currency = self.env['res.currency'].search([('name', '=', 'USD')], limit=1)
+        for line in self:
+            line.currency_ref = usd_currency
 
+    @api.depends('price_unit', 'order_id.pricelist_id.currency_id')
+    def _compute_price_unit_ref(self):
+        usd_currency = self.env['res.currency'].search([('name', '=', 'USD')], limit=1)
+        for line in self:
+            if line.order_id.pricelist_id.currency_id:
+                try:
+                    line.price_unit_ref = line.order_id.pricelist_id.currency_id._convert(
+                        line.price_unit,
+                        usd_currency,
+                        line.order_id.company_id,
+                        fields.Date.today()
+                    )
+                except Exception:
+                    line.price_unit_ref = 0.0
+
+    @api.depends('price_subtotal', 'order_id.pricelist_id.currency_id')
+    def _compute_price_subtotal_ref(self):
+        usd_currency = self.env['res.currency'].search([('name', '=', 'USD')], limit=1)
+        for line in self:
+            if line.order_id.pricelist_id.currency_id:
+                try:
+                    line.price_subtotal_ref = line.order_id.pricelist_id.currency_id._convert(
+                        line.price_subtotal,
+                        usd_currency,
+                        line.order_id.company_id,
+                        fields.Date.today()
+                    )
+                except Exception:
+                    line.price_subtotal_ref = 0.0

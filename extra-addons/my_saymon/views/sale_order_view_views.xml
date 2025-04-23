@@ -1,48 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- View sale_order_view form -->
     <record id="view_sale_order_view_form" model="ir.ui.view">
         <field name="name">view.sale_order_view.form</field>
         <field name="model">sale.order</field>
         <field name="inherit_id" ref="sale.view_order_form"/>
         <field name="arch" type="xml">
-            <!-- Agregar un título grande -->
-            <xpath expr="//header" position="inside">
-                <h1 style="font-size: 24px; color: #333;"> Título del Pedido de Ventaa</h1>
-            </xpath>
-
-             <!-- Reemplazar el campo pricelist_id -->
-            <xpath expr="//field[@name='pricelist_id']" position="replace">
-                <field name="pricelist_id" 
-                    string="cambia la moneda" 
-                    options="{'no_open': True, 'no_create': True}" 
-                    readonly="state in ['cancel', 'sale']" 
-                    onchange="action_update_prices()"/>
-            </xpath>
-
-
-            <!-- Modificar el comportamiento de la página de líneas de pedido -->
-            <xpath expr="//form/sheet/notebook/page[@name='order_lines']" position="attributes">
-                <attribute name="onchange">_onchange_order_line</attribute>
-            </xpath>
-
-           
-            <!-- Modificamos la subvista de las líneas de pedido para agregar price_unit_ref -->
             <xpath expr="//form/sheet/notebook/page[@name='order_lines']/field[@name='order_line']/list/field[@name='price_unit']" position="after">
-                <field name="price_unit_ref" string="ref"
-                attrs="{'style': 'color: red;'}"/>
+                <field name="currency_ref" invisible="1"/>
+                <field name="price_unit_ref" 
+                    string="USD Ref"
+                    widget="monetary" 
+                    options="{'currency_field': 'currency_ref'}"
+                    attrs="{'style': 'color: red;'}"
+                    force_save="1"/>
             </xpath>
 
-            <!-- Agregar price_subtotal_ref después de price_subtotal -->
             <xpath expr="//form/sheet/notebook/page[@name='order_lines']/field[@name='order_line']/list/field[@name='price_subtotal']" position="after">
-                <field name="price_subtotal_ref" string="ref"
-                attrs="{'style': 'color: red;'}"/>
+                <field name="price_subtotal_ref" 
+                    string="USD Ref"
+                    widget="monetary" 
+                    options="{'currency_field': 'currency_ref'}"
+                    attrs="{'style': 'color: red;'}"
+                    force_save="1"/>
             </xpath>
 
-            <!-- Agregar el campo price_total_ref después de tax_totals -->
             <xpath expr="//field[@name='tax_totals']" position="after">
-                <field name="price_total_ref" string="Total Referenciaxx"
-               />
+                <field name="currency_ref" invisible="1"/>
+                <field name="price_total_ref" 
+                    string="Total USD Ref" 
+                    widget="monetary" 
+                    options="{'currency_field': 'currency_ref'}"
+                    force_save="1"/>
             </xpath>
         </field>
     </record>
