@@ -6,7 +6,7 @@ class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
 
     # Define a computed field for USD currency that cannot be changed
-    currency_ref = fields.Many2one('res.currency', 
+    currency_aux = fields.Many2one('res.currency', 
         string='Reference Currency',
         compute='_compute_currency_ref',
         store=True)
@@ -15,14 +15,14 @@ class SaleOrderLine(models.Model):
         string='Precio Unitario Ref',
         compute='_compute_price_unit_ref',
         store=True,
-        currency_field='currency_ref'  # Changed to use currency_ref
+        currency_field='currency_aux'  # Changed to use currency_ref
     )
     
     price_subtotal_ref = fields.Monetary(
         string='Subtotal Ref',
         compute='_compute_price_subtotal_ref',
         store=True,
-        currency_field='currency_ref'  # Changed to use currency_ref
+        currency_field='currency_aux'  # Changed to use currency_ref
     )
 
     @api.depends()
@@ -30,7 +30,7 @@ class SaleOrderLine(models.Model):
         """Always set USD as reference currency"""
         usd_currency = self.env['res.currency'].search([('name', '=', 'USD')], limit=1)
         for line in self:
-            line.currency_ref = usd_currency
+            line.currency_aux = usd_currency
 
     @api.depends('price_unit', 'order_id.pricelist_id.currency_id')
     def _compute_price_unit_ref(self):
