@@ -33,6 +33,8 @@ class Hostel(models.Model):
                                  digits='Rating Value' # Method 2
                                  )
     category_id = fields.Many2one('hostel.category')
+    rector = fields.Many2one("res.partner", "Rector",
+        help="Select hostel rector")
     ref_doc_id = fields.Reference(selection='_referencable_models', string='Reference Document')
     rector = fields.Many2one("res.partner", "Rector",
         help="Select hostel rector")

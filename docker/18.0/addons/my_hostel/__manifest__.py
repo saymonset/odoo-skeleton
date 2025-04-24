@@ -11,7 +11,7 @@ Efficiently manage the entire residential facility in the school
     "category": "Tools",
     "website": "http://www.serpentcs.com",
     "license": "AGPL-3",
-    "depends": ["base"],
+    "depends": ["base","website"],
     "data": [
         "security/hostel_security.xml",
         "security/ir.model.access.csv",
@@ -23,7 +23,8 @@ Efficiently manage the entire residential facility in the school
         "views/hostel_student.xml",
         "views/hostel_categ.xml",
         'views/hostel_room_category_view.xml',
-         'views/res_config_settings_views.xml'
+         'views/res_config_settings_views.xml',
+         'views/templates.xml'
     ],
     # This demo data files will be loaded if db initialize with demo data (commented because file is not added in this example)
     # 'demo': [
