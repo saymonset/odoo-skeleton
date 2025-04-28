@@ -38,20 +38,22 @@ class SaleOrder(models.Model):
     def onchange_pricelist_id(self):
         total_ref = 0.0
         for order in self:
-           
+            #Recuperamos la moneda actual de la orden
             from_currency = order.pricelist_id.currency_id
+            #Buscamos la moneda USD
             to_currency = self.env['res.currency'].search([('name', '=', 'USD')], limit=1)
-            
             # Llama al método _recompute_prices para actualizar los precios
             order._recompute_prices()
-            
+            #Si hay un valor valido en el campo pricelist_id que es el select para escojer moneda entonces
             if order.pricelist_id:
+                #Buscamos cada linea de orden 
                 for line in order.order_line:
                     currency_id = order.pricelist_id.currency_id
                     
                     if currency_id.name != 'USD':
-                        price_unit_in_usd = self.convert_price_to_currency(line.price_unit, from_currency, to_currency)
-                        line.price_unit_ref = price_unit_in_usd
+                        #Clculamos el valor en USD de precio unitario y lo colocamos en price_unit_ref
+                        line.price_unit_ref =self.convert_price_to_currency(line.price_unit, from_currency, to_currency)
+                       # line.price_unit_ref = price_unit_in_usd
                         
                         price_subtotal_in_usd = self.convert_price_to_currency(line.price_subtotal, from_currency, to_currency)
                         line.price_subtotal_ref = price_subtotal_in_usd
