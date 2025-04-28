@@ -5,7 +5,7 @@
             <!-- Input para ingresar un número -->
              <t t-if="state.hasData">
                 <div class="payment-infos d-flex align-items-center justify-content-between flex-grow-1 px-3 py-3 text-truncate cursor-pointer fs-2">
-                    <span class="payment-name">RefWeSaymons</span>
+                    <span class="payment-name">Ref</span>
                     <div class="payment-amount px-3">
                         <input type="number" id="numberInput" class="form-control border-0 border-bottom" style="border-bottom: 2px solid #000;"
                          t-on-input="onInputChange" />
