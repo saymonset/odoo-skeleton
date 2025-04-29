@@ -16,7 +16,6 @@
                     <div class="payment-amount px-3">
                         <!-- Ensure state.result is properly formatted -->
                         <t t-esc="env.utils.formatCurrency(state.result)" />
-                        <t t-esc="env.utils.formatCurrency(state.result)" />
                     </div>
                 </div>
             </t>

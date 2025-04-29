@@ -53,8 +53,8 @@ async onInputChange(event) {
     const inputValue = parseFloat(event.target.value) || 0; // Captura el valor del input
     console.log("Valor ingresado:", inputValue);
 
-    const fromCurrency = "VEF"; // Moneda de origen
-    const toCurrency = "USD"; // Moneda de destino
+    const fromCurrency = "USD"; // Moneda de origen
+    const toCurrency = "VEF"; // Moneda de destino
 
     try {
         const response = await fetch(`${CONFIG.API_URL}/convert_price`, {
@@ -80,6 +80,7 @@ async onInputChange(event) {
             this.state.result = 0; // Set a default value to avoid errors
         } else {
             this.state.result = parseFloat(result.converted_price) || 0; // Ensure the result is a valid number
+            this.updateLastPaymentLine(this.state.result); // Manually trigger the update
             console.log("Precio convertido:", this.state.result);
         }
     } catch (error) {
@@ -89,35 +90,7 @@ async onInputChange(event) {
 }
 
 
-async onInputChangeXX(event) {
-    const inputValue = parseFloat(event.target.value) || 0; // Captura el valor del input
-    console.log("Valor ingresado:", inputValue);
-
-    // Llamada al backend para convertir el precio
-    const fromCurrency = "EUR"; // Ejemplo: Moneda de origen
-    const toCurrency = "USD"; // Ejemplo: Moneda de destino
-
-    try {
-        const convertedPrice = await this.rpc({
-            model: "sale.order",
-            method: "convert_price_to_currency",
-            args: [inputValue, fromCurrency, toCurrency],
-        });
-
-        this.state.result = convertedPrice; // Actualiza el estado con el precio convertido
-        console.log("Precio convertido:", convertedPrice);
-    } catch (error) {
-        console.error("Error al convertir el precio:", error);
-    }
-}
-
-  // Función para manejar el evento input
-  onInputChangexx(event) {
-    const inputValue = parseFloat(event.target.value) || 0; // Captura el valor del input
-    this.state.result = inputValue * 62; // Multiplica el valor por 62
-    console.log("Resultado actualizado:", this.state.result); // Muestra el resultado en la consola
-}
-
+ 
 // calculateAmountSaymon(line) {
 //     // Lógica personalizada para calcular el campo en el frontend (si es necesario)
 //     return line.get_amount() * 62; // Ejemplo: multiplicar por 1.5
