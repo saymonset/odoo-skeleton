@@ -9,5 +9,16 @@ patch(PaymentScreenPaymentLines, {
     },
     setup() {
         this._super(); // Call the original setup method
+        // Define el método deleteLineWithStateUpdate
+        // this.deleteLineWithStateUpdate = (uuid) => {
+        //     console.log("Llamando a deleteLineWithStateUpdate con UUID:", uuid);
+
+        //     // Llama al método original deleteLine si está disponible
+        //     if (typeof this.props.deleteLine === "function") {
+        //         this.props.deleteLine(uuid);
+        //     } else {
+        //         console.error("deleteLine no está definido en las propiedades del componente padre.");
+        //     }
+        // };
     },
     });

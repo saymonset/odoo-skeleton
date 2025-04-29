@@ -7,8 +7,10 @@
         <xpath expr="//div[@class='paymentlines d-flex flex-column overflow-y-auto gap-1']" position="before">
             <CustomPaymentLinesCustomization
                 paymentLines="props.paymentLines" 
+                order="props.order" 
             />
         </xpath>
+       
     </t>
 </templates>
-
+ 
