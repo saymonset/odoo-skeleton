@@ -105,6 +105,7 @@ onBlur(event){
 }
 
 async onInputChange(event) {
+     
     const inputValue = parseFloat(event.target.value) || 0; // Captura el valor del input
     this.state.inputValue=inputValue;
     let fromCurrency =  this.state.selectedCurrency ==="USD"? "USD" :"VEF"; // Moneda de origen

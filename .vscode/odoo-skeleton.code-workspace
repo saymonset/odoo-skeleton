@@ -1,0 +1,12 @@
+{
+	"folders": [
+		{
+			"path": "..",
+			"name": "Odoo 18"
+		}
+	],
+	"settings": {
+		"editor.fontSize": 20,
+		"editor.tabSize": 4
+	}
+}
