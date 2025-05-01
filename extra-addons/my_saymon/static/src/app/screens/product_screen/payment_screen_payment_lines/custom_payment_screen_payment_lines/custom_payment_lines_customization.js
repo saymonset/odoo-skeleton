@@ -2,7 +2,7 @@
 import { _t } from "@web/core/l10n/translation";
 import { Component, useState, onRendered, onWillUpdateProps, useRef } from "@odoo/owl";
 import { CONFIG } from "@my_saymon/config";
-
+import {  paymentService } from "@my_saymon/app/screens/conversion_service";
 
 export class CustomPaymentLinesCustomization extends Component {
     static template = "my_saymon.Custom_payment_lines_customization";
@@ -33,12 +33,14 @@ export class CustomPaymentLinesCustomization extends Component {
       
         this.numberInputRef = useRef("numberInput");
         const hasData = this.props.paymentLines && this.props.paymentLines.length > 0;
+        const paymentMethodName = paymentService.getPaymentMethodName();
         this.state = useState({
             result: 0,
             hasData,
             inputValue: 0,
             ref_label: CONFIG.REF_LABEL,
             selectedCurrency: "USD",
+            paymentMethodName
         });
 
         console.log("********Payment lines recibidas:", this.props.paymentLines || []);
@@ -47,6 +49,7 @@ export class CustomPaymentLinesCustomization extends Component {
             if (this.props.paymentLines && this.props.paymentLines.length > 0) {
                 this.updateHasData(this.props.paymentLines);
             }
+            this.state.paymentMethodName = paymentService.getPaymentMethodName();
         });
 
         onWillUpdateProps((nextProps) => {
