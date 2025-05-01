@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <templates xml:space="preserve">
     <t t-name="my_saymon.Custom_payment_lines_customization">
-     <div class="paymentlines d-flex flex-column overflow-y-auto gap-1">
+        <div class="paymentlines d-flex flex-column overflow-y-auto gap-1">
             <!-- Input para ingresar un número -->
             <t t-if="state.hasData">
                 <div class="payment-infos d-flex align-items-center justify-content-end flex-grow-1 px-3 py-3 text-truncate cursor-pointer fs-2">
@@ -23,29 +23,10 @@
                     <span class="payment-name"></span>
                     <div class="payment-amount px-3">
                         <!-- Ensure state.result is properly formatted -->
-                        <t t-esc="env.utils.formatCurrency(state.result)" />
+                        <!-- <t t-esc="env.utils.formatCurrency(state.result)" /> -->
                     </div>
                 </div>
             </t>
-            <!-- <t t-if="props.paymentLines">
-                 <t t-foreach="props.paymentLines" t-as="line" t-key="line.uuid">
-                    <div class="custom-line d-flex align-items-center justify-content-between">
-                        <span class="payment-name"><t t-esc="line.payment_method_id.name" /></span>
-                        <div class="payment-amount px-3">
-                            <t t-esc="env.utils.formatCurrency(line.get_amount())" />
-                        </div>
-                        <button class="delete-button btn btn-link mx-2 px-3"
-                            t-on-click="() => this.deleteLineWithStateUpdate(line.uuid)"
-                            aria-label="Delete" title="Delete">
-                            <i class="oi oi-close text-danger" />
-                        </button>
-                    </div>
-                </t> 
-                 
-            </t>
-            <t t-else="">
-                <div>No payment lines available</div>
-            </t> -->
-        </div>
+          </div>
     </t>
 </templates>
