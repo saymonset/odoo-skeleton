@@ -10,7 +10,6 @@
     'version': '18.0',
     "data": [
         "security/ir.model.access.csv",
-        "views/pos_payment_screen_views.xml",
         "views/res_partner_view_views.xml",
         "views/sale_order_view_views.xml"
     ],
