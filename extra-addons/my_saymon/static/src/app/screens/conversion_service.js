@@ -25,13 +25,25 @@ export function useConversionService() {
   // paymentService.js
 export const paymentService = {
   paymentMethodName: '',
-  
+  listeners: [], // Array para almacenar los listeners
+
   setPaymentMethodName(name) {
       this.paymentMethodName = name;
+      this.notifyListeners(); // Notifica a los listeners cuando cambia el nombre
   },
 
   getPaymentMethodName() {
       return this.paymentMethodName;
+  },
+
+  // Método para agregar listeners
+  addListener(callback) {
+      this.listeners.push(callback);
+  },
+
+  // Método para notificar a todos los listeners
+  notifyListeners() {
+      this.listeners.forEach(callback => callback(this.paymentMethodName));
   }
 };
   

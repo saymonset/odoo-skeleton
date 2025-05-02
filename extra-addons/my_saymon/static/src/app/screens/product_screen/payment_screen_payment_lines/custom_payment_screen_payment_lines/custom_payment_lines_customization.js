@@ -45,6 +45,14 @@ export class CustomPaymentLinesCustomization extends Component {
 
         console.log("********Payment lines recibidas:", this.props.paymentLines || []);
 
+         // Agregar un listener para cambios en el método de pago
+         paymentService.addListener((newPaymentMethodName) => {
+            if (newPaymentMethodName !== this.state.paymentMethodName) {
+                this.state.paymentMethodName = newPaymentMethodName; // Actualiza el estado
+                this.updateLastPaymentLine(this.state.result); // Llama a updateLastPaymentLine si ha cambiado
+            }
+        });
+
         onRendered(() => {
             if (this.props.paymentLines && this.props.paymentLines.length > 0) {
                 this.updateHasData(this.props.paymentLines);
@@ -57,6 +65,12 @@ export class CustomPaymentLinesCustomization extends Component {
                 this.updateHasData(nextProps.paymentLines);
             } else {
                 console.warn("No se recibieron nuevas líneas de pago.");
+            }
+              // Verifica si el método de pago ha cambiado
+            const newPaymentMethodName = paymentService.getPaymentMethodName();
+            if (newPaymentMethodName !== this.state.paymentMethodName) {
+                this.state.paymentMethodName = newPaymentMethodName; // Actualiza el estado
+                this.updateLastPaymentLine(this.state.result); // Llama a updateLastPaymentLine si ha cambiado
             }
         });
     }
@@ -127,7 +141,18 @@ async calculo(inputValue, fromCurrency){
 updateLastPaymentLine(newValue) {
     if (this.props.paymentLines && this.props.paymentLines.length > 0) {
         const lastLine = this.props.paymentLines[this.props.paymentLines.length - 1];
-        lastLine.amount = newValue; // Update the value of the last element
+        //Secaldula el igtf
+        debugger
+        const igtf = Number(CONFIG.IGTF);
+        if (this.state.paymentMethodName.toUpperCase() === 'IGTF') {
+          //  lastLine.amount = ((igtf / 100) * lastLine.amount ) * -1 // Update the value of the last element
+        }else{
+            lastLine.amount = newValue; // Update the value of the last element
+        }
+        
+
+
+      
         console.log("Última línea actualizada:", lastLine);
     } else {
         console.warn("No payment lines available to update.");

@@ -25,6 +25,28 @@ patch(PaymentScreen.prototype, {
 
         // Llama al método original para que continúe con su funcionalidad
         originalAddNewPaymentLine.call(this, paymentMethod);
+
+        debugger
+        // Verifica si el método de pago es IGTF y aplica el 30%
+        if (paymentMethod.name.toUpperCase() === 'IGTF') {
+          // Obtén la última línea de pago
+          const paymentLines = this.paymentLines;
+          if (paymentLines.length > 0) {
+              const lastLine = paymentLines[paymentLines.length - 1];
+              
+              // Calcula el 30% del monto original
+              const igtf = 30; // Asegúrate de que IGTF esté definido en tu configuración
+             // const additionalAmount = (igtf / 100) * Math.abs(lastLine.amount);
+             
+              
+              // Ajusta el monto de la última línea de pago
+              paymentMethod.name = paymentMethod.name + ` (${igtf}%)`;
+              lastLine.amount = ((igtf / 100) * lastLine.amount ) * -1 // Update the value of the last element
+             // lastLine.amount = lastLine.amount - additionalAmount;
+          }
+      }
+
+    //  return result;
     },
 
      
