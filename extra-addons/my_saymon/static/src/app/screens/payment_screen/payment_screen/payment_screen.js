@@ -11,7 +11,6 @@ const originalAddNewPaymentLine = PaymentScreen.prototype.addNewPaymentLine;
 patch(PaymentScreen.prototype, {
   setup() {
     super.setup(...arguments);
-   // debugger
     // Llama a setup del componente original
     const env = useEnv();
     this.igtfValue = 0; // Inicializa el valor del IGTF
@@ -65,7 +64,7 @@ patch(PaymentScreen.prototype, {
         // Llama al método original para que continúe con su funcionalidad
         originalAddNewPaymentLine.call(this, paymentMethod);
 
-        debugger
+        
         // Verifica si el método de pago es IGTF y aplica el 30%
         if (paymentMethod.is_igtf) {
            // Obtén el valor del IGTF desde la base de datos
