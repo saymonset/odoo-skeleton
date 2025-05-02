@@ -29,6 +29,10 @@ patch(PaymentScreen.prototype, {
        // debugger
         // Verifica si el método de pago es IGTF y aplica el 30%
         if (paymentMethod.name.toUpperCase() === 'IGTF') {
+          debugger
+           // Obtén el valor del IGTF desde la base de datos
+           const env = useEnv();
+           const { rpc } = env.services;
           // Obtén la última línea de pago
           const paymentLines = this.paymentLines;
           if (paymentLines.length > 0) {

@@ -142,7 +142,7 @@ updateLastPaymentLine(newValue) {
     if (this.props.paymentLines && this.props.paymentLines.length > 0) {
         const lastLine = this.props.paymentLines[this.props.paymentLines.length - 1];
         //Secaldula el igtf
-        debugger
+      //  debugger
         const igtf = Number(CONFIG.IGTF);
         if (this.state.paymentMethodName.toUpperCase() === 'IGTF') {
           //  lastLine.amount = ((igtf / 100) * lastLine.amount ) * -1 // Update the value of the last element
