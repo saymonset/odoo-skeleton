@@ -26,7 +26,7 @@ patch(PaymentScreen.prototype, {
         // Llama al método original para que continúe con su funcionalidad
         originalAddNewPaymentLine.call(this, paymentMethod);
 
-        debugger
+       // debugger
         // Verifica si el método de pago es IGTF y aplica el 30%
         if (paymentMethod.name.toUpperCase() === 'IGTF') {
           // Obtén la última línea de pago
