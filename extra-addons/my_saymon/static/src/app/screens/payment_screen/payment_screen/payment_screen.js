@@ -2,17 +2,43 @@
 
 import { patch } from '@web/core/utils/patch';
 import { PaymentScreen } from "@point_of_sale/app/screens/payment_screen/payment_screen";
-import { useEnv, useState } from "@odoo/owl";
+import { useEnv, useState, onMounted } from "@odoo/owl";
 import {  paymentService } from "@my_saymon/app/screens/conversion_service";
 
 // Guarda una referencia al método original
 const originalAddNewPaymentLine = PaymentScreen.prototype.addNewPaymentLine;
 
 patch(PaymentScreen.prototype, {
+  setup() {
+    super.setup(...arguments);
+   // debugger
+    // Llama a setup del componente original
+    const env = useEnv();
+    this.igtfValue = 0; // Inicializa el valor del IGTF
+
+    // Obtén el valor del IGTF desde la base de datos
+    const { rpc } = env.services;
+
+    onMounted(() => {
+        // const pendingPaymentLine = this.currentOrder.payment_ids.find(
+        //     (paymentLine) =>
+        //         paymentLine.payment_method_id.use_payment_terminal === "adyen" &&
+        //         !paymentLine.is_done() &&
+        //         paymentLine.get_payment_status() !== "pending"
+        // );
+        // if (!pendingPaymentLine) {
+        //     return;
+        // }
+        // pendingPaymentLine.payment_method_id.payment_terminal.set_most_recent_service_id(
+        //     pendingPaymentLine.terminalServiceId
+        // );
+    });
+},
+    
     /**
      * Sobrescribimos el método para agregar un manejador de clic personalizado.
      */
-    addNewPaymentLine(paymentMethod) {
+   async addNewPaymentLine(paymentMethod) {
      //   debugger
         // const env = useEnv();
         // this.conversionService =  useState(env.conversionService);
@@ -31,8 +57,8 @@ patch(PaymentScreen.prototype, {
         if (paymentMethod.name.toUpperCase() === 'IGTF') {
           debugger
            // Obtén el valor del IGTF desde la base de datos
-           const env = useEnv();
-           const { rpc } = env.services;
+          //  const env = useEnv();
+          //  const { rpc } = env.services;
           // Obtén la última línea de pago
           const paymentLines = this.paymentLines;
           if (paymentLines.length > 0) {
