@@ -47,6 +47,8 @@ async deletePaymentLine(uuid) {
               // Elimina la línea de pago
               this.currentOrder.remove_paymentline(line);
               this.numberBuffer.reset();
+               // Actualiza el nombre del método de pago en el servicio
+               paymentService.setPaymentMethodName("");
           },
       });
   }

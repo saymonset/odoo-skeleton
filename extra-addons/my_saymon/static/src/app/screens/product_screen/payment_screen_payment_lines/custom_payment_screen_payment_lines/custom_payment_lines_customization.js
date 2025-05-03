@@ -33,14 +33,14 @@ export class CustomPaymentLinesCustomization extends Component {
       
         this.numberInputRef = useRef("numberInput");
         const hasData = this.props.paymentLines && this.props.paymentLines.length > 0;
-        const paymentMethodName = paymentService.getPaymentMethodName();
+      //  const paymentMethodName = paymentService.getPaymentMethodName();
         this.state = useState({
             result: 0,
             hasData,
             inputValue: 0,
             ref_label: CONFIG.REF_LABEL,
             selectedCurrency: "USD",
-            paymentMethodName
+            paymentMethodName: paymentService.getPaymentMethodName()
         });
 
         console.log("********Payment lines recibidas:", this.props.paymentLines || []);
@@ -60,12 +60,13 @@ export class CustomPaymentLinesCustomization extends Component {
             } else {
                 console.warn("No se recibieron nuevas líneas de pago.");
             }
-              // Verifica si el método de pago ha cambiado
-            // const newPaymentMethodName = paymentService.getPaymentMethodName();
-            // if (newPaymentMethodName !== this.state.paymentMethodName) {
-            //     this.state.paymentMethodName = newPaymentMethodName; // Actualiza el estado
-            //     this.updateLastPaymentLine(this.state.result); // Llama a updateLastPaymentLine si ha cambiado
-            // }
+
+            // Escuchar cambios en el nombre del método de pago
+        const newPaymentMethodName = paymentService.getPaymentMethodName();
+        if (newPaymentMethodName !== this.state.paymentMethodName) {
+            this.state.paymentMethodName = newPaymentMethodName; // Actualiza el estado
+           // this.updateLastPaymentLine(this.state.result); // Llama a updateLastPaymentLine si ha cambiado
+        }
         });
     }
 
