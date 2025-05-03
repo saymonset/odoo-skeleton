@@ -4,6 +4,10 @@ import { patch } from '@web/core/utils/patch';
 import { PaymentScreen } from "@point_of_sale/app/screens/payment_screen/payment_screen";
 import { useEnv, useState, onMounted } from "@odoo/owl";
 import {  paymentService } from "@my_saymon/app/screens/conversion_service";
+import { ConfirmationDialog } from "@web/core/confirmation_dialog/confirmation_dialog";
+import { _t } from "@web/core/l10n/translation";
+
+
 
 // Guarda una referencia al método original
 const originalAddNewPaymentLine = PaymentScreen.prototype.addNewPaymentLine;
@@ -11,51 +15,47 @@ const originalAddNewPaymentLine = PaymentScreen.prototype.addNewPaymentLine;
 patch(PaymentScreen.prototype, {
   setup() {
     super.setup(...arguments);
-    // Llama a setup del componente original
-    const env = useEnv();
-    this.igtfValue = 0; // Inicializa el valor del IGTF
-
-    // Obtén el valor del IGTF desde la base de datos
-    const { rpc } = env.services;
 
     onMounted(() => {
-        // const pendingPaymentLine = this.currentOrder.payment_ids.find(
-        //     (paymentLine) =>
-        //         paymentLine.payment_method_id.use_payment_terminal === "adyen" &&
-        //         !paymentLine.is_done() &&
-        //         paymentLine.get_payment_status() !== "pending"
-        // );
-        // if (!pendingPaymentLine) {
-        //     return;
-        // }
-        // pendingPaymentLine.payment_method_id.payment_terminal.set_most_recent_service_id(
-        //     pendingPaymentLine.terminalServiceId
-        // );
     });
+},
+
+async deletePaymentLine(uuid) {
+  // Llama al método original para mantener la funcionalidad existente
+  const line = this.paymentLines.find((line) => line.uuid === uuid);
+  
+  // Agrega tu lógica adicional aquí
+  if (line) {
+      // Ejemplo: Mostrar un mensaje de confirmación antes de eliminar
+      this.dialog.add(ConfirmationDialog, {
+          title: _t("Confirm Deletion"),
+          body: _t("Are you sure you want to delete this payment line?"),
+          confirm: async () => {
+              // Si el método de pago es QR Code, maneja la eliminación
+              if (line.payment_method_id.payment_method_type === "qr_code") {
+                  this.currentOrder.remove_paymentline(line);
+                  this.numberBuffer.reset();
+                  return;
+              }
+
+              // Manejo de cancelación para pagos en espera
+              if (["waiting", "waitingCard", "timeout"].includes(line.get_payment_status())) {
+                  line.set_payment_status("waitingCancel");
+                  await line.payment_method_id.payment_terminal.send_payment_cancel(this.currentOrder, uuid);
+              }
+
+              // Elimina la línea de pago
+              this.currentOrder.remove_paymentline(line);
+              this.numberBuffer.reset();
+          },
+      });
+  }
 },
     
     /**
      * Sobrescribimos el método para agregar un manejador de clic personalizado.
      */
    async addNewPaymentLine(paymentMethod) {
-        // Calcula el 30% del monto original
-       // let igtf = 0; // Asegúrate de que IGTF esté definido en tu configuración
-        // Imprimir toda la información del método de pago
-         console.log('Método de Pago Completo:', paymentMethod);
-         console.log('Propiedades del Método de Pago:', Object.keys(paymentMethod));
-
-        // // Verificar si is_igtf existe
-        // if (paymentMethod.is_igtf !== undefined) {
-        //     console.log('Es IGTF:', paymentMethod.is_igtf);
-        //     console.log('Porcentaje IGTF:', paymentMethod.igtf_percentage);
-        // } else {
-        //     console.warn('El campo is_igtf no está presente en el método de pago');
-        // }
-        // // Verifica si el método de pago es IGTF
-        // if (paymentMethod.is_igtf) {
-        //   igtf = paymentMethod.igtf_percentage || 0; 
-        // }
-        
         // Imprime el nombre del método de pago seleccionado en la consola
         console.log(`Método de pago seleccionado: ${paymentMethod.name}`);
           // Guarda el nombre del método de pago en el servicio
@@ -63,26 +63,22 @@ patch(PaymentScreen.prototype, {
 
         // Llama al método original para que continúe con su funcionalidad
         originalAddNewPaymentLine.call(this, paymentMethod);
-
         
         // Verifica si el método de pago es IGTF y aplica el 30%
         if (paymentMethod.is_igtf) {
-           // Obtén el valor del IGTF desde la base de datos
-          //  const env = useEnv();
-          //  const { rpc } = env.services;
           // Obtén la última línea de pago
           const paymentLines = this.paymentLines;
           if (paymentLines.length > 0) {
-              const lastLine = paymentLines[paymentLines.length - 1];
-              // Ajusta el monto de la última línea de pago
-              paymentMethod.name = paymentMethod.name + ` (${paymentMethod.igtf_percentage}%)`;
-              lastLine.amount = (( paymentMethod.igtf_percentage / 100) * lastLine.amount ) * -1 // Update the value of the last element
+              // Supongamos que paymentMethod es un objeto que ya existe
+            const percentageString = ` (${paymentMethod.igtf_percentage}%)`;
+              // Verifica si el nombre ya contiene la concatenación
+            if (!paymentMethod.name.includes(percentageString)) {
+              // Si no está presente, concatena el porcentaje al nombre
+              paymentMethod.name += percentageString;
+            }
+            const lastLine = paymentLines[paymentLines.length - 1];
+            lastLine.amount = (( paymentMethod.igtf_percentage / 100) * lastLine.amount ) * -1 // Update the value of the last element
           }
       }
-
-    //  return result;
     },
-
-     
-     
 });

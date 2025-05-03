@@ -45,13 +45,7 @@ export class CustomPaymentLinesCustomization extends Component {
 
         console.log("********Payment lines recibidas:", this.props.paymentLines || []);
 
-         // Agregar un listener para cambios en el método de pago
-         paymentService.addListener((newPaymentMethodName) => {
-            if (newPaymentMethodName !== this.state.paymentMethodName) {
-                this.state.paymentMethodName = newPaymentMethodName; // Actualiza el estado
-                this.updateLastPaymentLine(this.state.result); // Llama a updateLastPaymentLine si ha cambiado
-            }
-        });
+       
 
         onRendered(() => {
             if (this.props.paymentLines && this.props.paymentLines.length > 0) {
@@ -67,11 +61,11 @@ export class CustomPaymentLinesCustomization extends Component {
                 console.warn("No se recibieron nuevas líneas de pago.");
             }
               // Verifica si el método de pago ha cambiado
-            const newPaymentMethodName = paymentService.getPaymentMethodName();
-            if (newPaymentMethodName !== this.state.paymentMethodName) {
-                this.state.paymentMethodName = newPaymentMethodName; // Actualiza el estado
-                this.updateLastPaymentLine(this.state.result); // Llama a updateLastPaymentLine si ha cambiado
-            }
+            // const newPaymentMethodName = paymentService.getPaymentMethodName();
+            // if (newPaymentMethodName !== this.state.paymentMethodName) {
+            //     this.state.paymentMethodName = newPaymentMethodName; // Actualiza el estado
+            //     this.updateLastPaymentLine(this.state.result); // Llama a updateLastPaymentLine si ha cambiado
+            // }
         });
     }
 
@@ -149,10 +143,6 @@ updateLastPaymentLine(newValue) {
         }else{
             lastLine.amount = newValue; // Update the value of the last element
         }
-        
-
-
-      
         console.log("Última línea actualizada:", lastLine);
     } else {
         console.warn("No payment lines available to update.");
