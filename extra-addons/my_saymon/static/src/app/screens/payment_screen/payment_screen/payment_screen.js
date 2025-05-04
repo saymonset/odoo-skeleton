@@ -49,6 +49,7 @@ async deletePaymentLine(uuid) {
               this.numberBuffer.reset();
                // Actualiza el nombre del método de pago en el servicio
                paymentService.setPaymentMethodName("");
+               paymentService.is_igtf=false;
           },
       });
   }
@@ -62,6 +63,7 @@ async deletePaymentLine(uuid) {
         console.log(`Método de pago seleccionado: ${paymentMethod.name}`);
           // Guarda el nombre del método de pago en el servicio
         paymentService.setPaymentMethodName(paymentMethod.name);
+        paymentService.is_igtf=paymentMethod.is_igtf;
 
         // Llama al método original para que continúe con su funcionalidad
         originalAddNewPaymentLine.call(this, paymentMethod);

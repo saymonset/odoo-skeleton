@@ -40,7 +40,8 @@ export class CustomPaymentLinesCustomization extends Component {
             inputValue: 0,
             ref_label: CONFIG.REF_LABEL,
             selectedCurrency: "USD",
-            paymentMethodName: paymentService.getPaymentMethodName()
+            paymentMethodName: paymentService.getPaymentMethodName(),
+            is_igtf: paymentService.is_igtf,
         });
 
         console.log("********Payment lines recibidas:", this.props.paymentLines || []);
@@ -52,6 +53,7 @@ export class CustomPaymentLinesCustomization extends Component {
                 this.updateHasData(this.props.paymentLines);
             }
             this.state.paymentMethodName = paymentService.getPaymentMethodName();
+            this.state.is_igtf = paymentService.is_igtf;
         });
 
         onWillUpdateProps((nextProps) => {
@@ -65,6 +67,7 @@ export class CustomPaymentLinesCustomization extends Component {
         const newPaymentMethodName = paymentService.getPaymentMethodName();
         if (newPaymentMethodName !== this.state.paymentMethodName) {
             this.state.paymentMethodName = newPaymentMethodName; // Actualiza el estado
+            this.state.is_igtf = paymentService.is_igtf; // Actualiza el estado
            // this.updateLastPaymentLine(this.state.result); // Llama a updateLastPaymentLine si ha cambiado
         }
         });
@@ -137,9 +140,8 @@ updateLastPaymentLine(newValue) {
     if (this.props.paymentLines && this.props.paymentLines.length > 0) {
         const lastLine = this.props.paymentLines[this.props.paymentLines.length - 1];
         //Secaldula el igtf
-      //  debugger
-        const igtf = Number(CONFIG.IGTF);
-        if (this.state.paymentMethodName.toUpperCase() === 'IGTF') {
+     //   debugger
+        if (this.state.is_igtf) {
           //  lastLine.amount = ((igtf / 100) * lastLine.amount ) * -1 // Update the value of the last element
         }else{
             lastLine.amount = newValue; // Update the value of the last element
