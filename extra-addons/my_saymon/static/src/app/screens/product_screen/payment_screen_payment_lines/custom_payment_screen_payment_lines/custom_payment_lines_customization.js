@@ -3,6 +3,7 @@ import { _t } from "@web/core/l10n/translation";
 import { Component, useState, onRendered, onWillUpdateProps, useRef } from "@odoo/owl";
 import { CONFIG } from "@my_saymon/config";
 import {  paymentService } from "@my_saymon/app/screens/conversion_service";
+import { convertCurrency } from "@my_saymon/currencyConverter"; 
 
 export class CustomPaymentLinesCustomization extends Component {
     static template = "my_saymon.Custom_payment_lines_customization";
@@ -27,7 +28,7 @@ export class CustomPaymentLinesCustomization extends Component {
     };
 
     setup() {
-      //  debugger
+      //  
         super.setup();
     
       
@@ -79,7 +80,13 @@ async onCurrencyChange(event) {
     // Actualiza el estado
     this.state.selectedCurrency = newCurrency;
     let fromCurrency =  this.state.selectedCurrency ==="USD"? "USD" :"VEF"; // Moneda de origen
-    this.calculo(this.state.inputValue, fromCurrency)
+   // this.calculo(this.state.inputValue, fromCurrency);
+ 
+   
+    const ref = await convertCurrency(this.state.inputValue, fromCurrency);
+     this.state.result = ref; // Actualiza el resultado
+     this.updateLastPaymentLine(ref);
+     
 }
 onBlur(event){
     const inputElement = this.numberInputRef.el; // Accede al elemento del DOM
@@ -95,52 +102,20 @@ async onInputChange(event) {
     const inputValue = parseFloat(event.target.value) || 0; // Captura el valor del input
     this.state.inputValue=inputValue;
     let fromCurrency =  this.state.selectedCurrency ==="USD"? "USD" :"VEF"; // Moneda de origen
-    this.calculo( this.state.inputValue, fromCurrency);
+   // this.calculo( this.state.inputValue, fromCurrency);
+     // Obtener el tipo de cambio
+     
+    const ref =  await convertCurrency(this.state.inputValue, fromCurrency) ;
+    this.state.result = ref; // Actualiza el resultado
+    this.updateLastPaymentLine(ref); // Llama a updateLastPaymentLine con el nuevo valor
 }
-
-async calculo(inputValue, fromCurrency){
-    //No vamos a llevar de VEF a USD
-    let toCurrency   =  fromCurrency ==="VEF"?  "USD":"VEF"; // Moneda de destino
-    //Siempore la vamos a llevar en VEF
-    toCurrency ="VEF"
-    try {
-        const response = await fetch(`${CONFIG.API_URL}/convert_price`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                price_unit: inputValue,
-                from_currency: fromCurrency,
-                to_currency: toCurrency,
-            }),
-        });
-
-        if (!response.ok) {
-            throw new Error(`Error en la solicitud: ${response.statusText}`);
-        }
-
-        const data = await response.json();
-        const {result} =data;
-        if (data.error) {
-            console.error("Error en la conversión:", data.error);
-            this.state.result = 0; // Set a default value to avoid errors
-        } else {
-            this.state.result = parseFloat(result.converted_price) || 0; // Ensure the result is a valid number
-            this.updateLastPaymentLine(this.state.result); // Manually trigger the update
-            console.log("Precio convertido:", this.state.result);
-        }
-    } catch (error) {
-        console.error("Error al convertir el precio:", error);
-        this.state.result = 0; // Set a default value to avoid errors
-    }
-}
+ 
 
 updateLastPaymentLine(newValue) {
     if (this.props.paymentLines && this.props.paymentLines.length > 0) {
         const lastLine = this.props.paymentLines[this.props.paymentLines.length - 1];
         //Secaldula el igtf
-     //   debugger
+     //   
         if (this.state.is_igtf) {
           //  lastLine.amount = ((igtf / 100) * lastLine.amount ) * -1 // Update the value of the last element
         }else{

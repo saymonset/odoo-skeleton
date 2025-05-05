@@ -27,10 +27,7 @@ async deletePaymentLine(uuid) {
   // Agrega tu lógica adicional aquí
   if (line) {
       // Ejemplo: Mostrar un mensaje de confirmación antes de eliminar
-      this.dialog.add(ConfirmationDialog, {
-          title: _t("Confirm Deletion"),
-          body: _t("Are you sure you want to delete this payment line?"),
-          confirm: async () => {
+    
               // Si el método de pago es QR Code, maneja la eliminación
               if (line.payment_method_id.payment_method_type === "qr_code") {
                   this.currentOrder.remove_paymentline(line);
@@ -50,8 +47,7 @@ async deletePaymentLine(uuid) {
                // Actualiza el nombre del método de pago en el servicio
                paymentService.setPaymentMethodName("");
                paymentService.is_igtf=false;
-          },
-      });
+         
   }
 },
     

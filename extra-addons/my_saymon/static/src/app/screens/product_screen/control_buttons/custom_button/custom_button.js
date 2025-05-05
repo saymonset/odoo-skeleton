@@ -3,6 +3,7 @@
 import { _t } from "@web/core/l10n/translation";
 import { Component, useState, onRendered , onWillUpdateProps, onWillStart, useRef, useService } from "@odoo/owl";
 import { CONFIG } from "@my_saymon/config";
+import { convertCurrency } from "@my_saymon/currencyConverter"; // Importa la función
 import { TagsList } from "@web/core/tags_list/tags_list";
 //import { useService } from "@odoo/owl"; // Importar el servicio
 
@@ -24,8 +25,9 @@ export class CustomButton extends Component {
          //   console.log("Currency Rate:", this.state.currencyRate);
         });
 
-        this.calculo().then((ref)=>{
-                this.state.ref = ref;
+        // Obtener el tipo de cambio
+        convertCurrency(1,'USD').then((ref)=>{
+              this.state.ref = ref;
             });;
 
         onWillStart(async () => {
@@ -70,43 +72,7 @@ export class CustomButton extends Component {
     }
 
 
-    async calculo(){
-        let inputValue = 1;
-        let fromCurrency = "USD";
-
-        //No vamos a llevar de VEF a USD
-        let toCurrency   =  fromCurrency ==="VEF"?  "USD":"VEF"; // Moneda de destino
-        //Siempore la vamos a llevar en VEF
-        toCurrency ="VEF"
-        try {
-            const response = await fetch(`${CONFIG.API_URL}/convert_price`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    price_unit: inputValue,
-                    from_currency: fromCurrency,
-                    to_currency: toCurrency,
-                }),
-            });
-    
-            if (!response.ok) {
-                throw new Error(`Error en la solicitud: ${response.statusText}`);
-            }
-            const data = await response.json();
-            const {result} =data;
-            if (data.error) {
-                console.error("Error en la conversión:", data.error);
-                this.state.result = 0; // Set a default value to avoid errors
-            } else {
-                return parseFloat(result.converted_price) || 0; // Ensure the result is a valid number
-            }
-        } catch (error) {
-            console.error("Error al convertir el precio:", error);
-            this.state.result = 0; // Set a default value to avoid errors
-        }
-    }
+ 
 
     
  
