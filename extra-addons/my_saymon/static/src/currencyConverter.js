@@ -1,8 +1,9 @@
 // currencyConverter.js
 import { CONFIG } from "@my_saymon/config";
 
-export async function convertCurrency(inputValue, fromCurrency) {
-    let toCurrency = "VEF"; // Siempre convertimos a VEF
+export async function convertCurrency(inputValue, fromCurrency,  toCurrency = 'VEF') {
+   // let toCurrency =  fromCurrency === 'USD' ? 'VEF' : 'USD'; // Siempre convertimos de VEF a USD
+   // let toCurrency = "VEF"; // Siempre convertimos a VEF
 
     try {
         const response = await fetch(`${CONFIG.API_URL}/convert_price`, {
@@ -26,6 +27,7 @@ export async function convertCurrency(inputValue, fromCurrency) {
             console.error("Error en la conversión:", data.error);
             return 0; // Valor predeterminado en caso de error
         } else {
+            
             return parseFloat(result.converted_price) || 0; // Asegura que el resultado sea un número válido
         }
     } catch (error) {

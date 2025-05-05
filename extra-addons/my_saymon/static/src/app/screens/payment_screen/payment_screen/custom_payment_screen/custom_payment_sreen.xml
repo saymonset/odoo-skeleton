@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates xml:space="preserve">
+    <t t-name="my_saymon.custom_payment_screen">
+          <section class="paymentlines-container rounded-3 bg-view"
+            t-att-class="{'paymentlines-empty': state.paymentLines.length === 0 }">
+            <div class="total text-center py-2 py-lg-4 text-info">
+                <!-- <t t-esc="this.env.utils.formatCurrency(state.usd)" /> -->
+                <t t-esc="formattedAmount" class="currency-display" />
+            </div>
+        </section>
+    </t>
+</templates>
