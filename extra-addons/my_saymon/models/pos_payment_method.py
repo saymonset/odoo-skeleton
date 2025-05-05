@@ -9,8 +9,9 @@ _logger = logging.getLogger(__name__)
 
 class PosPaymentMethod(models.Model):
     _inherit = 'pos.payment.method'
-    is_igtf = fields.Boolean(string='¿Es IGTF?', default=False)
-    igtf_percentage = fields.Float(string='Porcentaje IGTF', default=0.0)
+    is_igtf = fields.Boolean(string='¿Este pago incluye un impuesto?', default=False)
+    igtf_percentage = fields.Float(string='Porcentaje del impuesto', default=0.0, help='Porcentaje del impuesto que se aplica a esta transacción. Si desea incluir este impuesto, marque la opción anterior.')
+
     
     @api.model
     def _load_pos_data_fields(self, config_id):

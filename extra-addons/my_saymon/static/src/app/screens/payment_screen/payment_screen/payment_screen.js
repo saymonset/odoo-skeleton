@@ -55,6 +55,13 @@ async deletePaymentLine(uuid) {
      * Sobrescribimos el método para agregar un manejador de clic personalizado.
      */
    async addNewPaymentLine(paymentMethod) {
+
+  //   this.state = useState({
+  //     totalDue: this.props.currentOrder ? this.props.currentOrder.getTotalDue() || 0 : 0,
+  //     paymentLines: this.props.paymentLines || [],
+  //     usd: 0,
+  //     ref:'USD',
+  // });
         // Imprime el nombre del método de pago seleccionado en la consola
         console.log(`Método de pago seleccionado: ${paymentMethod.name}`);
           // Guarda el nombre del método de pago en el servicio
@@ -77,7 +84,7 @@ async deletePaymentLine(uuid) {
               paymentMethod.name += percentageString;
             }
             const lastLine = paymentLines[paymentLines.length - 1];
-            lastLine.amount = (( paymentMethod.igtf_percentage / 100) * lastLine.amount ) * -1 // Update the value of the last element
+            lastLine.amount = (( paymentMethod.igtf_percentage / 100) * (this.currentOrder.getTotalDue() || 1) ) * -1 // Update the value of the last element
           }
       }
     },
