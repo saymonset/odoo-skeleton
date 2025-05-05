@@ -7,8 +7,8 @@ import { convertCurrency } from "@my_saymon/currencyConverter"; // Importa la fu
 import { TagsList } from "@web/core/tags_list/tags_list";
 //import { useService } from "@odoo/owl"; // Importar el servicio
 
-export class CustomButton extends Component {
-    static template = "conversion.CustomButton";
+export class CustomOrderLine extends Component {
+    static template = "my_saymon.CustomOrderLine";
      // Definir las propiedades que recibirá el componente
      static props = {
         line: Object, // Asegúrate de que la propiedad 'line' sea un objeto

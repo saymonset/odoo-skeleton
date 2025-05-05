@@ -1,6 +1,6 @@
 import {patch} from "@web/core/utils/patch";
 import { Orderline } from "@point_of_sale/app/generic_components/orderline/orderline";
-import { CustomButton } from "./custom_button/custom_button";
+import { CustomOrderLine } from "./custom_orderline/custom_orderline";
 
 // You can do this
 // ControlButtons.components = {
@@ -11,6 +11,6 @@ import { CustomButton } from "./custom_button/custom_button";
 patch(Orderline, {
     components: {
         ...Orderline.components,
-        CustomButton,
+        CustomOrderLine: CustomOrderLine,
     },
 });

@@ -84,7 +84,7 @@ async deletePaymentLine(uuid) {
               paymentMethod.name += percentageString;
             }
             const lastLine = paymentLines[paymentLines.length - 1];
-            lastLine.amount = (( paymentMethod.igtf_percentage / 100) * (this.currentOrder.getTotalDue() || 1) ) * -1 // Update the value of the last element
+            lastLine.amount = (( paymentMethod.igtf_percentage / 100) * (this.currentOrder.getTotalDue() || 0) ) * -1 // Update the value of the last element
           }
       }
     },

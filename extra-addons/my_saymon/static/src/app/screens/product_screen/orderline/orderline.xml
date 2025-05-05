@@ -3,7 +3,7 @@
     <t t-inherit="point_of_sale.Orderline" t-inherit-mode="extension">
         <xpath expr="//li[@class='orderline position-relative d-flex align-items-center p-2 lh-sm cursor-pointer']"
          position="after">
-             <CustomButton t-props="{ line: line }"/>
+             <CustomOrderLine t-props="{ line: line }"/>
         </xpath>
     </t>
     

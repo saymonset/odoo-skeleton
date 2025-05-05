@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates id="template" xml:space="preserve">
-    <t t-name="conversion.CustomButton">
+    <t t-name="my_saymon.CustomOrderLine">
         <button class="control-button btn btn-light rounded-0 fw-bolder" t-on-click="() => this.onClick()">
             <i class="fa fa-smiley-o me-1" />
             <span> </span>
