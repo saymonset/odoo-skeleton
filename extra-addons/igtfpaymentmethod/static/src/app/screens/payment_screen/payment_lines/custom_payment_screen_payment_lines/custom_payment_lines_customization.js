@@ -1,9 +1,7 @@
 /** @odoo-module **/
 import { _t } from "@web/core/l10n/translation";
 import { Component, useState, onRendered, onWillUpdateProps, useRef } from "@odoo/owl";
-import { CONFIG } from "@igtfpaymentmethod/config";
 import {  paymentService } from "@igtfpaymentmethod/app/screens/conversion_service";
-import { convertCurrency } from "@igtfpaymentmethod/currencyConverter"; 
 
 export class CustomPaymentLinesCustomization extends Component {
     static template = "igtfpaymentmethod.Custom_payment_lines_customization";
@@ -37,7 +35,6 @@ export class CustomPaymentLinesCustomization extends Component {
             result: 0,
             hasData,
             inputValue: 0,
-            ref_label: CONFIG.REF_LABEL,
             selectedCurrency: "USD",
             paymentMethodName: paymentService.getPaymentMethodName(),
             is_igtf: paymentService.is_igtf,
@@ -72,20 +69,7 @@ export class CustomPaymentLinesCustomization extends Component {
         });
     }
 
-// Método para manejar el cambio de moneda
-async onCurrencyChange(event) {
-    const newCurrency = event.target.value; // Captura la moneda seleccionada
-    // Actualiza el estado
-    this.state.selectedCurrency = newCurrency;
-    let fromCurrency =  this.state.selectedCurrency ==="USD"? "USD" :"VEF"; // Moneda de origen
-   // this.calculo(this.state.inputValue, fromCurrency);
- 
-   
-    const ref = await convertCurrency(this.state.inputValue, fromCurrency);
-     this.state.result = ref; // Actualiza el resultado
-     this.updateLastPaymentLine(ref);
-     
-}
+
 
  
 
