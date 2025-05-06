@@ -1,7 +1,6 @@
-/** @odoo-module */
-  // paymentService.js
-export const paymentService = {
+export const paymentMethodManager = {
   paymentMethodName: '',
+  // Verificar si el IGTF es un impuesto para sumarselo al total
   _is_igtf: false,
   
   get is_igtf() {
@@ -10,7 +9,7 @@ export const paymentService = {
   set is_igtf(value) {
     this._is_igtf = value;
   },
-   
+  // Establecer el nombre del método de pago 
   setPaymentMethodName(name) {
       this.paymentMethodName = name;
   },

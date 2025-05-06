@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<templates xml:space="preserve">
-    <t t-name="igtfpaymentmethod.Custom_payment_lines_customization">
-        <div class="paymentlines d-flex flex-column overflow-y-auto gap-1">
-            <!-- Input para ingresar un número -->
-           
-          </div>
-    </t>
-</templates>

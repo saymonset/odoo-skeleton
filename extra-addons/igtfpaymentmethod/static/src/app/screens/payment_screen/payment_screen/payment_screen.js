@@ -3,10 +3,8 @@
 import { patch } from '@web/core/utils/patch';
 import { PaymentScreen } from "@point_of_sale/app/screens/payment_screen/payment_screen";
 import {  onMounted } from "@odoo/owl";
-import {  paymentService } from "@igtfpaymentmethod/app/screens/conversion_service";
+import {  paymentMethodManager } from "@igtfpaymentmethod/app/screens/utils";
 import { _t } from "@web/core/l10n/translation";
-
-
 
 // Guarda una referencia al método original
 const originalAddNewPaymentLine = PaymentScreen.prototype.addNewPaymentLine;
@@ -22,11 +20,8 @@ patch(PaymentScreen.prototype, {
 async deletePaymentLine(uuid) {
   // Llama al método original para mantener la funcionalidad existente
   const line = this.paymentLines.find((line) => line.uuid === uuid);
-  
   // Agrega tu lógica adicional aquí
   if (line) {
-      // Ejemplo: Mostrar un mensaje de confirmación antes de eliminar
-    
               // Si el método de pago es QR Code, maneja la eliminación
               if (line.payment_method_id.payment_method_type === "qr_code") {
                   this.currentOrder.remove_paymentline(line);
@@ -44,9 +39,8 @@ async deletePaymentLine(uuid) {
               this.currentOrder.remove_paymentline(line);
               this.numberBuffer.reset();
                // Actualiza el nombre del método de pago en el servicio
-               paymentService.setPaymentMethodName("");
-               paymentService.is_igtf=false;
-         
+               paymentMethodManager.setPaymentMethodName("");
+               paymentMethodManager.is_igtf=false;
   }
 },
     
@@ -54,21 +48,11 @@ async deletePaymentLine(uuid) {
      * Sobrescribimos el método para agregar un manejador de clic personalizado.
      */
    async addNewPaymentLine(paymentMethod) {
-
-  //   this.state = useState({
-  //     totalDue: this.props.currentOrder ? this.props.currentOrder.getTotalDue() || 0 : 0,
-  //     paymentLines: this.props.paymentLines || [],
-  //     usd: 0,
-  //     ref:'USD',
-  // });
-        // Imprime el nombre del método de pago seleccionado en la consola
-        console.log(`Método de pago seleccionado: ${paymentMethod.name}`);
           // Guarda el nombre del método de pago en el servicio
-        paymentService.setPaymentMethodName(paymentMethod.name);
-        paymentService.is_igtf=paymentMethod.is_igtf;
-
+          paymentMethodManager.setPaymentMethodName(paymentMethod.name);
+          paymentMethodManager.is_igtf=paymentMethod.is_igtf;
         // Llama al método original para que continúe con su funcionalidad
-        originalAddNewPaymentLine.call(this, paymentMethod);
+          originalAddNewPaymentLine.call(this, paymentMethod);
         
         // Verifica si el método de pago es IGTF y aplica el 30%
         if (paymentMethod.is_igtf) {
