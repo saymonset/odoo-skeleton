@@ -15,7 +15,8 @@ Sustituye la version ${ODOO_VERSION} por la que vallas usar
 3. Crear el espacio de trabajo importando el código fuente de Odoo. Esta en src
 4. Configurar y modificar el fichero pyrightconfig.json para que apunte a los  fuentes de odoo y hacer debugger
 6. Configurar las variables en el .env. Si no existe, esta una copia de env copy, reemplazarla .venv y poner las variables de entorno
-8. ejecutar el docker compose con boton  derecho del raton o:  docker-compose up
+8. ejecutar el docker compose con boton  derecho del raton o: 
+ docker-compose up  -d
 9. Ir a http://localhost:8069/ y loguearsde conmo super usuario en elogin super usuario. 
  user: admin,  passwd: admin
 

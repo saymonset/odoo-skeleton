@@ -6,10 +6,12 @@
     'author': 'saymon_set@hotmail.com',
     'website': 'https://www.jumpjibe.com',
     'category': 'igtf',
-      'depends': ['base','point_of_sale'],
+      'depends': ['base', 'point_of_sale'],
+
     "data": [
         "security/ir.model.access.csv",
-        "views/pos_payment_method_views.xml"
+        "views/pos_payment_method_views.xml",
+		"views/sale_order_view_views.xml"
     ],
     'assets': {
              

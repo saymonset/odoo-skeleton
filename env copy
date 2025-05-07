@@ -9,4 +9,6 @@ PG_PASSWORD=odoo
 PG_PORT=5434
 ODOO_SERVER=./src/odoo-18
 CUSTOM_ADDONS=./extra-addons
-ENTRYPOINT=python3 -m debugpy --listen 0.0.0.0:8888 /opt/odoo/odoo-bin  -c /etc/odoo/odoo.conf -d db0
+report.url = http://localhost:8069
+web.base.url = http://localhost:8069
+ENTRYPOINT=python3 -m debugpy --listen 0.0.0.0:8888 /opt/odoo/odoo-bin  -c /etc/odoo/odoo.conf -d dbigtf -i igtfpaymentmethod
