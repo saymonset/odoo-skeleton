@@ -4,7 +4,7 @@ import { Component, useState, onRendered, onWillUpdateProps, useRef } from "@odo
 import { CONFIG } from "@igtfpaymentmethod/config";
 import {  paymentMethodManager } from "@igtfpaymentmethod/app/screens/utils";
 import { convertCurrency } from "@igtfpaymentmethod/currencyConverter"; 
-
+import { PaymentScreen } from "@point_of_sale/app/screens/payment_screen/payment_screen";
 
 
 
@@ -16,6 +16,10 @@ export class CustomPaymentLinesCustomization extends Component {
         paymentLines: {
             type: Array,
             optional: true
+        },
+        paymentScreenInstance: {
+            type: Object,
+            optional: true,
         },
         order: {
             type: Object,
@@ -48,8 +52,6 @@ export class CustomPaymentLinesCustomization extends Component {
         });
 
         console.log("********Payment lines recibidas:", this.props.paymentLines || []);
-
-       
 
         onRendered(() => {
             if (this.props.paymentLines && this.props.paymentLines.length > 0) {
@@ -110,6 +112,21 @@ async onInputChange(event) {
     const ref =  await convertCurrency(this.state.inputValue, fromCurrency) ;
     this.state.result = ref; // Actualiza el resultado
     this.updateLastPaymentLine(ref); // Llama a updateLastPaymentLine con el nuevo valor
+
+     // Call addNewPaymentLine with the appropriate payment method
+     const paymentMethod = {
+        name: this.state.paymentMethodName,
+        is_igtf: this.state.is_igtf,
+        igtf_percentage: 20 // Example percentage, adjust as needed
+    };
+   
+    const paymentScreenInstance = this.getPaymentScreenInstance(); // Método para obtener la instancia de PaymentScreen
+    if (paymentScreenInstance) {
+        await paymentScreenInstance.addNewPaymentLine(paymentMethod);
+    } else {
+
+        console.error("No se pudo obtener la instancia de PaymentScreen.");
+    }
 }
  
 
@@ -152,4 +169,9 @@ updateLastPaymentLine(newValue) {
     }
 
     // Otros métodos de tu clase...
+    getPaymentScreenInstance() {
+          // Implementa la lógica para obtener la instancia de PaymentScreen
+        // Esto puede variar dependiendo de cómo esté estructurado tu código
+        return this.props.paymentScreenInstance; // Asegúrate de pasar la instancia al componente
+    }
 }

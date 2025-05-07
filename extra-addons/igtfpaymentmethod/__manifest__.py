@@ -6,7 +6,7 @@
     'author': 'saymon_set@hotmail.com',
     'website': 'https://www.jumpjibe.com',
     'category': 'igtf',
-      'depends': ['base', 'point_of_sale'],
+      'depends': ['base', 'point_of_sale','sale'],
 
     "data": [
         "security/ir.model.access.csv",
