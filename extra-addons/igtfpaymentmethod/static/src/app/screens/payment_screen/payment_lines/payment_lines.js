@@ -18,6 +18,12 @@ patch(PaymentScreenPaymentLines, {
         onMounted(() => {
             console.log("El componente se ha montado");
         });
-    }
+    },
+      async addNewPaymentLine(paymentMethod) {
+              // Guarda el nombre del método de pago en el servicio
+             debugger
+             console.log("paymentMethod", paymentMethod);
+
+        },
    
 });

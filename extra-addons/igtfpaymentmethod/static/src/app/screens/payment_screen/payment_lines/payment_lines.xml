@@ -6,6 +6,7 @@
            <PaymentLinesCustom
                 paymentLines="props.paymentLines" 
                 order="props.order" 
+                 addNewPaymentLine="addNewPaymentLine"
             />
         </xpath>
     </t>

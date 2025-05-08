@@ -6,13 +6,15 @@ import {  onMounted } from "@odoo/owl";
 import {  paymentMethodManager } from "@igtfpaymentmethod/app/screens/utils";
 import { _t } from "@web/core/l10n/translation";
 import { PaymentScreenCustom } from "@igtfpaymentmethod/app/screens/payment_screen/payment_screen_custom/payment_screen_custom";
+import { PaymentLinesCustom } from "@igtfpaymentmethod/app/screens/payment_screen/payment_lines/payment_lines_custom/payment_lines_custom";
 // Guarda una referencia al método original
 const originalAddNewPaymentLine = PaymentScreen.prototype.addNewPaymentLine;
 
 patch(PaymentScreen.prototype, {
   components: {
     ...PaymentScreen.components,
-    PaymentScreenCustom
+    PaymentScreenCustom,
+    PaymentLinesCustom
      
 },
   setup() {

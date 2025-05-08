@@ -29,6 +29,10 @@ export class PaymentLinesCustom extends Component {
             type: Function,
             optional: true,
         },
+        addNewPaymentLine: {
+            type: Function,
+            optional: true,
+        },
     };
 
     setup() {
@@ -110,10 +114,9 @@ async onInputChange(event) {
     this.state.inputValue=inputValue;
     let fromCurrency =  this.state.selectedCurrency ==="USD"? "USD" :"VEF"; // Moneda de origen
 
-    const payment_methods_from_config = this.props.payment_methods_from_config;
 
-    if (this.payment_methods_from_config.length == 1 && this.paymentLines.length == 0) {
-       // this.addNewPaymentLine(this.payment_methods_from_config[0]);
+    if (this.payment_methods_from_config?.length > 0 ) {
+        this.addNewPaymentLine(this.payment_methods_from_config[0]);
     }
  
    // this.calculo( this.state.inputValue, fromCurrency);
@@ -132,6 +135,10 @@ async onInputChange(event) {
   
 }
  
+async addNewPaymentLine(paymentMethod) {
+    debugger
+     this.props.addNewPaymentLine(paymentMethod)
+}
 
 updateLastPaymentLine(newValue) {
     if (this.props.paymentLines && this.props.paymentLines.length > 0) {
