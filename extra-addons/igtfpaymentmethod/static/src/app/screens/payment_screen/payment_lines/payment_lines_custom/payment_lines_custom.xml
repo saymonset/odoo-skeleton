@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <templates xml:space="preserve">
-    <t t-name="my_saymon.Custom_payment_lines_customization">
+    <t t-name="igtfpaymentmethod.payment_lines_custom">
         <div class="paymentlines d-flex flex-column overflow-y-auto gap-1">
             <!-- Input para ingresar un número -->
             <t t-if="state.paymentMethodName">

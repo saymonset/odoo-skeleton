@@ -4,12 +4,12 @@ import { Component, useState, onRendered, onWillUpdateProps, useRef } from "@odo
 import { CONFIG } from "@igtfpaymentmethod/config";
 import {  paymentMethodManager } from "@igtfpaymentmethod/app/screens/utils";
 import { convertCurrency } from "@igtfpaymentmethod/currencyConverter"; 
-import { PaymentScreen } from "@point_of_sale/app/screens/payment_screen/payment_screen";
+import { usePos } from "@point_of_sale/app/store/pos_hook";
 
 
 
-export class CustomPaymentLinesCustomization extends Component {
-    static template = "my_saymon.Custom_payment_lines_customization";
+export class PaymentLinesCustom extends Component {
+    static template = "igtfpaymentmethod.payment_lines_custom";
     static components = {};
     
     static props = {
@@ -17,10 +17,7 @@ export class CustomPaymentLinesCustomization extends Component {
             type: Array,
             optional: true
         },
-        paymentScreenInstance: {
-            type: Object,
-            optional: true,
-        },
+       
         order: {
             type: Object,
             optional: true,
@@ -37,8 +34,10 @@ export class CustomPaymentLinesCustomization extends Component {
     setup() {
       //  
         super.setup();
-    
-      
+        this.pos = usePos();
+        this.payment_methods_from_config = this.pos.config.payment_method_ids
+        .slice()
+        .sort((a, b) => a.sequence - b.sequence);
         this.numberInputRef = useRef("numberInput");
         const hasData = this.props.paymentLines && this.props.paymentLines.length > 0;
         this.state = useState({
@@ -80,10 +79,14 @@ export class CustomPaymentLinesCustomization extends Component {
 
 // Método para manejar el cambio de moneda
 async onCurrencyChange(event) {
+    debugger
     const newCurrency = event.target.value; // Captura la moneda seleccionada
     // Actualiza el estado
     this.state.selectedCurrency = newCurrency;
     let fromCurrency =  this.state.selectedCurrency ==="USD"? "USD" :"VEF"; // Moneda de origen
+ 
+
+    
    // this.calculo(this.state.inputValue, fromCurrency);
  
    
@@ -106,6 +109,13 @@ async onInputChange(event) {
     const inputValue = parseFloat(event.target.value) || 0; // Captura el valor del input
     this.state.inputValue=inputValue;
     let fromCurrency =  this.state.selectedCurrency ==="USD"? "USD" :"VEF"; // Moneda de origen
+
+    const payment_methods_from_config = this.props.payment_methods_from_config;
+
+    if (this.payment_methods_from_config.length == 1 && this.paymentLines.length == 0) {
+       // this.addNewPaymentLine(this.payment_methods_from_config[0]);
+    }
+ 
    // this.calculo( this.state.inputValue, fromCurrency);
      // Obtener el tipo de cambio
      
@@ -119,14 +129,7 @@ async onInputChange(event) {
         is_igtf: this.state.is_igtf,
         igtf_percentage: 20 // Example percentage, adjust as needed
     };
-   
-    const paymentScreenInstance = this.getPaymentScreenInstance(); // Método para obtener la instancia de PaymentScreen
-    if (paymentScreenInstance) {
-        await paymentScreenInstance.addNewPaymentLine(paymentMethod);
-    } else {
-
-        console.error("No se pudo obtener la instancia de PaymentScreen.");
-    }
+  
 }
  
 
@@ -168,10 +171,5 @@ updateLastPaymentLine(newValue) {
         }
     }
 
-    // Otros métodos de tu clase...
-    getPaymentScreenInstance() {
-          // Implementa la lógica para obtener la instancia de PaymentScreen
-        // Esto puede variar dependiendo de cómo esté estructurado tu código
-        return this.props.paymentScreenInstance; // Asegúrate de pasar la instancia al componente
-    }
+ 
 }

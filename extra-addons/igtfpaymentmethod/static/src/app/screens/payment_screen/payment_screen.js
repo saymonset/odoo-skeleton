@@ -5,11 +5,16 @@ import { PaymentScreen } from "@point_of_sale/app/screens/payment_screen/payment
 import {  onMounted } from "@odoo/owl";
 import {  paymentMethodManager } from "@igtfpaymentmethod/app/screens/utils";
 import { _t } from "@web/core/l10n/translation";
-
+import { PaymentScreenCustom } from "@igtfpaymentmethod/app/screens/payment_screen/payment_screen_custom/payment_screen_custom";
 // Guarda una referencia al método original
 const originalAddNewPaymentLine = PaymentScreen.prototype.addNewPaymentLine;
 
 patch(PaymentScreen.prototype, {
+  components: {
+    ...PaymentScreen.components,
+    PaymentScreenCustom
+     
+},
   setup() {
     super.setup(...arguments);
 

@@ -2,12 +2,11 @@
 import { PaymentScreenPaymentLines } from "@point_of_sale/app/screens/payment_screen/payment_lines/payment_lines";
 import { patch } from "@web/core/utils/patch"; 
 import { onMounted } from "@odoo/owl";
-import { CustomPaymentLinesCustomization } from "@igtfpaymentmethod/app/screens/payment_screen/payment_lines/custom_payment_screen_payment_lines/custom_payment_lines";
-
+import { PaymentLinesCustom } from "@igtfpaymentmethod/app/screens/payment_screen/payment_lines/payment_lines_custom/payment_lines_custom";
 patch(PaymentScreenPaymentLines, {
     components: {
         ...PaymentScreenPaymentLines.components,
-           CustomPaymentLinesCustomization,
+           PaymentLinesCustom,
     },
     setup() {
         const self = this; // Guarda el contexto de `this`
