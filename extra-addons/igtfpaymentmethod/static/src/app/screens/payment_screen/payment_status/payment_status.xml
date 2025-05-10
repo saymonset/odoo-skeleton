@@ -3,14 +3,7 @@
     <t t-inherit="point_of_sale.PaymentScreenStatus" t-inherit-mode="extension">
        <div t-if="props.order.payment_ids.length == 0" class="text-center py-4 fs-4 my-auto">
             Please select a payment method 
-            <span class="payment-status-change">
-                          
-                           <button class="btn-switchpane validation-button btn btn-primary btn-lg flex-fill py-3 lh-lg"
-                                t-on-click="() => this.addNewPaymentLine()">
-                                <span>hols symonsxxxx  saymon and saymon 9</span>
-                            </button>
-                             
-            </span>
+         
         </div>
         <section t-else="" t-attf-class="paymentlines-container p-3 rounded-3 border {{ props.order.get_due() > 0 ? 'bg-danger-subtle border-danger text-danger' : 'bg-success-subtle border-success text-success'}}">
             <div class="payment-status-container d-flex flex-column-reverse flex-lg-row justify-content-between fs-2 pe-4 me-2">
@@ -18,6 +11,13 @@
                     <span class="label pe-2">Remaining</span>
                     <span class="amount align-self-end pe-5" t-att-class="{ 'highlight text-danger fw-bolder': props.order.get_due() > 0 }">
                         <t t-esc="remainingText" />
+
+                        <span class="payment-status-change">
+                           <button class="btn-switchpane validation-button btn btn-primary btn-lg flex-fill py-3 lh-lg"
+                                t-on-click="() => this.addNewPaymentLine()">
+                                <span>hols sym restante</span>
+                            </button>
+                        </span>
                        
                     </span>
                 </div>
@@ -25,9 +25,12 @@
                     <span class="label pe-2">Change</span>
                     <span class="amount align-self-end pe-5" t-att-class="{ 'highlight text-success fw-bolder': props.order.get_change() > 0 }">
                         <t t-esc="changeText" />
-                          <span class="payment-status-change">
-                             saymon and saymon 1
-                            </span>
+                             <span class="payment-status-change">
+                           <button class="btn-switchpane validation-button btn btn-primary btn-lg flex-fill py-3 lh-lg"
+                                t-on-click="() => this.addNewPaymentLine()">
+                                <span>hols symon cambio</span>
+                            </button>
+                        </span>
                     </span>
                 </div>
             </div>
