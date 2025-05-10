@@ -21,7 +21,7 @@
                 </div>
 
                 <div class="payment-infos d-flex align-items-center justify-content-between flex-grow-1 px-3 py-3 text-truncate cursor-pointer fs-2">
-                    <span class="payment-name"></span>
+                   
                     <div class="payment-amount px-3">
                         <!-- Ensure state.result is properly formatted -->
                         <t t-esc="env.utils.formatCurrency(state.result)" /> 

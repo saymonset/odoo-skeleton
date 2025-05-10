@@ -196,6 +196,7 @@ export class PaymentScreen extends Component {
     }
     toggleIsToInvoice() {
         this.currentOrder.set_to_invoice(!this.currentOrder.is_to_invoice());
+        
     }
     openCashbox() {
         this.hardwareProxy.openCashbox();

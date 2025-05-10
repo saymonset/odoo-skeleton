@@ -5,8 +5,7 @@
         <xpath expr="//div[@class='paymentlines d-flex flex-column overflow-y-auto gap-1']" position="after">
            <PaymentLinesCustom
                 paymentLines="props.paymentLines" 
-                order="props.order" 
-                 addNewPaymentLine="addNewPaymentLine"
+               
             />
         </xpath>
     </t>

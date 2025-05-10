@@ -17,28 +17,18 @@ export class PaymentLinesCustom extends Component {
             type: Array,
             optional: true
         },
-       
-        order: {
-            type: Object,
-            optional: true,
-            shape: {
-                payment_ids: Array
-            }
-        },
         deleteLine: {
             type: Function,
             optional: true,
-        },
-        addNewPaymentLine: {
-            type: Function,
-            optional: true,
-        },
+        }
     };
 
     setup() {
       //  
         super.setup();
         this.pos = usePos();
+        
+        console.log("Current props:", this.props);
         this.payment_methods_from_config = this.pos.config.payment_method_ids
         .slice()
         .sort((a, b) => a.sequence - b.sequence);
@@ -83,7 +73,6 @@ export class PaymentLinesCustom extends Component {
 
 // Método para manejar el cambio de moneda
 async onCurrencyChange(event) {
-    debugger
     const newCurrency = event.target.value; // Captura la moneda seleccionada
     // Actualiza el estado
     this.state.selectedCurrency = newCurrency;
@@ -115,9 +104,7 @@ async onInputChange(event) {
     let fromCurrency =  this.state.selectedCurrency ==="USD"? "USD" :"VEF"; // Moneda de origen
 
 
-    if (this.payment_methods_from_config?.length > 0 ) {
-        this.addNewPaymentLine(this.payment_methods_from_config[0]);
-    }
+ 
  
    // this.calculo( this.state.inputValue, fromCurrency);
      // Obtener el tipo de cambio
@@ -125,20 +112,10 @@ async onInputChange(event) {
     const ref =  await convertCurrency(this.state.inputValue, fromCurrency) ;
     this.state.result = ref; // Actualiza el resultado
     this.updateLastPaymentLine(ref); // Llama a updateLastPaymentLine con el nuevo valor
-
-     // Call addNewPaymentLine with the appropriate payment method
-     const paymentMethod = {
-        name: this.state.paymentMethodName,
-        is_igtf: this.state.is_igtf,
-        igtf_percentage: 20 // Example percentage, adjust as needed
-    };
-  
 }
  
-async addNewPaymentLine(paymentMethod) {
-    debugger
-     this.props.addNewPaymentLine(paymentMethod)
-}
+
+
 
 updateLastPaymentLine(newValue) {
     if (this.props.paymentLines && this.props.paymentLines.length > 0) {

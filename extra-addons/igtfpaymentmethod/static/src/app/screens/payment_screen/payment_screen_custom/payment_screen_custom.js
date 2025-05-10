@@ -22,25 +22,14 @@ export class PaymentScreenCustom extends Component {
       //  
         super.setup();
         
-        
-        this.state = useState({
-            totalDue: this.props.currentOrder ? this.props.currentOrder.getTotalDue() || 0 : 0,
-            paymentLines: this.props.paymentLines || [],
-            usd: 0,
-            ref:'USD',
-        });
+     
 
         onWillStart(async () => {
-            if (this.state.totalDue) {
-                const usd = await convertCurrency(this.state.totalDue, 'VEF', 'USD');
-                this.state.usd = usd ;
-            }
+            
         });
         
     }
 
-    get formattedAmount() {
-        return `${this.state.usd.toFixed(2)} ${this.state.ref}`;
-    }
+   
  
 }
