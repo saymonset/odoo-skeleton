@@ -9,8 +9,8 @@
                                 t-on-click="() => this.addNewPaymentLine()">
                                 <span>hols symonsxxxx  saymon and saymon 3</span>
                             </button>
-                                <span class="payment-status-change"  t-on-click="()=> addNewPaymentLine()">
-                             yo errorroorrrr
+                                <span class="payment-status-change"  t-on-click="()=> this.addNewPaymentLine()">
+                             yo errorroorrrr, borrar
                             
                             </span>
             </span>
