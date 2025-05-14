@@ -1,6 +1,6 @@
-APP=odoo_app_antojitos
+APP=odoo_app_horebcorporation
 POSTGRES_PASSWORD=123456
 VERSION=18
-ANTOJITOS_VERSION=28
+HOREBCORPORATION_VERSION=38
 HOST=ep-still-morning-a5ancq44.us-east-2.aws.neon.tech
 PGDATA=/var/lib/postgresql15/data/pgdata

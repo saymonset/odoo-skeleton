@@ -1,3 +1,11 @@
+#Si no esta instalado ngnix, entonces corre el docker compose up -d
+
+
+#Si esta instalado entonces restart el ngnix
+#Paralevantar o restart el ngnix es 
+#```bash
+#sudo systemctl start nginx
+#```
 version: '3.8'
 services:
   app:

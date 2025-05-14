@@ -1,15 +1,15 @@
 services:
   web:
     image: "odoo:${VERSION}"
-    container_name: "odoo-antojitos-${ANTOJITOS_VERSION}"
+    container_name: "odoo-horebcorporation-${HOREBCORPORATION_VERSION}"
     user: root
     depends_on:
       - db
     ports:
-      - "${ANTOJITOS_VERSION}069:8069"
-      - "${ANTOJITOS_VERSION}072:8072"
+      - "${HOREBCORPORATION_VERSION}069:8069"
+      - "${HOREBCORPORATION_VERSION}072:8072"
     networks:
-      - odoo_network_antojitos
+      - odoo_network_horebcorporation
     volumes:
       - "./v${VERSION}/odoo-web-data:/var/lib/odoo"
       - "./v${VERSION}/config/odoo.conf:/etc/odoo/odoo.conf"
@@ -19,25 +19,25 @@ services:
 
   db:
     image: postgres:16
-    container_name: "odoo-db${ANTOJITOS_VERSION}"
+    container_name: "odoo-db${HOREBCORPORATION_VERSION}"
     environment:
       - POSTGRES_DB=postgres
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}  # Set the password directly here
       - POSTGRES_USER=odoo
       - PGDATA=${PGDATA}
     ports:
-      - "${ANTOJITOS_VERSION}432:5432"
+      - "${HOREBCORPORATION_VERSION}432:5432"
     networks:
-      - odoo_network_antojitos
+      - odoo_network_horebcorporation
     volumes:
-      - "./v${ANTOJITOS_VERSION}/pgdata:${PGDATA}"
+      - "./v${HOREBCORPORATION_VERSION}/pgdata:${PGDATA}"
 
 volumes:
   odoo-web-data:
-    name: "${APP:-myodoo}-web-v${ANTOJITOS_VERSION}"
+    name: "${APP:-myodoo}-web-v${HOREBCORPORATION_VERSION}"
   odoo-db-data:
-    name: "${APP:-myodoo}-db-v${ANTOJITOS_VERSION}"
+    name: "${APP:-myodoo}-db-v${HOREBCORPORATION_VERSION}"
 
 networks:
-  odoo_network_antojitos:
-    name: odoo_network_antojitos
+  odoo_network_horebcorporation:
+    name: odoo_network_horebcorporation
