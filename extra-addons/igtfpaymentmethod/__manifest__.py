@@ -16,14 +16,16 @@
     'assets': {
              
                'point_of_sale.assets': [
-                    'igtfpaymentmethod/static/src/**/*',
-                    
+                    'igtfpaymentmethod/static/src/**/*.js',
+                    'igtfpaymentmethod/static/src/**/*.xml',
                 ],
                 "point_of_sale._assets_pos": [
-                    "igtfpaymentmethod/static/src/**/*",
+                     'igtfpaymentmethod/static/src/**/*.js',
+                    'igtfpaymentmethod/static/src/**/*.xml',
                 ],
                 'web.assets_qweb': [
-                    'igtfpaymentmethod/static/src/**/*',
+                   'igtfpaymentmethod/static/src/**/*.js',
+                    'igtfpaymentmethod/static/src/**/*.xml',
                 ],
           },
     'application': True,
