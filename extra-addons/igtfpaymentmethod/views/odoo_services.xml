@@ -11,5 +11,13 @@
                      parent="sale.sale_menu_root"
                      name="Hostel solangel"
                      sequence="100"/>
+
+
+              <record id="action_owl_dashboard" model="ir.actions.client">
+                <field name="name">OWL Dashboard Services</field>
+                <field name="tag">owl.Dashboard</field>
+            </record>
+
+            <menuitem id="menu_owl_dashboard" name="Dashboard" action="action_owl_dashboard" parent="sale.sale_menu_root" sequence="101"/>          
        </data>
    </odoo>

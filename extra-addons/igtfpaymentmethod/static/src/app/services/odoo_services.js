@@ -7,6 +7,7 @@ import { useService } from "@web/core/utils/hooks"
 import { ConfirmationDialog } from "@web/core/confirmation_dialog/confirmation_dialog"
 import { browser } from "@web/core/browser/browser"
 import { router } from "@web/core/browser/router";
+import { rpc } from "@web/core/network/rpc";
 
 const { Component, useSubEnv, useState } = owl
 
@@ -16,13 +17,21 @@ export class OwlOdooServices extends Component {
         this.display = {
             controlPanel: {"top-right": false, "bottom-right": false}
         }
+debugger
+        // Accede directamente a this.env
+        this.env = this.env; // Asegúrate de que env se pase correctamente
+          // Usar useService para acceder al servicio rpc
+     //   this.rpcService = useService("rpc");
 
-        useSubEnv({
-            config: {
-                ...getDefaultConfig(),
-                ...this.env.config,
-            }
-        })
+        // const subEnv = useSubEnv({
+        //     config: {
+        //         ...getDefaultConfig(),
+        //         ...this.env.config,
+        //     }
+        // });
+
+  // Ahora puedes acceder a this.env
+    
 
         // this.cookieService = useService("cookie")
         // console.log(this.cookieService)
@@ -132,8 +141,10 @@ export class OwlOdooServices extends Component {
     }
 
     async getRpcService(){
-        const rpc = this.env.services.rpc
-        const data = await rpc("/owl/rpc_service", {limit: 15})
+        debugger
+        //const data = await this.rpcService("/owl/rpc_service", { limit: 15 });
+        // const rpc = this.env.services.rpc
+         const data = await rpc("/owl/rpc_service", {limit: 15})
         console.log(data)
         this.state.rpc_data = data
     }

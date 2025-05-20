@@ -10,9 +10,9 @@
 
     "data": [
         "security/ir.model.access.csv",
+        "views/odoo_services.xml",
         "views/pos_payment_method_views.xml",
         "views/sale_order_view_views.xml",
-        "views/odoo_services.xml"
     ],
     'assets': {
              

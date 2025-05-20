@@ -1,14 +1,14 @@
 /** @odoo-module */
 
 import { registry } from "@web/core/registry"
+const { reactive } = owl;
 import { rpc } from "@web/core/network/rpc";
-const { reactive } = owl
 
 export const owlDashboardService = {
+    
     dependencies:["rpc"],
     async start(env, { rpc }){
         debugger
-        
         let dashboard_data = reactive({})
 
         Object.assign(dashboard_data, await rpc("/owl/dashboard_service/"))
@@ -26,5 +26,6 @@ export const owlDashboardService = {
         }
     }
 }
+1800
 
 registry.category("services").add("owlDashboardService", owlDashboardService)
