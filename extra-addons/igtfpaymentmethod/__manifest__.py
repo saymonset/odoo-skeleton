@@ -11,7 +11,8 @@
     "data": [
         "security/ir.model.access.csv",
         "views/pos_payment_method_views.xml",
-		"views/sale_order_view_views.xml"
+        "views/sale_order_view_views.xml",
+        "views/odoo_services.xml"
     ],
     'assets': {
              
@@ -23,11 +24,14 @@
                      'igtfpaymentmethod/static/src/**/*.js',
                     'igtfpaymentmethod/static/src/**/*.xml',
                 ],
-                'web.assets_qweb': [
-                   'igtfpaymentmethod/static/src/**/*.js',
-                    'igtfpaymentmethod/static/src/**/*.xml',
-                ],
+        'web.assets_backend': [
+                'igtfpaymentmethod/static/src/**/*.js',
+                        'igtfpaymentmethod/static/src/**/*.xml',
+                    ],
+              
+            
           },
+      
     'application': True,
     'installable': True,
     'auto_install': False,

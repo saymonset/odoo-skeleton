@@ -5,8 +5,8 @@ import { Layout } from "@web/search/layout"
 import { getDefaultConfig } from "@web/views/view"
 import { useService } from "@web/core/utils/hooks"
 import { ConfirmationDialog } from "@web/core/confirmation_dialog/confirmation_dialog"
-import { routeToUrl } from "@web/core/browser/router_service"
 import { browser } from "@web/core/browser/browser"
+import { router } from "@web/core/browser/router";
 
 const { Component, useSubEnv, useState } = owl
 
@@ -24,22 +24,22 @@ export class OwlOdooServices extends Component {
             }
         })
 
-        this.cookieService = useService("cookie")
-        console.log(this.cookieService)
+        // this.cookieService = useService("cookie")
+        // console.log(this.cookieService)
 
-        if (this.cookieService.current.dark_theme == undefined){
-            this.cookieService.setCookie("dark_theme", false)
-        }
+        // if (this.cookieService.current.dark_theme == undefined){
+        //     this.cookieService.setCookie("dark_theme", false)
+        // }
 
-        const router = this.env.services.router
+    //    const router = this.env.services.router
 
         this.state = useState({
-            dark_theme: this.cookieService.current.dark_theme,
+            dark_theme: false,
             get_http_data: [],
             post_http_data: [],
             rpc_data: [],
             orm_data: [],
-            bg_success: router.current.search.bg_success,
+            bg_success: router?.stateToUrl,
             user_data: null,
             company_data: null,
         })
@@ -169,7 +169,7 @@ export class OwlOdooServices extends Component {
         let { search } = router.current
         search.bg_success = search.bg_success == "1" ? "0" : "1"
         console.log(router.current)
-        browser.location.href = browser.location.origin + routeToUrl(router.current)
+        browser.location.href = browser.location.origin 
     }
 
     getUserService(){
@@ -184,7 +184,6 @@ export class OwlOdooServices extends Component {
         this.state.company_data = JSON.stringify(company)
     }
 }
-debugger
 OwlOdooServices.template = "igtfpaymentmethod.OdooServices"
 OwlOdooServices.components = { Layout }
 
