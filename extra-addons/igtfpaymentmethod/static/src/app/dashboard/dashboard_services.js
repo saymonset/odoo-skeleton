@@ -6,9 +6,9 @@ import { rpc } from "@web/core/network/rpc";
 
 export const owlDashboardService = {
     
-    dependencies:["rpc"],
-    async start(env, { rpc }){
-        debugger
+   
+    async start(env){
+       
         let dashboard_data = reactive({})
 
         Object.assign(dashboard_data, await rpc("/owl/dashboard_service/"))

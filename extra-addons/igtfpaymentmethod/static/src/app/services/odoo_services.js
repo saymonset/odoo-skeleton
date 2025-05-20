@@ -17,7 +17,6 @@ export class OwlOdooServices extends Component {
         this.display = {
             controlPanel: {"top-right": false, "bottom-right": false}
         }
-debugger
         // Accede directamente a this.env
         this.env = this.env; // Asegúrate de que env se pase correctamente
           // Usar useService para acceder al servicio rpc
@@ -141,7 +140,6 @@ debugger
     }
 
     async getRpcService(){
-        debugger
         //const data = await this.rpcService("/owl/rpc_service", { limit: 15 });
         // const rpc = this.env.services.rpc
          const data = await rpc("/owl/rpc_service", {limit: 15})

@@ -3,6 +3,7 @@
 import { registry } from "@web/core/registry"
 import { Layout } from "@web/search/layout"
 import { getDefaultConfig } from "@web/views/view"
+import { useService } from "@web/core/utils/hooks"
 
 const { Component, useSubEnv, useState, onWillStart } = owl
 
@@ -20,17 +21,17 @@ export class OwlDashboard extends Component {
             }
         })
 
-        // this.dashboard_service = useService("owlDashboardService")
+         this.dashboard_service = useService("owlDashboardService")
         // console.log(this.dashboard_service)
-        // this.dashboard_data = useState(this.dashboard_service.dashboard_data)
+         this.dashboard_data = useState(this.dashboard_service.dashboard_data)
         // this.simple_mail = useService("simpleMailService")
 
-        this.dashboard_data= {
-            "partners":"1",
-            "customers":"2",
-            "individuals":"3",
-            "locations":"4",
-        }
+        // this.dashboard_data= {
+        //     "partners":"1",
+        //     "customers":"2",
+        //     "individuals":"3",
+        //     "locations":"4",
+        // }
  
     }
 
