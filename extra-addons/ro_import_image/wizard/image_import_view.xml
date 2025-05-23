@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="image_import_form" model="ir.ui.view">
+        <field name="name">image.import.form</field>
+        <field name="model">image.import</field>
+        <field name="arch" type="xml">
+            <form string="Image import">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="model_id"/>
+                        </group>
+                        <group>
+                            <field name="field_reference_id"
+                                   domain="[('model_id', '=', model_id), ('ttype', '=', 'char')]"/>
+                            <field name="field_imagen_id"
+                                   domain="[('model_id', '=', model_id), ('ttype', '=', 'binary')]"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="image_ids" widget="many2many_binary" required="1"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="import_image" string="Import" type="object" class="btn-primary" data-hotkey="q"/>
+                    <button special="cancel" data-hotkey="x" string="Cancel" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    <record id="action_view_base_image_import" model="ir.actions.act_window">
+        <field name="name">Import images</field>
+        <field name="res_model">image.import</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem name="Import image" id="import_image_menu" parent="base.menu_management"
+              sequence="110"
+              action="action_view_base_image_import"/>
+
+</odoo>

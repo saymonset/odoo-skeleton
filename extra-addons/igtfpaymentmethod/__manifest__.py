@@ -16,19 +16,18 @@
     ],
     'assets': {
              
-               'point_of_sale.assets': [
-                    'igtfpaymentmethod/static/src/**/*.js',
-                    'igtfpaymentmethod/static/src/**/*.xml',
-                ],
                 "point_of_sale._assets_pos": [
-                     'igtfpaymentmethod/static/src/**/*.js',
-                    'igtfpaymentmethod/static/src/**/*.xml',
+                     'igtfpaymentmethod/static/src/app/screens/**/*.js',
+                     'igtfpaymentmethod/static/src/app/screens/**/*.xml',
+                     'igtfpaymentmethod/static/src/config.js',
+                     'igtfpaymentmethod/static/src/currencyConverter.js',
                 ],
-        'web.assets_backend': [
-                'igtfpaymentmethod/static/src/**/*.js',
-                        'igtfpaymentmethod/static/src/**/*.xml',
-                    ],
-              
+                'web.assets_backend': [
+                    'igtfpaymentmethod/static/src/app/dashboard/**/*.js',
+                    'igtfpaymentmethod/static/src/app/services/**/*.js',
+                    'igtfpaymentmethod/static/src/app/services/**/*.xml',
+                    'igtfpaymentmethod/static/src/app/dashboard/**/*.xml',
+                ],
             
           },
       
