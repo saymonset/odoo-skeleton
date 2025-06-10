@@ -2,11 +2,10 @@
 
 import { patch } from '@web/core/utils/patch';
 import { PaymentScreen } from "@point_of_sale/app/screens/payment_screen/payment_screen";
-import {  onMounted } from "@odoo/owl";
+import {  onMounted, onWillStart , onWillUpdateProps } from "@odoo/owl";
 import {  paymentMethodManager } from "@igtfpaymentmethod/app/screens/utils";
 import { _t } from "@web/core/l10n/translation";
-//import { PaymentScreenCustom } from "@igtfpaymentmethod/app/screens/payment_screen/payment_screen_custom/payment_screen_custom";
-// Guarda una referencia al método original
+import { useService} from "@web/core/utils/hooks"
 const originalAddNewPaymentLine = PaymentScreen.prototype.addNewPaymentLine;
 
 patch(PaymentScreen.prototype, {
@@ -15,8 +14,13 @@ patch(PaymentScreen.prototype, {
 },
   setup() {
     super.setup(...arguments);
+    this.igtfPaymentScreenService = useService("igtfPaymentScreenService");
 
-    onMounted(() => {
+    onWillStart(() => {
+        this.igtfPaymentScreenService.setCurrentOrder(this.currentOrder);
+    });
+    onWillUpdateProps((nextProps) => {
+        this.igtfPaymentScreenService.setCurrentOrder(nextProps.currentOrder);
     });
 },
 

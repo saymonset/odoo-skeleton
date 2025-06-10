@@ -5,7 +5,7 @@ import { CONFIG } from "@igtfpaymentmethod/config";
 import {  paymentMethodManager } from "@igtfpaymentmethod/app/screens/utils";
 import { convertCurrency } from "@igtfpaymentmethod/currencyConverter"; 
 import { usePos } from "@point_of_sale/app/store/pos_hook";
-
+import { useService} from "@web/core/utils/hooks"
 
 
 export class PaymentLinesCustom extends Component {
@@ -26,6 +26,8 @@ export class PaymentLinesCustom extends Component {
     setup() {
       //  
         super.setup();
+        this.igtfPaymentScreenService = useService("igtfPaymentScreenService");
+        
         this.pos = usePos();
         
         console.log("Current props:", this.props);
@@ -46,6 +48,7 @@ export class PaymentLinesCustom extends Component {
 
         console.log("********Payment lines recibidas:", this.props.paymentLines || []);
 
+  
         onRendered(() => {
             if (this.props.paymentLines && this.props.paymentLines.length > 0) {
                 this.updateHasData(this.props.paymentLines);
@@ -96,15 +99,19 @@ onBlur(event){
         this.state.result = 0; // Reinicia el resultado
         console.log("El campo se ha inicializado en 0.");
     }
+
+    //acomodar manana 2025-05-23
+        const currentOrder = this.igtfPaymentScreenService.getCurrentOrder();
+        this.payment_methods_from_config[0].amount = this.state.result;
+        currentOrder.add_paymentline(this.payment_methods_from_config[0]);
+//acomodar manana fin
 }
 
 async onInputChange(event) {
+    
     const inputValue = parseFloat(event.target.value) || 0; // Captura el valor del input
     this.state.inputValue=inputValue;
     let fromCurrency =  this.state.selectedCurrency ==="USD"? "USD" :"VEF"; // Moneda de origen
-
-
- 
  
    // this.calculo( this.state.inputValue, fromCurrency);
      // Obtener el tipo de cambio
@@ -118,8 +125,10 @@ async onInputChange(event) {
 
 
 updateLastPaymentLine(newValue) {
+
     if (this.props.paymentLines && this.props.paymentLines.length > 0) {
         const lastLine = this.props.paymentLines[this.props.paymentLines.length - 1];
+        
         //Secaldula el igtf
      //   
         if (this.state.is_igtf) {
@@ -127,6 +136,7 @@ updateLastPaymentLine(newValue) {
         }else{
             lastLine.amount = newValue; // Update the value of the last element
         }
+  
         console.log("Última línea actualizada:", lastLine);
     } else {
         console.warn("No payment lines available to update.");
