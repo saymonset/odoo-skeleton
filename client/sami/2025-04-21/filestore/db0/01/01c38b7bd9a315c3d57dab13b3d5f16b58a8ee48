@@ -1,0 +1,44 @@
+
+                // Simplified color-contrast function to replicate bootstrap in report preview.
+                @function preview-color-contrast($background) {
+                    @if (lightness($background) > 50) {
+                        @return black;
+                    } @else {
+                        @return white;
+                    }
+                }
+
+                .o_company_1_layout {
+                    font-family: Lato;
+
+                    h2 {
+                        color: #af687b;
+                    }
+
+                    #informations strong {
+                        color: #afa29a;
+                    }
+
+                    .o_total strong {
+                        color: #af687b;
+                    }
+
+                    .o_company_tagline {
+                        color: #af687b
+                    }
+                &.o_report_layout_bubble {
+                    #informations {
+                        border-color: #afa29a;
+                        background-color: mix(white, #afa29a, 92%);
+                    }
+
+                    thead th, #total .o_total td {
+                        background-color: #af687b;
+                        color: preview-color-contrast(#af687b);
+
+                        strong {
+                            color: preview-color-contrast(#af687b);
+                        }
+                    }
+                }
+            }
