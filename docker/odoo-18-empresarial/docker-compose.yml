@@ -1,0 +1,51 @@
+services:
+  web:
+    container_name: ${ODOO_CONTAINER_NAME}
+    image: odooenterprice:${ODOO_VERSION}
+    depends_on:
+      - db
+    ports:
+      - "${ODOO_PORT}:${ODOO_PORT}"
+      - "${DEBUGPY_PORT}:${DEBUGPY_PORT}"
+    networks:
+      - odoo18_enterprice_network  
+    volumes:
+      - ./conf:/etc/odoo
+      - ./logs:/var/log/odoo
+      - odoo-web-data:/var/lib/odoo
+      - ${ODOO_SERVER}:/var/lib/odoo/odoo
+      - ${CUSTOM_ADDONS_ENTERPRICE}:/var/lib/odoo/custom_addons_enterprice
+      - ${CUSTOM_ADDONS_EXTRA}:/var/lib/odoo/custom_addons_extra
+      - ${CUSTOM_ADDONS_OCA}:/var/lib/odoo/custom_addons_oca
+    entrypoint: ${ENTRYPOINT}
+  db:
+    container_name: ${PG_CONTAINER_NAME}
+    image: postgres:${PG_VERSION}
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_PASSWORD=${PG_PASSWORD}
+      - POSTGRES_USER=${PG_USER}
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    ports:
+      - ${PG_PORT}:5432
+    networks:
+      - odoo18_enterprice_network    
+    volumes:
+      - pgdb-data:/var/lib/postgresql/data/pgdata
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: saymon_set@hotmail.com    
+      PGADMIN_DEFAULT_PASSWORD: 123456
+    ports:
+      - "8080:80"
+    depends_on:
+      - db        
+
+volumes:
+  odoo-web-data:
+  pgdb-data:
+
+networks:
+  odoo18_enterprice_network:
+    name: odoo18_enterprice_network  
