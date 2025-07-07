@@ -1,3 +1,7 @@
+
+# Aqui esta la ubicacion de la confiuracion en nginx
+/etc/nginx/sites-available/jumpjibe.com.conf
+
 #Lista los certificados
 sudo certbot certificates
 
