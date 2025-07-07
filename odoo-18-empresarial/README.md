@@ -7,7 +7,9 @@ https://www.youtube.com/watch?v=9qy8a5Kuq1Q
 ```bash
   docker network create odoo18_enterprice_network
  ```
-
+```bash
+Renombrar env copy a .env y modificar variables de ambiente si es necesario
+```
 0.1 5. Compilar la imagen de docker con el fichero Dockerfile.
 ```bash
  docker build -t odooenterprice:18 .
