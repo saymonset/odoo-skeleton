@@ -7,11 +7,11 @@ sudo openssl dhparam -out /etc/ssl/certs/dhparam.pem 2048
 
 sudo mkdir -p /var/lib/letsencrypt/.well-known
 sudo chgrp www-data /var/lib/letsencrypt
-sudo chmod g+s /var/lib/letsencrypt
+sudo chmod 777 /var/lib/letsencrypt
 
 ---------------------------------------------------------------
 
-sudo nano /etc/nginx/snippets/letsencrypt.conf
+sudo vi /etc/nginx/snippets/letsencrypt.conf
 
 -----
 
@@ -26,7 +26,7 @@ location ^~ /.well-known/acme-challenge/ {
 
 ---------------------------------------------------------------
 
-sudo nano /etc/nginx/snippets/ssl.conf
+sudo vi /etc/nginx/snippets/ssl.conf
 
 ----
 
@@ -53,7 +53,7 @@ add_header X-Content-Type-Options nosniff;
 
 ---------------------------------------------------------------
 
-sudo nano /etc/nginx/sites-available/adlacademy.online.conf
+sudo vi /etc/nginx/sites-available/adlacademy.online.conf
 
 ----
 
