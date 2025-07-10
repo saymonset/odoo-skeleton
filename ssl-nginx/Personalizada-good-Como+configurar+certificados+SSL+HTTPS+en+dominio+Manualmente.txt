@@ -12,7 +12,8 @@ sudo openssl dhparam -out /etc/ssl/certs/dhparam.pem 2048
 
 sudo mkdir -p /var/lib/letsencrypt/.well-known
 sudo chgrp www-data /var/lib/letsencrypt
-sudo chmod g+s /var/lib/letsencrypt
+# La ultimaves sin estos permisos no funciono
+sudo chmod 777 /var/lib/letsencrypt
 
 ---------------------------------------------------------------
 
@@ -31,7 +32,7 @@ location ^~ /.well-known/acme-challenge/ {
 
 ---------------------------------------------------------------
 
-sudo nano /etc/nginx/snippets/ssl.conf
+sudo vi /etc/nginx/snippets/ssl.conf
 
 ----
 
@@ -58,7 +59,7 @@ add_header X-Content-Type-Options nosniff;
 
 ---------------------------------------------------------------
 
-sudo nano /etc/nginx/sites-available/jumpjibe.com.conf
+sudo vi /etc/nginx/sites-available/jumpjibe.com.conf
 
 ----
 
@@ -122,7 +123,7 @@ sudo certbot certonly --agree-tos --email admin@jumpjibe.com --webroot -w /var/l
 
 -----------------------------------------------------------------
 
-sudo nano /etc/nginx/sites-available/jumpjibe.com.conf
+sudo vi /etc/nginx/sites-available/jumpjibe.com.conf
 
 
 ----
@@ -175,7 +176,7 @@ https://www.ssllabs.com/ssltest/
 
 ---------------------------------------------------------------------
 
-sudo nano /etc/letsencrypt/cli.ini
+sudo vi /etc/letsencrypt/cli.ini
 
 ----
 
@@ -187,7 +188,7 @@ sudo certbot renew --dry-run
 
 
 
-sudo nano /etc/nginx/sites-enabled/jumpjibe.com.conf
+sudo vi /etc/nginx/sites-enabled/jumpjibe.com.conf
 
 # Para un subdominio.. Si wuieres varios subdominios, dirijete a conf-2-subdominios
 ----
