@@ -95,9 +95,16 @@ sudo certbot certonly --agree-tos --email admin@jumpjibe.com --webroot -w /var/l
      sudo ufw status
    ```
 
-   ```bash
-    sudo ufw allow out 443
-   ```
+ ```bash
+ sudo ufw allow 443/tcp
+ ```
+```bash
+sudo nginx -t
+```
+```bash
+sudo systemctl reload nginx
+```
+
 
    ```bash
      curl -I https://acme-v02.api.letsencrypt.org
@@ -105,6 +112,10 @@ sudo certbot certonly --agree-tos --email admin@jumpjibe.com --webroot -w /var/l
 
 ### Generar certificados
 
+##Para Horeb. No se te olvide  que el correo es el correo con su dominio
+ sudo certbot certonly --agree-tos --email admin@horebcorporation.net--webroot -w /var/lib/letsencrypt/ -d odoo.horebcorporation.net
+
+## Para jumpjibe
     # Multiplos subdominios para que soporten ssl
     ```bash
      sudo certbot certonly --agree-tos --email admin@jumpjibe.com --webroot -w /var/lib/letsencrypt/ -d jumpjibe.com -d www.jumpjibe.com -d antojitos.jumpjibe.com 
@@ -124,45 +135,69 @@ sudo certbot certonly --agree-tos --email admin@jumpjibe.com --webroot -w /var/l
 -----------------------------------------------------------------
 
 sudo vi /etc/nginx/sites-available/jumpjibe.com.conf
-
+El odoo.horebcorporation.net lo puedes sustituir por otro dominio por ejemplo
+www.jumpjibe.com o jumpjibe.com
 
 ----
-
 server {
     listen 80;
-    server_name www.jumpjibe.com jumpjibe.com;
+    server_name odoo.horebcorporation.net;
 
     include snippets/letsencrypt.conf;
-    return 301 https://$host$request_uri;
+    return 301 https://odoo.horebcorporation.net$request_uri;
 }
 
+ # Configuración para odoo.horebcorporation.net (HTTPS)
 server {
     listen 443 ssl http2;
-    server_name www.jumpjibe.com;
+    server_name odoo.horebcorporation.net;
 
-    ssl_certificate /etc/letsencrypt/live/jumpjibe.com/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/jumpjibe.com/privkey.pem;
-    ssl_trusted_certificate /etc/letsencrypt/live/jumpjibe.com/chain.pem;
+    proxy_read_timeout 720s;
+    proxy_connect_timeout 720s;
+    proxy_send_timeout 720s;
+
+    # Proxy headers
+    proxy_set_header X-Forwarded-Host $host;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_set_header X-Real-IP $remote_addr;
+
+    # SSL parameters
+    ssl_certificate /etc/letsencrypt/live/odoo.horebcorporation.net/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/odoo.horebcorporation.net/privkey.pem;
+    ssl_trusted_certificate /etc/letsencrypt/live/odoo.horebcorporation.net/chain.pem;
     include snippets/ssl.conf;
     include snippets/letsencrypt.conf;
 
-    return 301 https://jumpjibe.com$request_uri;
+    # log files
+    access_log /var/log/nginx/odoo.access.log;
+    error_log /var/log/nginx/odoo.error.log;
+
+    # Handle longpoll requests
+    location /longpolling {
+        proxy_pass http://127.0.0.1:18072;
+    }
+
+    # Handle / requests
+    location / {
+       proxy_redirect off;
+       proxy_pass http://127.0.0.1:18069;
+    }
+
+    # Cache static files
+    location ~* /web/static/ {
+        proxy_cache_valid 200 90m;
+        proxy_buffering on;
+        expires 864000;
+        proxy_pass http://127.0.0.1:18069;
+    }
+
+    # Gzip
+    gzip_types text/css text/less text/plain text/xml application/xml application/json application/javascript;
+    gzip on;
 }
 
-server {
-    listen 443 ssl http2;
-    server_name jumpjibe.com;
-
-    ssl_certificate /etc/letsencrypt/live/jumpjibe.com/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/jumpjibe.com/privkey.pem;
-    ssl_trusted_certificate /etc/letsencrypt/live/jumpjibe.com/chain.pem;
-    include snippets/ssl.conf;
-    include snippets/letsencrypt.conf;
-
-    # . . . other code
-}
-
-
+ 
 
 ----
 
