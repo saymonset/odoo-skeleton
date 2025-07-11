@@ -17,7 +17,7 @@ sudo chmod 777 /var/lib/letsencrypt
 
 ---------------------------------------------------------------
 
-sudo nano /etc/nginx/snippets/letsencrypt.conf
+sudo vi /etc/nginx/snippets/letsencrypt.conf
 
 -----
 
