@@ -3825,3 +3825,4 @@ instalacion-docker-compose-18-17/docker-instalacion-18/v18/pgdata/pg_wal/0000000
 instalacion-docker-compose-18-17/docker-instalacion-18/v18/pgdata/pg_wal/000000010000000000000009
 instalacion-docker-compose-18-17/docker-instalacion-18/v18/pgdata/pg_xact/0000
 odoo-18-empresarial/logs/
+odoo-18-comunity/logs
