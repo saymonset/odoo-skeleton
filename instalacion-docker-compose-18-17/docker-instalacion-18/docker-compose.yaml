@@ -9,7 +9,7 @@ services:
       - "${VERSION}069:8069"
       - "${VERSION}072:8072"
     networks:
-      - odoo_network
+      - odoo_network_18
     volumes:
       - "./v${VERSION}/odoo-web-data:/var/lib/odoo"
       - "./v${VERSION}/config/odoo.conf:/etc/odoo/odoo.conf"
@@ -28,7 +28,7 @@ services:
     ports:
       - "${VERSION}432:5432"
     networks:
-      - odoo_network
+      - odoo_network_18
     volumes:
       - "./v${VERSION}/pgdata:${PGDATA}"
 
@@ -39,5 +39,5 @@ volumes:
     name: "${APP:-myodoo}-db-v${VERSION}"
 
 networks:
-  odoo_network:
-    name: odoo_network
+  odoo_network_18:
+    name: odoo_network_18
