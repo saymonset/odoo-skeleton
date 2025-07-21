@@ -31,6 +31,26 @@ services:
       - odoo_network_18
     volumes:
       - "./v${VERSION}/pgdata:${PGDATA}"
+  n8n:
+      image: n8nio/n8n
+      container_name: "n8n-container"
+      restart: unless-stopped
+      ports:
+        - "5678:5678"  # Puerto fijo para n8n (independiente de ${VERSION})
+      networks:
+        - odoo_network_18
+      environment:
+        - DB_TYPE=postgresdb
+        - DB_POSTGRESDB_DATABASE=postgres  # Usa la misma DB que Odoo
+        - DB_POSTGRESDB_HOST=db            # Nombre del servicio PostgreSQL
+        - DB_POSTGRESDB_PORT=5432
+        - DB_POSTGRESDB_USER=odoo          # Usuario existente
+        - DB_POSTGRESDB_PASSWORD=${POSTGRES_PASSWORD}  # Misma contraseña
+        - N8N_BASIC_AUTH_ACTIVE=true       # Seguridad básica (opcional)
+        - N8N_BASIC_AUTH_USER=${N8N_USER}        # Cambia esto
+        - N8N_BASIC_AUTH_PASSWORD=${N8N_PASSWORD}    # Cambia esto
+      volumes:
+        - "./v${VERSION}/n8n_data:/home/node/.n8n"  # Persistencia de datos      
 
 volumes:
   odoo-web-data:
