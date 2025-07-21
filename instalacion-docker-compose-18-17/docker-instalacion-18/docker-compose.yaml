@@ -1,3 +1,5 @@
+version: '3'
+
 services:
   web:
     image: "odoo:${VERSION}"
@@ -15,15 +17,18 @@ services:
       - "./v${VERSION}/config/odoo.conf:/etc/odoo/odoo.conf"
       - "./v${VERSION}/addons:/mnt/extra-addons"
     environment:
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD} # Set the password directly here
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
 
   db:
     image: postgres:16
     container_name: "odoo-db${VERSION}"
     environment:
-      - POSTGRES_DB=postgres
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}  # Set the password directly here
+      - POSTGRES_DB=postgres  # Base de datos principal para Odoo
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_USER=odoo
+      - POSTGRES_MULTIPLE_DATABASES=evolutiondb  # Nueva variable para crear DB adicional
+      - POSTGRES_MULTIPLE_USER=evolution_user    # Usuario para Evolution
+      - POSTGRES_MULTIPLE_PASSWORD=123456        # Contraseña para Evolution
       - PGDATA=${PGDATA}
     ports:
       - "${VERSION}432:5432"
@@ -31,32 +36,69 @@ services:
       - odoo_network_18
     volumes:
       - "./v${VERSION}/pgdata:${PGDATA}"
+    # Script para crear la DB adicional al iniciar
+    command: >
+      bash -c "
+      echo 'Creando bases de datos adicionales...';
+      docker-entrypoint.sh postgres &
+      sleep 5;
+      psql -U odoo -d postgres -c \"CREATE USER evolution_user WITH PASSWORD '123456';\";
+      psql -U odoo -d postgres -c \"CREATE DATABASE evolutiondb OWNER evolution_user;\";
+      wait"
+
+  redis:
+    image: redis:7
+    container_name: evolution_redis
+    restart: always
+    ports:
+      - "6379:6379"
+    networks:
+      - odoo_network_18
+
+  evolution-api:
+    container_name: evolution_api
+    image: atendai/evolution-api:v2.1.1
+    restart: always
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    depends_on:
+      - db
+      - redis
+    networks:
+      - odoo_network_18
+    volumes:
+      - evolution_instances:/evolution/instances
+
   n8n:
-      image: n8nio/n8n
-      container_name: "n8n-container"
-      restart: unless-stopped
-      ports:
-        - "5678:5678"  # Puerto fijo para n8n (independiente de ${VERSION})
-      networks:
-        - odoo_network_18
-      environment:
-        - DB_TYPE=postgresdb
-        - DB_POSTGRESDB_DATABASE=postgres  # Usa la misma DB que Odoo
-        - DB_POSTGRESDB_HOST=db            # Nombre del servicio PostgreSQL
-        - DB_POSTGRESDB_PORT=5432
-        - DB_POSTGRESDB_USER=odoo          # Usuario existente
-        - DB_POSTGRESDB_PASSWORD=${POSTGRES_PASSWORD}  # Misma contraseña
-        - N8N_BASIC_AUTH_ACTIVE=true       # Seguridad básica (opcional)
-        - N8N_BASIC_AUTH_USER=${N8N_USER}        # Cambia esto
-        - N8N_BASIC_AUTH_PASSWORD=${N8N_PASSWORD}    # Cambia esto
-      volumes:
-        - "./v${VERSION}/n8n_data:/home/node/.n8n"  # Persistencia de datos      
+    image: n8nio/n8n
+    container_name: "n8n-container"
+    restart: unless-stopped
+    ports:
+      - "5678:5678"
+    networks:
+      - odoo_network_18
+    environment:
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_DATABASE=postgres
+      - DB_POSTGRESDB_HOST=db
+      - DB_POSTGRESDB_PORT=5432
+      - DB_POSTGRESDB_USER=odoo
+      - DB_POSTGRESDB_PASSWORD=${POSTGRES_PASSWORD}
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=${N8N_USER}
+      - N8N_BASIC_AUTH_PASSWORD=${N8N_PASSWORD}
+    volumes:
+      - "./v${VERSION}/n8n_data:/home/node/.n8n"
 
 volumes:
   odoo-web-data:
     name: "${APP:-myodoo}-web-v${VERSION}"
   odoo-db-data:
     name: "${APP:-myodoo}-db-v${VERSION}"
+  evolution_instances:
+    name: "evolution-instances"
 
 networks:
   odoo_network_18:

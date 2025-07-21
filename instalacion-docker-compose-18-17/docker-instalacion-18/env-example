@@ -1,7 +1,32 @@
 APP=doo_app
 VERSION=18
 POSTGRES_PASSWORD=123456
-HOST=ep-still-morning-a5ancq44.us-east-2.aws.neon.tech
-PGDATA=/var/lib/postgresql15/data/pgdata
+HOST=localhost  # Cambiado de Neon.tech a local (ya que usas PostgreSQL local en Docker)
+PGDATA=/var/lib/postgresql/data/pgdata  # Corregido: postgresql16 → postgresql
+
+# Configuración de Evolution API
+AUTHENTICATION_API_KEY=123456.+az1
+DATABASE_ENABLED=true
+DATABASE_PROVIDER=postgresql
+DATABASE_CONNECTION_URI=postgresql://evolution_user:123456@db:5432/evolutiondb  # Usa 'db' como host (nombre del servicio)
+DATABASE_CONNECTION_CLIENT_NAME=evolution_exchange
+
+# Persistencia de datos
+DATABASE_SAVE_DATA_INSTANCE=true
+DATABASE_SAVE_DATA_NEW_MESSAGE=true
+DATABASE_SAVE_MESSAGE_UPDATE=true
+DATABASE_SAVE_DATA_CONTACTS=true
+DATABASE_SAVE_DATA_CHATS=true
+DATABASE_SAVE_DATA_LABELS=true
+DATABASE_SAVE_DATA_HISTORIC=true
+
+# Redis
+CACHE_REDIS_ENABLED=true
+CACHE_REDIS_URI=redis://redis:6379/6  # Usa 'redis' como host (nombre del servicio)
+CACHE_REDIS_PREFIX_KEY=evolution
+CACHE_REDIS_SAVE_INSTANCES=false
+CACHE_LOCAL_ENABLED=false
+
+# n8n
 N8N_USER=admin
 N8N_PASSWORD=admin
