@@ -70,7 +70,7 @@ services:
       - odoo_network_18
     volumes:
       - evolution_instances:/evolution/instances
-
+ 
   n8n:
     image: n8nio/n8n
     container_name: "n8n-container"
@@ -89,8 +89,16 @@ services:
       - N8N_BASIC_AUTH_ACTIVE=true
       - N8N_BASIC_AUTH_USER=${N8N_USER}
       - N8N_BASIC_AUTH_PASSWORD=${N8N_PASSWORD}
+      - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true  # Added to fix permissions
+      - USER=node  # Ensure running as node user
+    user: "node"  # Run as node user instead of root
     volumes:
       - "./v${VERSION}/n8n_data:/home/node/.n8n"
+    healthcheck:  # Added healthcheck
+      test: ["CMD", "curl", "-f", "http://localhost:5678/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
 volumes:
   odoo-web-data:
