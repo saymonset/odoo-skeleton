@@ -30,3 +30,4 @@ CACHE_LOCAL_ENABLED=false
 # n8n
 N8N_USER=admin
 N8N_PASSWORD=admin
+N8N_HOST=n8n.jumpjibe.com

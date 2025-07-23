@@ -80,6 +80,10 @@ services:
     networks:
       - odoo_network_18
     environment:
+      - N8N_HOST=n8n.jumpjibe.com
+      - N8N_PROTOCOL=https
+      - WEBHOOK_URL=https://n8n.jumpjibe.com/
+      - N8N_EDITOR_BASE_URL=https://n8n.jumpjibe.com
       - DB_TYPE=postgresdb
       - DB_POSTGRESDB_DATABASE=postgres
       - DB_POSTGRESDB_HOST=db
@@ -90,6 +94,7 @@ services:
       - N8N_BASIC_AUTH_USER=${N8N_USER}
       - N8N_BASIC_AUTH_PASSWORD=${N8N_PASSWORD}
       - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true  # Added to fix permissions
+      - N8N_RUNNERS_ENABLED=true  # Enable runners
       - USER=node  # Ensure running as node user
     user: "node"  # Run as node user instead of root
     volumes:

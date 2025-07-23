@@ -1,21 +1,28 @@
  # Copiar el archivo env-example a .env
  ```bash
  cp env-example .env
- ```
+  scp /Users/simon/opt/odoo/odoo-skeleton/instalacion-docker-compose-18-17/n8n-evolution-api-odoo-18/env-example root@5.189.161.7:/root/odoo/n8n-evolution-api-odoo-18/.env
+  ```
  # Copiar del local al remmote el archivo docker compose
- ```bash
- scp /Users/simon/opt/odoo/odoo-skeleton/instalacion-docker-compose-18-17/docker-instalacion-18/docker-compose.yaml  root@5.189.161.7:/root/odoo/n8n-evolution-api-odoo-18/docker-compose.yaml
-```
+
+```bash
+ scp /Users/simon/opt/odoo/odoo-skeleton/instalacion-docker-compose-18-17/n8n-evolution-api-odoo-18/docker-compose.yaml root@5.189.161.7:/root/odoo/n8n-evolution-api-odoo-18
+ ```
 # Ruta de la configuracion de los dominios y https en servidor remoto
 ```bash
 /etc/nginx/sites-available
 /etc/nginx/sites-available/jumpjibe.com.conf
 ```
+# Creamos enlace simbolico para la configuracion de los puertos y ssl 
+```bash
+ln -s /etc/nginx/sites-available conf_ngnix_puertos_ssl
+```
 # Copiar del remote al local el archivo de configuracion de dominio y subdomninios
  ```bash
  scp root@5.189.161.7:/etc/nginx/sites-available/jumpjibe.com.conf  /Users/simon/opt/odoo/odoo-skeleton/instalacion-docker-compose-18-17/n8n-evolution-api-odoo-18
 ```
-#Generar ssl para subdominios, ejemplo file: generate-ssl-jumpjibe.com.conf
+# PRIMERA PARTE archivo jumpjibe.com.conf
+# Generar ssl para subdominios, ejemplo file: generate-ssl-jumpjibe.com.conf
 # Apuntar los nuevos 80 del subdoninio y subirlo nuevamente al remoto , borrando el remotojumpjibe.com.conf  y colocando el nuevo jumpjibe.com.conf. Example: 
 # Subdominio para n8n (HTTP)
 server {
@@ -41,6 +48,7 @@ sudo ufw allow 6379/tcp
 sudo ufw allow 8080/tcp
 sudo ufw allow 5678/tcp
 ```
+# SEGUNDA PARTE archivo jumpjibe.com.conf
 # Subir el archivo jumpjibe.com.conf con los ssl de los subdominios
 # Ya funcionando
 ```bash
