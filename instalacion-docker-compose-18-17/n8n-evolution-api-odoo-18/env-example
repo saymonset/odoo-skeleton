@@ -10,6 +10,7 @@ DATABASE_ENABLED=true
 DATABASE_PROVIDER=postgresql
 DATABASE_CONNECTION_URI=postgresql://evolution_user:123456@db:5432/evolutiondb  # Usa 'db' como host (nombre del servicio)
 DATABASE_CONNECTION_CLIENT_NAME=evolution_exchange
+CONFIG_SESSION_PHONE_VERSION=2.3000.1023204200
 
 # Persistencia de datos
 DATABASE_SAVE_DATA_INSTANCE=true

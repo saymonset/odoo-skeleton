@@ -59,6 +59,17 @@ scp   /Users/simon/opt/odoo/odoo-skeleton/instalacion-docker-compose-18-17/n8n-e
  ```
  docker network create odoo_network_${VERSION}
  ```
+
+ # Redis recomienda habilitar vm.overcommit_memory=1 en sistemas Linux para evitar problemas en entornos con poca memoria.
+ ```bash
+ # Habilitar overcommit_memory temporalmente
+sudo sysctl vm.overcommit_memory=1
+
+# Hacerlo persistente tras reinicios
+echo "vm.overcommit_memory = 1" | sudo tee -a /etc/sysctl.conf
+sudo sysctl -p
+docker restart evolution_redis
+```
 ###
 ```bash
 Asegurate que la variable de ambiente file este : .env
