@@ -11,6 +11,40 @@ scp -r /Users/simon/opt/odoo/oca/account-financial-reporting-18.0/account_financ
 ```bash
 scp -r /Users/simon/opt/odoo/oca/account-financial-reporting-18.0/account_tax_balance  root@5.189.161.7:/root/odoo/n8n-evolution-api-odoo-18/v18/addons
 ```
+```bash
+scp -r /Users/simon/opt/odoo/oca/account-payment-18.0/account_payment_promissory_note  root@5.189.161.7:/root/odoo/n8n-evolution-api-odoo-18/v18/addons
+```
+```bash
+scp -r /Users/simon/opt/odoo/oca/account-payment-18.0/account_payment_return  root@5.189.161.7:/root/odoo/n8n-evolution-api-odoo-18/v18/addons
+```
+```bash
+scp -r /Users/simon/opt/odoo/oca/account-payment-18.0/account_payment_method_base  root@5.189.161.7:/root/odoo/n8n-evolution-api-odoo-18/v18/addons
+```
+```bash
+scp -r /Users/simon/opt/odoo/oca/server-ux-18.0/base_tier_validation root@5.189.161.7:/root/odoo/n8n-evolution-api-odoo-18/v18/addons
+```
+```bash
+scp -r /Users/simon/opt/odoo/oca/account-payment-18.0/account_payment_tier_validation  root@5.189.161.7:/root/odoo/n8n-evolution-api-odoo-18/v18/addons
+```
+```bash
+scp -r /Users/simon/opt/odoo/oca/account-payment-18.0/account_check_printing_report_base  root@5.189.161.7:/root/odoo/n8n-evolution-api-odoo-18/v18/addons
+```
+```bash
+scp -r /Users/simon/opt/odoo/oca/account-payment-18.0/account_due_list  root@5.189.161.7:/root/odoo/n8n-evolution-api-odoo-18/v18/addons
+```
+```bash
+scp -r /Users/simon/opt/odoo/oca/bank-payment-18.0/account_payment_mode  root@5.189.161.7:/root/odoo/n8n-evolution-api-odoo-18/v18/addons
+```
+```bash
+scp -r /Users/simon/opt/odoo/oca/bank-payment-18.0/account_payment_partner  root@5.189.161.7:/root/odoo/n8n-evolution-api-odoo-18/v18/addons
+```
+```bash
+scp -r /Users/simon/opt/odoo/oca/account-payment-18.0/account_due_list_payment_mode  root@5.189.161.7:/root/odoo/n8n-evolution-api-odoo-18/v18/addons
+```
+```bash
+scp -r /Users/simon/opt/odoo/oca/account-payment-18.0/account_payment_term_extension  root@5.189.161.7:/root/odoo/n8n-evolution-api-odoo-18/v18/addons
+```
+
 # Reiniciamos docker
 ```bash
 docker restart odoo-18
