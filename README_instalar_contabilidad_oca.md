@@ -45,6 +45,19 @@ scp -r /Users/simon/opt/odoo/oca/account-payment-18.0/account_due_list_payment_m
 scp -r /Users/simon/opt/odoo/oca/account-payment-18.0/account_payment_term_extension  root@5.189.161.7:/root/odoo/n8n-evolution-api-odoo-18/v18/addons
 ```
 
+Modulos conciliacion:
+```bash
+scp -r /Users/simon/opt/odoo/oca/account-reconcile-18.0/account_move_base_import  root@5.189.161.7:/root/odoo/n8n-evolution-api-odoo-18/v18/addons
+scp -r /Users/simon/opt/odoo/oca/account-reconcile-18.0/account_reconcile_model_oca  root@5.189.161.7:/root/odoo/n8n-evolution-api-odoo-18/v18/addons
+scp -r /Users/simon/opt/odoo/oca/account-reconcile-18.0/account_reconcile_oca  root@5.189.161.7:/root/odoo/n8n-evolution-api-odoo-18/v18/addons
+scp -r /Users/simon/opt/odoo/oca/account-reconcile-18.0/account_statement_base  root@5.189.161.7:/root/odoo/n8n-evolution-api-odoo-18/v18/addons
+scp -r /Users/simon/opt/odoo/oca/account-reconcile-18.0/base_transaction_id  root@5.189.161.7:/root/odoo/n8n-evolution-api-odoo-18/v18/addons
+```
+# Instalar Audit Log (Community)
+```bash
+scp -r /Users/simon/opt/odoo/oca/server-tools-18.0/auditlog  root@5.189.161.7:/root/odoo/n8n-evolution-api-odoo-18/v18/addons
+```
+
 # Reiniciamos docker
 ```bash
 docker restart odoo-18
