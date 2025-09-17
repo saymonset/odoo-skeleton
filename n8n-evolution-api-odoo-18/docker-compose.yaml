@@ -1,20 +1,25 @@
 services:
   web:
-    image: "odoo:${VERSION}"
-    container_name: "odoo-${VERSION}"
+    # image: "odoo:${VERSION}"
+    # container_name: "odoo-${VERSION}"
+    image: "odoo-pers:${VERSION}"
+    container_name: "cont-odoo-pers-${VERSION}"
     user: root
     depends_on:
       - db
     ports:
       - "${VERSION}069:8069"
       - "${VERSION}072:8072"
+      - "${DEBUGPY_PORT}:${DEBUGPY_PORT}"
     networks:
       - odoo_network_18
     volumes:
       - "./v${VERSION}/odoo-web-data:/var/lib/odoo"
-      - "./v${VERSION}/config/odoo.conf:/etc/odoo/odoo.conf"
+      - "./v${VERSION}/config:/etc/odoo"
       - "./v${VERSION}/addons:/mnt/extra-addons"
       - "./v${VERSION}/logs:/var/log/odoo"
+      - "${ODOO_SERVER}:/var/lib/odoo/odoo"
+      - "${CUSTOM_ADDONS}:/var/lib/odoo/custom_addons"
     environment:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     #command: "--db-filter=^dbodoo18$$ -i base"

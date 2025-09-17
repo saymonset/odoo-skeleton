@@ -49,8 +49,7 @@ class Disease(models.Model):
     )
 
     parent_path = fields.Char(
-        index=True,
-        unaccent=False)
+        index=True)
 
     disease_type_id = fields.Many2one(
         comodel_name='a_hospital.disease.type',

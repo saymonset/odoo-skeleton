@@ -1,50 +1,31 @@
 APP=doo_app
 VERSION=18
 POSTGRES_PASSWORD=123456
-HOST=localhost  # Cambiado de Neon.tech a local (ya que usas PostgreSQL local en Docker)
-PGDATA=/var/lib/postgresql/data/pgdata  # Corregido: postgresql16 → postgresql
+HOST=localhost
 
-# Configuración de Evolution API
+# PostgreSQL
+PG_VERSION=16
+PG_USER=odoo
+PG_PASSWORD=odoo
+PG_PORT=5434
+PGDATA=/var/lib/postgresql/data/pgdata
+DB_NAME=dbodoo18
+DB_HOST=db
+DB_PORT=5432
+
+# Odoo
+ODOO_SERVER=./src/odoo-18
+CUSTOM_ADDONS=./v18/addons
+DEBUGPY_PORT=8888
+
+# Evolution API
 AUTHENTICATION_API_KEY=123456.+az1
-# If you leave this option as true, the instances will be exposed in the fetch instances endpoint.
-AUTHENTICATION_EXPOSE_IN_FETCH_INSTANCES=true
-LANGUAGE=es
-DATABASE_ENABLED=true
-DATABASE_PROVIDER=postgresql
-DATABASE_CONNECTION_URI=postgresql://evolution_user:123456@db:5432/evolutiondb  # Usa 'db' como host (nombre del servicio)
-DATABASE_CONNECTION_CLIENT_NAME=evolution_exchange
-#CONFIG_SESSION_PHONE_VERSION=2.3000.1023204200
-#CONFIG_SESSION_PHONE_VERSION=2.3000.1026755568
-
-#config session font= "version=2:3000:10:23" 
-
-# Persistencia de datos
-DATABASE_SAVE_DATA_INSTANCE=true
-DATABASE_SAVE_DATA_NEW_MESSAGE=true
-DATABASE_SAVE_MESSAGE_UPDATE=true
-DATABASE_SAVE_DATA_CONTACTS=true
-DATABASE_SAVE_DATA_CHATS=true
-DATABASE_SAVE_DATA_LABELS=true
-DATABASE_SAVE_DATA_HISTORIC=true
-DATABASE_SAVE_IS_ON_WHATSAPP=true
-DATABASE_SAVE_IS_ON_WHATSAPP_DAYS=7
-DATABASE_DELETE_MESSAGE=true
-
-# Redis
-REDIS_PASSWORD=123456.+  # Añadido para la contraseña de Redis
-CACHE_REDIS_ENABLED=true
-CACHE_REDIS_URI=redis://:${REDIS_PASSWORD}@redis:6379/6  # Usa 'redis' como host (nombre del servicio)
-CACHE_REDIS_PREFIX_KEY=evolution
-CACHE_REDIS_SAVE_INSTANCES=false
-CACHE_LOCAL_ENABLED=false
-
+REDIS_PASSWORD=123456.+
 
 # n8n
 N8N_USER=admin
 N8N_PASSWORD=admin
-N8N_HOST=n8n.jumpjibe.com
-N8N_EXPRESS_TRUST_PROXY=true
-N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
+
 
 
 #Loguearse con
