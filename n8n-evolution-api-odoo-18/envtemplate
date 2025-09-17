@@ -44,6 +44,8 @@ N8N_USER=admin
 N8N_PASSWORD=admin
 N8N_HOST=n8n.jumpjibe.com
 N8N_EXPRESS_TRUST_PROXY=true
+N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
+
 
 #Loguearse con
 # saymon_set@hotmail.com

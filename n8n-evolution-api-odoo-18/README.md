@@ -2,6 +2,13 @@
  ```bash
  cp env-example .env
  ```
+ # Si n8n da error de permisos : Causa del error EACCES: permission denied, open '/home/node/.n8n/config' en n8n
+ # Fix con
+ ```bash
+ sudo chown -R 1000:1000 ./v18/n8n_data
+chmod -R u+rw ./v18/n8n_data
+```
+
 
  # Execute given commands one by one to install Odoo
  # Creamos la red en docker
