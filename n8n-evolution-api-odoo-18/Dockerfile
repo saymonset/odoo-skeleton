@@ -52,4 +52,4 @@ ENTRYPOINT ["/entrypoint.sh"]
 # Comando por defecto: arrancar Odoo
 CMD ["python", "-Xfrozen_modules=off", "-m", "odoo"]
 # Para depuración con debugpy:
-# CMD ["python", "-Xfrozen_modules=off", "-m", "debugpy", "--listen", "0.0.0.0:5678", "--wait-for-client", "-m", "odoo"]
+#CMD ["python", "-Xfrozen_modules=off", "-m", "debugpy", "--listen", "0.0.0.0:5678", "--wait-for-client", "-m", "odoo"]

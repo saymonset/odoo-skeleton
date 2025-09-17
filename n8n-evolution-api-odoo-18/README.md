@@ -42,3 +42,17 @@ Cuando Docker Compose ya creó un contenedor roto, a veces hay que limpiarlo:
 
 docker-compose down -v --remove-orphans
 docker-compose up -d --build
+
+
+---------tips
+select value from ir_config_parameter where key = 'web.base.url';
+         value          
+------------------------
+ http://127.0.0.1:18069
+                                               ^
+UPDATE ir_config_parameter
+SET value = 'https://jumpjibe.com'
+WHERE key = 'web.base.url';
+
+UPDATE 1
+dbodoo18=# commit;

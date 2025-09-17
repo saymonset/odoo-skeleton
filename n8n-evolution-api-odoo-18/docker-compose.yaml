@@ -24,7 +24,8 @@ services:
       
     environment:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-    #command: "--db-filter=^dbodoo18$$ -i base"
+    #command: ["python", "-Xfrozen_modules=off", "-m", "odoo", "--db-filter=^dbodoo18$$", "-i", "base"]
+
     
 
   db:

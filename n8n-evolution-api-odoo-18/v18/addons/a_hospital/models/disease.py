@@ -64,7 +64,7 @@ class Disease(models.Model):
         Raises:
             ValidationError: If a recursive hierarchy is detected.
         """
-        if not self._check_recursion():
+        if not self._has_cycle():
             raise models.ValidationError(_(
                 'You cannot create recursive hierarchy.'))
 
