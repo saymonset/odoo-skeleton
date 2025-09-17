@@ -3,7 +3,7 @@ services:
     # image: "odoo:${VERSION}"
     # container_name: "odoo-${VERSION}"
     image: "odoo-pers:${VERSION}"
-    container_name: "cont-odoo-pers-${VERSION}"
+    container_name: "odoo-${VERSION}"
     user: root
     depends_on:
       - db
@@ -20,6 +20,8 @@ services:
       - "./v${VERSION}/logs:/var/log/odoo"
       - "${ODOO_SERVER}:/var/lib/odoo/odoo"
       - "${CUSTOM_ADDONS}:/var/lib/odoo/custom_addons"
+      - "./v${VERSION}/filestore:/var/lib/odoo/.local/share/Odoo"
+      
     environment:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     #command: "--db-filter=^dbodoo18$$ -i base"
