@@ -29,29 +29,32 @@ class Diagnosis(models.Model):
     """
     _name = 'a_hospital.diagnosis'
     _description = 'Diagnosis'
-
+    
+    # Agrega este campo para los archivos adjuntos
+    attachment_ids = fields.Many2many(
+        'ir.attachment',
+        string='Archivos Adjuntos',
+        help='Documentos, imágenes u otros archivos relacionados con el diagnóstico'
+    )
+    
     visit_id = fields.Many2one(
         comodel_name='a_hospital.visit',
         string='Visit',
-        required=True,
     )
 
     doctor_id = fields.Many2one(
         comodel_name='a_hospital.doctor',
         string='Doctor',
-        required=True
     )
 
     disease_id = fields.Many2one(
         comodel_name='a_hospital.disease',
         string='Disease',
-        required=True
     )
 
     patient_id = fields.Many2one(
         comodel_name='a_hospital.patient',
         string='Patient',
-        required=True,
     )
 
     description = fields.Text()
@@ -76,36 +79,7 @@ class Diagnosis(models.Model):
         readonly=True
     )
 
-    @api.constrains('visit_id', 'is_approved')
-    def _check_approval_for_intern(self):
-        """
-        Ensures that diagnoses made by interns require mentor approval.
-        Raises:
-            ValidationError: If the intern’s diagnosis is not approved.
-        """
-        for diagnosis in self:
-            doctor = diagnosis.visit_id.doctor_id
-            if doctor.is_intern and diagnosis.is_approved:
-                raise ValidationError(_(
-                    "Diagnosis made by an intern must be approved "
-                    "by the mentor."))
-
-    @api.model
-    def create(self, vals):
-        """
-        Ensures that diagnoses made by interns require mentor approval.
-        Raises:
-            ValidationError: If the intern’s diagnosis is not approved.
-        """
-        if 'visit_id' in vals:
-            visit = self.env['a_hospital.visit'].browse(vals['visit_id'])
-            vals['patient_id'] = visit.patient_id.id
-        return super(Diagnosis, self).create(vals)
-
-    @api.onchange('visit_id')
-    def _onchange_visit_id(self):
-        """
-        Updates the patient_id based on the selected visit.
-        """
-        for patient in self:
-            patient.patient_id = patient.visit_id.patient_id
+      
+    description = fields.Text()
+ 
+     
