@@ -1,4 +1,14 @@
+## Renovar subdominios
+# Listar todos los certificados con su dias validos
+sudo certbot certificates
 
+# Instalar esto para renovar
+# Si no esta instalado, se instala
+apt install python3-certbot-nginx
+
+# Renovando examples 
+sudo certbot --nginx -d n8n.jumpjibe.com
+sudo certbot --nginx -d jumpjibe.com
 
 ## Paso 1: Aplicar SSL para un Solo Dominio
 # Instrucciones para Configurar Certificados SSL
