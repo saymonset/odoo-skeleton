@@ -1,0 +1,33 @@
+############################
+# ⚙️ App Config
+############################
+APP=doo_app
+VERSION=18
+HOST=localhost
+DEBUGPY_PORT=8888
+
+############################
+# 🐘 PostgreSQL
+############################
+PGDATA=/var/lib/postgresql/data/pgdata
+POSTGRES_USER=odoo
+POSTGRES_DB=postgres
+
+############################
+# 🔐 Secrets references
+############################
+# Las contraseñas reales están en /secrets (ver docker-compose.prod.yml)
+POSTGRES_PASSWORD_FILE=/run/secrets/postgres_password
+EVOLUTION_PASSWORD_FILE=/run/secrets/evolution_password
+REDIS_PASSWORD_FILE=/run/secrets/redis_password
+N8N_PASSWORD_FILE=/run/secrets/n8n_password
+N8N_ENCRYPTION_KEY_FILE=/run/secrets/n8n_encryption_key
+
+############################
+# 🤖 n8n
+############################
+N8N_USER=admin
+N8N_HOST=n8n.jumpjibe.com
+N8N_PROTOCOL=https
+WEBHOOK_URL=https://n8n.jumpjibe.com/
+N8N_EDITOR_BASE_URL=https://n8n.jumpjibe.com

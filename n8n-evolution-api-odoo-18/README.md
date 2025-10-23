@@ -1,24 +1,34 @@
+ # Ir a la carpeta raiz
+  odoo-skeleton/n8n-evolution-api-odoo-18
+ 
+ # Crear secretos de forma segura
+ # Ejecuta en tu terminal:
+ ```bash
+    mkdir -p secrets
+    openssl rand -hex 32 > secrets/postgres_password.txt
+    openssl rand -hex 32 > secrets/evolution_password.txt
+    openssl rand -hex 32 > secrets/redis_password.txt
+    openssl rand -hex 32 > secrets/n8n_password.txt
+    openssl rand -hex 64 > secrets/n8n_encryption_key.txt
+```
+
  # Copiar el archivo env-example a .env
  ```bash
  cp env-example .env
  ```
- # Si n8n da error de permisos : Causa del error EACCES: permission denied, open '/home/node/.n8n/config' en n8n
- # Fix con
- ```bash
- sudo chown -R 1000:1000 ./v18/n8n_data
-chmod -R u+rw ./v18/n8n_data
-```
 
-
- # Execute given commands one by one to install Odoo
  # Creamos la red en docker
  ```
  docker network create odoo_network_${VERSION}
  ```
+ # Dar permisos
+ ```bash
+ chmod +x backup/backup.sh
+
+ ```
 ###
 ```bash
 Asegurate que la variable de ambiente file este : .env
-LLena las variables de ambiente en .env. La variable HOST , no se sta usando
 ```
 ### down :
 ```bash
@@ -27,32 +37,37 @@ docker-compose down
 
 ### start :
 ```bash
-docker-compose up -d
+docker compose -f docker-compose.prod.yml --env-file .env up -d
+
 ```
 
-# Soluion de problemas
- Para forzar -i base la primera ves en odoo18 , coloca este comando y luego lo comntas
-  command: "--db-filter=^dbodoo18$$ -i base"
-# Si hay errores 
-Carga tu archivo .env (si tienes uno)
-source .env
+## Verificar backup
+```bash
+docker exec -it doo_app_backup sh
+ls /backup/daily
 
-Elimina los contenedores viejos y vuelve a crear
-Cuando Docker Compose ya creó un contenedor roto, a veces hay que limpiarlo:
+```
 
-docker-compose down -v --remove-orphans
-docker-compose up -d --build
-
-
----------tips
-select value from ir_config_parameter where key = 'web.base.url';
-         value          
-------------------------
- http://127.0.0.1:18069
-                                               ^
-UPDATE ir_config_parameter
-SET value = 'https://jumpjibe.com'
-WHERE key = 'web.base.url';
-
-UPDATE 1
-dbodoo18=# commit;
+# ######################
+# Estructura del proyecto
+# #####################
+project/
+│
+├── .env
+├── docker-compose.prod.yml
+├── secrets/
+│   ├── postgres_password.txt
+│   ├── evolution_password.txt
+│   ├── redis_password.txt
+│   ├── n8n_password.txt
+│   └── n8n_encryption_key.txt
+     backup/
+    │   ├── backup.sh
+    │   └── crontab
+└── v18/
+    ├── addons/
+    ├── config/
+    ├── logs/
+    ├── odoo-web-data/
+    ├── filestore/
+    └── pgdata/
