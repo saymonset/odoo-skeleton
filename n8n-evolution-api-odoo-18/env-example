@@ -1,7 +1,7 @@
 ############################
 # ⚙️ App Config
 ############################
-APP=doo_app
+APP=odoo_app
 VERSION=18
 HOST=localhost
 DEBUGPY_PORT=8888
