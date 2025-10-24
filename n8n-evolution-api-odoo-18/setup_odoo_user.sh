@@ -4,6 +4,13 @@
 # Configura usuario, grupos, permisos y directorios para Odoo 18 + n8n + Evolution
 # ===============================
 
+# Crear un usuario normal con sudo
+# ```bash
+# adduser odoo
+# usermod -aG sudo odoo
+# sudo passwd odoo
+# su odoo
+# ````
 APP_USER=odoo
 APP_GROUP=odoo
 VERSION=18
