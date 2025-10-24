@@ -116,6 +116,13 @@ sudo ufw status numbered
  sudo ufw status
 sudo ss -tuln | grep 18069
  ```
+ # Abrimox el puerto 80
+ ```bash
+ sudo ufw delete allow 80/tcp
+ sudo ufw allow from 147.93.179.254 to any port 80 proto tcp
+ sudo ufw allow 80/tcp
+ sudo ufw reload
+ ```
 #  Endurecer el servidor contra hackeos  Actualizar paquete
 ```bash
 sudo apt update && sudo apt upgrade -y
