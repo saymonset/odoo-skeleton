@@ -1,41 +1,29 @@
-# README para la Instalación de Docker Compose 18-17
-
-Este documento proporciona instrucciones para instalar la carpeta `instalacion-docker-compose-18-17` en un servidor Digital Ocean y aplicar SSL para un solo dominio.
-
-## Requisitos Previos
-
-- Tener acceso a un servidor Digital Ocean.
-- Tener instalado Docker y Docker Compose en el servidor.
-- Un dominio registrado que apunte a la dirección IP de tu servidor.
-
-## Paso 1: Ir a la carpeta: instalacion-docker-compose-18-17 y  Leer el Archivo `README-DIGITAL-OCEAN.md`
-
-Antes de proceder con la instalación, es importante revisar el archivo `README-DIGITAL-OCEAN.md` que contiene información esencial sobre la configuración y el uso de Digital Ocean.
-
+# Creamos una carpeta src
+# Dentrro de ella bajamos los fuentes de odoo
 ```bash
-cat README-DIGITAL-OCEAN.md
+git clone -b 18.0 --single-branch --depth 1 https://github.com/odoo/odoo.git odoo-18
+git clone -b 18.0 --single-branch --depth 1 https://github.com/odoo-ide/odoo-stubs.git
+
 ```
 
-
-## Paso 2: Aplicar SSL para un Solo Dominio
-# Instrucciones para Configurar Certificados SSL
-
-Ve a la carpeta `ssl-nginx` y abre el archivo `Personalizada-good-Como+configurar+certificados+SSL+HTTPS+en+dominio+Manualmente.txt`. Allí encontrarás algunas URL útiles y las instrucciones necesarias en ese archivo.
-
-## Notas
-
-- Asegúrate de seguir todas las instrucciones cuidadosamente.
-- Si tienes alguna duda, consulta las URL proporcionadas en el archivo para obtener más ayuda.
-
-## TIPS
-
-# README para la Transferencia de Archivos Odoo
-
-Este documento proporciona instrucciones sobre cómo transferir archivos de un servidor remoto a un directorio local utilizando el comando `scp`.
-
-## Comando de Transferencia
-
-Para copiar de manera recursiva el directorio `odoo_subdominios` desde el servidor remoto a tu máquina local, utiliza el siguiente comando:
-
+# Asi debe de estar comentada el debugger y comentada la por defaul de odoo
+# Comando por defecto: arrancar Odoo
 ```bash
-scp -r root@5.189.161.7:/root/odoo/odoo_subdominios /Users/simon/opt/odoo/odoo-skeleton
+#CMD ["python", "-Xfrozen_modules=off", "-m", "odoo"]
+```
+# Para depuración con debugpy:
+```bash
+CMD ["python", "-Xfrozen_modules=off", "-m", "debugpy", "--listen", "0.0.0.0:5678", "--wait-for-client", "-m", "odoo"]
+```
+# Creamos la imagen de odoo en doxker personalizada
+```bash
+ docker image rm odoo-pers:18  --force
+ docker rm odoo-pers-18
+ docker build -t odoo-pers:18 .
+ ```
+
+ # Sio hay error  ERROR dbodoo18 odoo.modules.loading: Database dbodoo18 not initialized, you can force it with `-i base` 
+ # descomente , corra y comentela linea de docker-compose 
+ ```bash
+command: ["python", "-Xfrozen_modules=off", "-m", "odoo", "--db-filter=^dbodoo18$$", "-i", "base"]
+ ```

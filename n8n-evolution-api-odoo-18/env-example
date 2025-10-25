@@ -1,0 +1,53 @@
+############################
+# ⚙️ App Config
+############################
+APP=odoo_app
+VERSION=18
+HOST=192.168.0.191
+DEBUGPY_PORT=8888
+
+############################
+# 🐘 PostgreSQL
+############################
+PGDATA=/var/lib/postgresql/data/pgdata
+POSTGRES_USER=odoo
+POSTGRES_DB=postgres
+POSTGRES_PASSWORD_FILE=/run/secrets/postgres_password
+
+# 🧩 Conexión interna (para Odoo, Evolution API, n8n)
+DB_HOST=odoo-db18
+DB_PORT=5432
+DB_USER=odoo
+DB_NAME=postgres
+DB_PROVIDER=postgres
+DB_PASSWORD_FILE=/run/secrets/postgres_password
+
+############################
+# 🔐 Evolution API Database
+############################
+EVOLUTION_DB_PROVIDER=postgres
+EVOLUTION_DB_HOST=db
+EVOLUTION_DB_PORT=5432
+EVOLUTION_DB_USERNAME=odoo
+EVOLUTION_DB_PASSWORD_FILE=/run/secrets/postgres_password
+EVOLUTION_DB_DATABASE=postgres
+############################
+# 🔐 Secrets references
+############################
+POSTGRES_PASSWORD_FILE=/run/secrets/postgres_password
+EVOLUTION_PASSWORD_FILE=/run/secrets/evolution_password
+REDIS_PASSWORD_FILE=/run/secrets/redis_password
+N8N_PASSWORD_FILE=/run/secrets/n8n_password
+N8N_ENCRYPTION_KEY_FILE=/run/secrets/n8n_encryption_key
+
+############################
+# 🤖 n8n
+############################
+N8N_USER=admin
+N8N_HOST=n8n.jumpjibe.com
+N8N_PROTOCOL=https
+WEBHOOK_URL=https://n8n.jumpjibe.com/
+N8N_EDITOR_BASE_URL=https://n8n.jumpjibe.com/
+N8N_RUNNERS_ENABLED=true
+N8N_BLOCK_ENV_ACCESS_IN_NODE=false
+N8N_GIT_NODE_DISABLE_BARE_REPOS=true

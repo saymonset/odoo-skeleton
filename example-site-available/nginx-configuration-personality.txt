@@ -1,0 +1,318 @@
+### Ayuda: https://www.youtube.com/watch?v=_3Iyg7K7qiU
+### Udemy curso: https://www.udemy.com/course/curso-de-odoo-17-tecnico-para-implementadores/learn/lecture/43704384#overview
+
+### Start
+
+sudo apt update
+sudo apt install nginx -y 
+
+sudo apt install certbot -y
+
+sudo openssl dhparam -out /etc/ssl/certs/dhparam.pem 2048
+
+sudo mkdir -p /var/lib/letsencrypt/.well-known
+sudo chgrp www-data /var/lib/letsencrypt
+# La ultimaves sin estos permisos no funciono
+sudo chmod 777 /var/lib/letsencrypt
+
+---------------------------------------------------------------
+
+sudo vi /etc/nginx/snippets/letsencrypt.conf
+
+-----
+
+location ^~ /.well-known/acme-challenge/ {
+  allow all;
+  root /var/lib/letsencrypt/;
+  default_type "text/plain";
+  try_files $uri =404;
+}
+
+----
+
+---------------------------------------------------------------
+
+sudo vi /etc/nginx/snippets/ssl.conf
+
+----
+
+ssl_dhparam /etc/ssl/certs/dhparam.pem;
+
+ssl_session_timeout 1d;
+ssl_session_cache shared:SSL:10m;
+ssl_session_tickets off;
+
+ssl_protocols TLSv1.2 TLSv1.3;
+ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384;
+ssl_prefer_server_ciphers on;
+
+ssl_stapling on;
+ssl_stapling_verify on;
+resolver 8.8.8.8 8.8.4.4 valid=300s;
+resolver_timeout 30s;
+
+add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+add_header X-Frame-Options SAMEORIGIN;
+add_header X-Content-Type-Options nosniff;
+
+----
+
+---------------------------------------------------------------
+
+sudo vi /etc/nginx/sites-available/jumpjibe.com.conf
+
+----
+
+server {
+  listen 80;
+  server_name jumpjibe.com www.jumpjibe.com;
+
+  include snippets/letsencrypt.conf;
+}
+
+----
+
+----------------------------------------------------------------
+
+
+
+sudo ln -s /etc/nginx/sites-available/jumpjibe.com.conf /etc/nginx/sites-enabled/
+
+
+sudo systemctl restart nginx
+
+
+sudo certbot certonly --agree-tos --email admin@jumpjibe.com --webroot -w /var/lib/letsencrypt/ -d jumpjibe.com -d www.jumpjibe.com
+sudo certbot certonly --agree-tos --email n8n@jumpjibe.com --webroot -w /var/lib/letsencrypt/ -d n8n.jumpjibe.com
+
+############-SI HAY ERROR-##########################
+# ---------------------hacer esto -------------------------------------------
+    
+    ```bash
+      ping acme-v02.api.letsencrypt.org
+   ```
+
+   ```bash
+     sudo ufw status
+   ```
+
+ ```bash
+ sudo ufw allow 443/tcp
+ ```
+```bash
+sudo nginx -t
+```
+```bash
+sudo systemctl reload nginx
+```
+
+
+   ```bash
+     curl -I https://acme-v02.api.letsencrypt.org
+    ```
+
+### Generar certificados
+
+##Para Horeb. No se te olvide  que el correo es el correo con su dominio
+ sudo certbot certonly --agree-tos --email admin@horebcorporation.net--webroot -w /var/lib/letsencrypt/ -d odoo.horebcorporation.net
+
+## Para jumpjibe
+    # Multiplos subdominios para que soporten ssl
+    ```bash
+     sudo certbot certonly --agree-tos --email admin@jumpjibe.com --webroot -w /var/lib/letsencrypt/ -d jumpjibe.com -d www.jumpjibe.com -d antojitos.jumpjibe.com 
+   ```
+
+   # Un solo dominio se configura para ssl
+    ```bash
+     sudo certbot certonly --agree-tos --email admin@jumpjibe.com --webroot -w /var/lib/letsencrypt/ -d jumpjibe.com
+    ```
+   
+
+  
+
+##################-FIN-#############################
+
+
+-----------------------------------------------------------------
+
+sudo vi /etc/nginx/sites-available/jumpjibe.com.conf
+El odoo.horebcorporation.net lo puedes sustituir por otro dominio por ejemplo
+www.jumpjibe.com o jumpjibe.com
+
+----
+server {
+    listen 80;
+    server_name odoo.horebcorporation.net;
+
+    include snippets/letsencrypt.conf;
+    return 301 https://odoo.horebcorporation.net$request_uri;
+}
+
+ # Configuración para odoo.horebcorporation.net (HTTPS)
+server {
+    listen 443 ssl http2;
+    server_name odoo.horebcorporation.net;
+
+    proxy_read_timeout 720s;
+    proxy_connect_timeout 720s;
+    proxy_send_timeout 720s;
+
+    # Proxy headers
+    proxy_set_header X-Forwarded-Host $host;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_set_header X-Real-IP $remote_addr;
+
+    # SSL parameters
+    ssl_certificate /etc/letsencrypt/live/odoo.horebcorporation.net/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/odoo.horebcorporation.net/privkey.pem;
+    ssl_trusted_certificate /etc/letsencrypt/live/odoo.horebcorporation.net/chain.pem;
+    include snippets/ssl.conf;
+    include snippets/letsencrypt.conf;
+
+    # log files
+    access_log /var/log/nginx/odoo.access.log;
+    error_log /var/log/nginx/odoo.error.log;
+
+    # Handle longpoll requests
+    location /longpolling {
+        proxy_pass http://127.0.0.1:18072;
+    }
+
+    # Handle / requests
+    location / {
+       proxy_redirect off;
+       proxy_pass http://127.0.0.1:18069;
+    }
+
+    # Cache static files
+    location ~* /web/static/ {
+        proxy_cache_valid 200 90m;
+        proxy_buffering on;
+        expires 864000;
+        proxy_pass http://127.0.0.1:18069;
+    }
+
+    # Gzip
+    gzip_types text/css text/less text/plain text/xml application/xml application/json application/javascript;
+    gzip on;
+}
+
+ 
+
+----
+
+
+
+sudo systemctl reload nginx
+
+
+
+https://www.ssllabs.com/ssltest/
+
+---------------------------------------------------------------------
+
+sudo vi /etc/letsencrypt/cli.ini
+
+----
+
+deploy-hook = systemctl reload nginx
+
+----
+
+sudo certbot renew --dry-run
+
+
+
+sudo vi /etc/nginx/sites-enabled/jumpjibe.com.conf
+
+# Para un subdominio.. Si wuieres varios subdominios, dirijete a conf-2-subdominios
+----
+
+# Odoo servers
+upstream odoo {
+ server 127.0.0.1:18069;
+}
+
+upstream odoochat {
+ server 127.0.0.1:18072;
+}
+
+# HTTP -> HTTPS
+server {
+    listen 80;
+    server_name www.jumpjibe.com jumpjibe.com;
+
+    include snippets/letsencrypt.conf;
+    return 301 https://jumpjibe.com$request_uri;
+}
+
+# WWW -> NON WWW
+server {
+    listen 443 ssl http2;
+    server_name www.jumpjibe.com;
+
+    ssl_certificate /etc/letsencrypt/live/jumpjibe.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/jumpjibe.com/privkey.pem;
+    ssl_trusted_certificate /etc/letsencrypt/live/jumpjibe.com/chain.pem;
+    include snippets/ssl.conf;
+    include snippets/letsencrypt.conf;
+
+    return 301 https://jumpjibe.com$request_uri;
+}
+
+server {
+    listen 443 ssl http2;
+    server_name jumpjibe.com;
+
+    proxy_read_timeout 720s;
+    proxy_connect_timeout 720s;
+    proxy_send_timeout 720s;
+
+    # Proxy headers
+    proxy_set_header X-Forwarded-Host $host;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_set_header X-Real-IP $remote_addr;
+
+    # SSL parameters
+    ssl_certificate /etc/letsencrypt/live/jumpjibe.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/jumpjibe.com/privkey.pem;
+    ssl_trusted_certificate /etc/letsencrypt/live/jumpjibe.com/chain.pem;
+    include snippets/ssl.conf;
+    include snippets/letsencrypt.conf;
+
+    # log files
+    access_log /var/log/nginx/odoo.access.log;
+    error_log /var/log/nginx/odoo.error.log;
+
+    # Handle longpoll requests
+    location /longpolling {
+        proxy_pass http://odoochat;
+    }
+
+    # Handle / requests
+    location / {
+       proxy_redirect off;
+       proxy_pass http://odoo;
+    }
+
+    # Cache static files
+    location ~* /web/static/ {
+        proxy_cache_valid 200 90m;
+        proxy_buffering on;
+        expires 864000;
+        proxy_pass http://odoo;
+    }
+
+    # Gzip
+    gzip_types text/css text/less text/plain text/xml application/xml application/json application/javascript;
+    gzip on;
+}
+ 
+----
+
+ln
+
+sudo systemctl restart nginx
+ 

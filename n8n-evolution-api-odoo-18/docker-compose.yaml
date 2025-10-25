@@ -1,0 +1,128 @@
+services:
+  web:
+    image: "odoo-pers:${VERSION}"
+    container_name: "odoo-${VERSION}"
+    user: odoo
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "${VERSION}069:8069"
+      - "${VERSION}072:8072"
+      - "${DEBUGPY_PORT}:${DEBUGPY_PORT}"
+    networks:
+      - odoo_network_18
+    volumes:
+      - "./v${VERSION}/odoo-web-data:/var/lib/odoo"
+      - "./v${VERSION}/config:/etc/odoo"
+      - "./v${VERSION}/addons/extra:/mnt/extra-addons/extra"
+      - "./v${VERSION}/addons/oca:/mnt/extra-addons/oca"
+      - "./v${VERSION}/addons/enterprise:/mnt/extra-addons/enterprise"
+      - "./v${VERSION}/logs:/var/log/odoo"
+      - "./v${VERSION}/filestore:/var/lib/odoo/.local/share/Odoo"
+    environment:
+      - HOST=${DB_HOST}
+      - USER=${POSTGRES_USER}
+      - PASSWORD_FILE=${POSTGRES_PASSWORD_FILE}
+    secrets:
+      - postgres_password
+
+  db:
+    image: pgvector/pgvector:pg16
+    container_name: "odoo-db${VERSION}"
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD_FILE=${POSTGRES_PASSWORD_FILE}
+      - PGDATA=${PGDATA}
+    ports:
+      - "${VERSION}432:5432"
+    networks:
+      - odoo_network_18
+    volumes:
+      - "./v${VERSION}/pgdata/data:${PGDATA}"
+      - "./v${VERSION}/pgdata/init:/docker-entrypoint-initdb.d"
+    secrets:
+      - postgres_password
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7
+    container_name: odoo_redis
+    restart: always
+    ports:
+      - "6379:6379"
+    command: >
+      sh -c "
+        mkdir -p /usr/local/etc/redis &&
+        REDIS_PASS=$$(cat /run/secrets/redis_password 2>/dev/null || echo '') &&
+        if [ -n \"$$REDIS_PASS\" ]; then
+          echo \"requirepass $$REDIS_PASS\" > /usr/local/etc/redis/redis.conf &&
+          redis-server /usr/local/etc/redis/redis.conf
+        else
+          redis-server --save 60 1 --loglevel warning
+        fi
+      "
+    secrets:
+      - redis_password
+    networks:
+      - odoo_network_18
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  n8n:
+    image: docker.n8n.io/n8nio/n8n
+    container_name: "n8n-container"
+    restart: unless-stopped
+    ports:
+      - "5678:5678"
+    networks:
+      - odoo_network_18
+    environment:
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_DATABASE=${POSTGRES_DB}
+      - DB_POSTGRESDB_HOST=${DB_HOST}
+      - DB_POSTGRESDB_PORT=${DB_PORT}
+      - DB_POSTGRESDB_USER=${POSTGRES_USER}
+      - DB_POSTGRESDB_PASSWORD_FILE=${POSTGRES_PASSWORD_FILE}
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=${N8N_USER}
+      - N8N_BASIC_AUTH_PASSWORD_FILE=${N8N_PASSWORD_FILE}
+      - N8N_ENCRYPTION_KEY_FILE=${N8N_ENCRYPTION_KEY_FILE}
+      - N8N_HOST=${N8N_HOST}
+      - N8N_PROTOCOL=${N8N_PROTOCOL}
+      - WEBHOOK_URL=${WEBHOOK_URL}
+      - N8N_RUNNERS_ENABLED=${N8N_RUNNERS_ENABLED}
+      - N8N_BLOCK_ENV_ACCESS_IN_NODE=${N8N_BLOCK_ENV_ACCESS_IN_NODE}
+      - N8N_GIT_NODE_DISABLE_BARE_REPOS=${N8N_GIT_NODE_DISABLE_BARE_REPOS}
+    user: "1000:1000"
+    volumes:
+      - "./v${VERSION}/n8n_data:/home/node/.n8n"
+    depends_on:
+      db:
+        condition: service_healthy
+    secrets:
+      - postgres_password
+      - n8n_password
+      - n8n_encryption_key
+
+secrets:
+  postgres_password:
+    file: ./secrets/postgres_password.txt
+  redis_password:
+    file: ./secrets/redis_password.txt
+  n8n_password:
+    file: ./secrets/n8n_password.txt
+  n8n_encryption_key:
+    file: ./secrets/n8n_encryption_key.txt
+
+networks:
+  odoo_network_18:
+    driver: bridge
