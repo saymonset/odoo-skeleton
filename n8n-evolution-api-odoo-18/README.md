@@ -37,11 +37,21 @@ sudo chmod 777 ./secrets/*.txt
 # sudo rm -rf ./v18/n8n_data
 # sudo rm -rf ./v18/logs
 
-# mkdir -p ./v18/filestore ./v18/addons ./v18/config ./v18/odoo-web-data ./v18/pgdata ./v18/n8n_data ./v18/logs
+ mkdir -p ./v18/filestore ./v18/addons ./v18/config ./v18/odoo-web-data ./v18/pgdata ./v18/n8n_data ./v18/logs
 
 # # Recreate directories with proper permissions
 # sudo chown -R 1000:1000 ./v18/n8n_data ./v18/logs
 # sudo chmod -R 777 ./v18
+
+ sudo chown -R 1001:1001 v18
+ # Todos los directorios que monta Odoo deben ser del UID 1001
+ cd v18
+sudo chown -R 1001:1001 ./odoo-web-data
+sudo chown -R 1001:1001 ./config
+sudo chown -R 1001:1001 ./addons/extra
+sudo chown -R 1001:1001 ./addons/oca
+sudo chown -R 1001:1001 ./addons/enterprise
+sudo chown -R 1001:1001 ./filestore
 
 sudo usermod -aG docker $USER
 newgrp docker
@@ -122,6 +132,6 @@ project/
 # ###############COLOCAR SEGURIDAD####################
 # Ir a hacer las instrcciones del archivo
 ```bash
- ultimo_optimización_Seguridad_UFW_Nginx_odoo.md
+ seguridad_UFW_Nginx_odoo.md
  ```
  # ####################################

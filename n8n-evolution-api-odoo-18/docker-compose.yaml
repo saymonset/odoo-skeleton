@@ -2,7 +2,7 @@ services:
   web:
     image: "odoo-pers:${VERSION}"
     container_name: "odoo-${VERSION}"
-    user: odoo
+    user: "1001:1001"
     depends_on:
       db:
         condition: service_healthy

@@ -3,7 +3,12 @@
 ```bash
 curl ifconfig.me
 ```
-
+# Activa vm.overcommit_memory (Redis)
+# bash# Solución inmediata
+```bash
+sudo sysctl vm.overcommit_memory=1
+echo 'vm.overcommit_memory = 1' | sudo tee -a /etc/sysctl.conf
+```
 
 # Verifica el estado final:
 ```bash
