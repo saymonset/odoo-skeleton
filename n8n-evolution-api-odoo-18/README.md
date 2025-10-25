@@ -89,88 +89,6 @@ docker compose --env-file .env up -d
 
 ```
 
-# Actibar firewall
-
-# PASO 1: Activar y configurar el firewall (ufw)
-# Primero, activa ufw y permite solo lo necesario.
-```bash
-sudo ufw default deny incoming
-sudo ufw default allow outgoing
-```
-# permite el SSH (para no perder acceso remoto):
-```bash
-sudo ufw allow ssh
-```
-# Ahora, permite el puerto 18069, pero de forma controlada.
-```bash
-sudo ufw allow from 147.93.179.254 to any port 18069 proto tcp
-```
-# Activa el firewall:
-```bash
-sudo ufw enable
-sudo ufw status numbered
-```
-# Verificar la exposición del puerto
-```bash
- nc -zv 147.93.179.254 18069
- sudo ufw status
-sudo ss -tuln | grep 18069
- ```
- # Abrimox el puerto 80
- ```bash
- sudo ufw delete allow 80/tcp
- sudo ufw allow from 147.93.179.254 to any port 80 proto tcp
- sudo ufw allow 80/tcp
- sudo ufw reload
- ```
-#  Endurecer el servidor contra hackeos  Actualizar paquete
-```bash
-sudo apt update && sudo apt upgrade -y
-```
-
-
-
-# Instalar Fail2ban
-# (bloquea IPs que hagan intentos de acceso sospechosos
-```bash
-sudo apt install fail2ban -y
-```
-<!-- 
-Deshabilitar login directo de root por SSH
-Edita:
-
-sudo nano /etc/ssh/sshd_config
-
-
-Y cambia:
-
-PermitRootLogin no
-
-
-Luego:
-
-sudo systemctl restart ssh -->
-
-# Instalar rkhunter o chkrootkit para detectar malware:
-```bash
-sudo apt install rkhunter chkrootkit -y
-sudo rkhunter --update
-sudo rkhunter --check
-```
-
-# Comprobar que todo este correcto
-```bash
-sudo ufw status verbose
-sudo ss -tuln | grep 18069
-```
-
-
-
-```bash
-sudo ufw status
-
-```
-
 ## Verificar backup
 ```bash
 docker exec -it doo_app_backup sh
@@ -201,3 +119,9 @@ project/
     ├── odoo-web-data/
     ├── filestore/
     └── pgdata/
+# ###############COLOCAR SEGURIDAD####################
+# Ir a hacer las instrcciones del archivo
+```bash
+ ultimo_optimización_Seguridad_UFW_Nginx_odoo.md
+ ```
+ # ####################################
