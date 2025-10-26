@@ -41,16 +41,17 @@ RUN python3 -m venv /opt/venv \
     && pip install debugpy
 
 # ----------------------------
-# Clonar Odoo 18 completo (SIN CARPETA ANIDADA)
+# Clonar Odoo 18 correctamente
 # ----------------------------
-RUN mkdir -p /opt/odoo/odoo-core && \
-    git clone -b 18.0 --single-branch https://github.com/odoo/odoo.git /opt/odoo/temp-odoo && \
-    mv /opt/odoo/temp-odoo/* /opt/odoo/odoo-core/ && \
-    mv /opt/odoo/temp-odoo/.* /opt/odoo/odoo-core/ 2>/dev/null || true && \
-    rm -rf /opt/odoo/temp-odoo && \
+RUN git clone -b 18.0 --single-branch https://github.com/odoo/odoo.git /opt/odoo/odoo-core && \
     chown -R odoo:odoo /opt/odoo/odoo-core
 
-WORKDIR /opt/odoo
+WORKDIR /opt/odoo/odoo-core
+
+# ----------------------------
+# Instalar dependencias de Odoo
+# ----------------------------
+RUN pip install -r /opt/odoo/odoo-core/requirements.txt
 
 # ----------------------------
 # Copiar requirements.txt adicional e instalar dependencias Python
@@ -72,6 +73,6 @@ USER 1001
 ENTRYPOINT ["/entrypoint.sh"]
 
 # ----------------------------
-# Comando por defecto: arrancar Odoo usando odoo-bin
+# Comando por defecto corregido
 # ----------------------------
-CMD ["/opt/odoo/odoo-core/odoo-bin", "-c", "/etc/odoo/odoo.conf", "-p", "8069", "-d", "dbodoo18"]
+CMD ["python", "-m", "debugpy", "--listen", "0.0.0.0:5679", "--wait-for-client", "odoo-bin", "-c", "/etc/odoo/odoo.conf"]

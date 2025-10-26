@@ -6,55 +6,46 @@ services:
   # Odoo Web (puertos internos)
   # -----------------------------
   web:
-    image: "odoo-pers:${VERSION}"
-    container_name: "odoo-${VERSION}"
-    user: "1001:1001"
+    image: "odoo-pers:18"
+    container_name: "odoo-18"
     depends_on:
       db:
-        condition: service_healthy
-      redis:
         condition: service_healthy
     networks:
       - odoo_network_18
     ports:
-      - "18069:8069"   # ← NGINX → jumpjibe.com
-      - "18072:8072"   # ← longpolling
+      - "18069:8069"
+      - "15679:5679"
     volumes:
-      - "./v${VERSION}/odoo-web-data:/var/lib/odoo"
-      - "./v${VERSION}/config:/etc/odoo"
-      - "./v${VERSION}/addons/extra:/opt/odoo/custom-addons/extra"
-      - "./v${VERSION}/addons/oca:/opt/odoo/custom-addons/oca"
-      - "./v${VERSION}/addons/enterprise:/opt/odoo/custom-addons/enterprise"
-      - "./v${VERSION}/logs:/var/log/odoo"
-      - "./v${VERSION}/filestore:/var/lib/odoo/.local/share/Odoo"
+      - "./v18/config:/etc/odoo"
     environment:
-      - HOST=${DB_HOST}
-      - USER=${POSTGRES_USER}
-      - PASSWORD_FILE=${POSTGRES_PASSWORD_FILE}
-    secrets:
-      - postgres_password
+      - HOST=db
+      - USER=odoo
+      - PASSWORD=123456
+    command: [
+      "python", "-m", "debugpy", "--listen", "0.0.0.0:5679",
+      "--wait-for-client", "odoo-bin", "-c", "/etc/odoo/odoo.conf"
+    ]
     stop_grace_period: 60s
+    # El comando ahora está en el Dockerfile
 
   # -----------------------------
   # PostgreSQL con pgvector
   # -----------------------------
   db:
-    image: pgvector/pgvector:pg16
+    image: postgres:16
     container_name: "odoo-db${VERSION}"
     environment:
-      - POSTGRES_DB=${POSTGRES_DB}
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD_FILE=${POSTGRES_PASSWORD_FILE}
-      - PGDATA=${PGDATA}
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=123456
+      - PGDATA=/var/lib/postgresql/data/pgdata
     networks:
       - odoo_network_18
     volumes:
-      - "./v${VERSION}/pgdata/data:${PGDATA}"
+      - "./v${VERSION}/pgdata/data:/var/lib/postgresql/data/pgdata"
       - "./v${VERSION}/pgdata/init:/docker-entrypoint-initdb.d"
-    secrets:
-      - postgres_password
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
       timeout: 5s
       retries: 10

@@ -6,7 +6,7 @@ import { rpc } from "@web/core/network/rpc";
 import { useService } from "@web/core/utils/hooks";
 
 export class VoiceRecorder extends Component {
-        setup() {
+    setup() {
         this.state = useState({
             recording: false,
             uploading: false,
@@ -18,36 +18,36 @@ export class VoiceRecorder extends Component {
             availableContacts: [],  // Contactos disponibles para selección
             selectedContacts: [],  // Contactos seleccionados
         });
-         this.orm = useService("orm");
+        this.orm = useService("orm");
     }
 
     /**
  * Agrega un contacto a la lista de contactos seleccionados.
  * @param {Object} contact - El contacto a agregar.
  */
-addContact= (contact) =>{
-    // Evitar duplicados
-    if (!this.state.selectedContacts.some(c => c.id === contact.id)) {
-        this.state.selectedContacts.push(contact);
+    addContact = (contact) => {
+        // Evitar duplicados
+        if (!this.state.selectedContacts.some(c => c.id === contact.id)) {
+            this.state.selectedContacts.push(contact);
+        }
+        // Limpiar el término de búsqueda y los contactos disponibles después de agregar
+        this.state.searchTerm = '';
+        this.state.availableContacts = [];
     }
-    // Limpiar el término de búsqueda y los contactos disponibles después de agregar
-    this.state.searchTerm = '';
-    this.state.availableContacts = [];
-}
 
-/**
- * Quita un contacto de la lista de contactos seleccionados.
- * @param {number} contactId - El ID del contacto a quitar.
- */
-removeContact  = (contactId) => {
-    this.state.selectedContacts = this.state.selectedContacts.filter(c => c.id !== contactId);
-}
-     /**
-     * Propiedad computada para ordenar las notas.
-     * Ordena las notas por 'id' de forma descendente (mayor a menor),
-     * asumiendo que el 'id' es el ID de Odoo (ir.attachment) y que un ID
-     * más alto significa una creación más reciente.
+    /**
+     * Quita un contacto de la lista de contactos seleccionados.
+     * @param {number} contactId - El ID del contacto a quitar.
      */
+    removeContact = (contactId) => {
+        this.state.selectedContacts = this.state.selectedContacts.filter(c => c.id !== contactId);
+    }
+    /**
+    * Propiedad computada para ordenar las notas.
+    * Ordena las notas por 'id' de forma descendente (mayor a menor),
+    * asumiendo que el 'id' es el ID de Odoo (ir.attachment) y que un ID
+    * más alto significa una creación más reciente.
+    */
     get sortedNotes() {
         // Hacemos una copia para no mutar el array original en state
         // Si la nota aún no tiene ID (aún no se ha subido), la ponemos al final temporalmente (id = 0)
@@ -85,9 +85,9 @@ removeContact  = (contactId) => {
         }
     }
 
-/**
-     * Busca contactos en Odoo basados en el término de búsqueda.
-     */
+    /**
+         * Busca contactos en Odoo basados en el término de búsqueda.
+         */
     async searchContacts() {
         if (this.state.searchTerm.length < 2) {
             this.state.availableContacts = [];
@@ -122,7 +122,7 @@ removeContact  = (contactId) => {
                     const tempId = Date.now(); // ID temporal para rastrear el elemento
 
 
-                       // Guardar en lista de notas con un ID temporal
+                    // Guardar en lista de notas con un ID temporal
                     this.state.notes.push({
                         id: null, // El ID real de Odoo se asignará al subir
                         tempId: tempId,
@@ -133,7 +133,7 @@ removeContact  = (contactId) => {
                     });
 
 
-                    
+
                     // Usamos el tempId para encontrar la nota que estamos subiendo
                     const noteIndex = this.state.notes.findIndex(note => note.tempId === tempId);
 
@@ -143,20 +143,20 @@ removeContact  = (contactId) => {
                         const base64 = reader.result.split(",")[1];
                         try {
 
-                         const [attachmentId] = await this.orm.create("ir.attachment", [{
-                                            name: name,
-                                            datas: base64,
-                                            mimetype: "audio/webm",
-                                            type: "binary",
-                                            res_model: this.props.resModel || null,
-                                            res_id: this.props.resId || null,
-                                        }]);
-                           // Actualizar el estado de la nota con el ID real y quitar el 'uploading'
+                            const [attachmentId] = await this.orm.create("ir.attachment", [{
+                                name: name,
+                                datas: base64,
+                                mimetype: "audio/webm",
+                                type: "binary",
+                                res_model: this.props.resModel || null,
+                                res_id: this.props.resId || null,
+                            }]);
+                            // Actualizar el estado de la nota con el ID real y quitar el 'uploading'
                             if (noteIndex !== -1) {
                                 this.state.notes[noteIndex].id = attachmentId; // <<< AQUI SE GUARDA EL ID REAL
                                 this.state.notes[noteIndex].uploading = false;
                                 delete this.state.notes[noteIndex].tempId; // Limpiamos el ID temporal
-                            } 
+                            }
                         } catch (rpcError) {
                             console.error("Error en RPC:", rpcError); // Imprimir el error completo para depuración
                             let errorMessage = "Error al subir el archivo.";
@@ -192,10 +192,11 @@ removeContact  = (contactId) => {
     async sendToN8N() {
         const N8N_WEBHOOK_URL = "https://n8n.jumpjibe.com/webhook/audios";
 
+
         // Filtrar solo las notas que se hayan subido correctamente (tienen un ID de Odoo)
         const notesToSend = this.state.notes.filter(note => note.id);
 
-      //  if (notesToSend.length === 0) {
+        //  if (notesToSend.length === 0) {
         if (notesToSend.length === 0 && this.state.selectedContacts.length === 0) {
             //this.notification.add("No hay notas de voz grabadas y subidas para enviar.", { type: "info" });
             alert("No hay notas de voz ni contactos seleccionados para enviar.");
@@ -207,7 +208,7 @@ removeContact  = (contactId) => {
         try {
             // 1. Obtener los datos binarios (base64) de Odoo
             //const attachmentIds = notesToSend.map(note => note.id);
-            
+
             // Buscar los adjuntos y seleccionar los campos que necesitamos
             // 'datas' es el campo binario (base64) que queremos enviar
             //const attachments = await this.orm.read("ir.attachment", attachmentIds, ["name", "datas", "mimetype", "res_id", "res_model"]);
@@ -224,7 +225,7 @@ removeContact  = (contactId) => {
                 }));
             }
 
-           // 2. Formatear la data para n8n, incluyendo los contactos seleccionados
+            // 2. Formatear la data para n8n, incluyendo los contactos seleccionados
             const payload = {
                 record_id: this.props.resId || null,
                 model: this.props.resModel || null,
@@ -247,11 +248,11 @@ removeContact  = (contactId) => {
             });
 
             if (response.ok) {
-              //  this.notification.add(`Notas enviadas con éxito a n8n. (${notesToSend.length} archivos)`, { type: "success" });
-               // alert(`Notas enviadas con éxito a n8n. (${notesToSend.length} archivos)`);
-               alert(`Datos enviados con éxito a n8n. (${notesToSend.length} audios, ${this.state.selectedContacts.length} contactos)`);
+                //  this.notification.add(`Notas enviadas con éxito a n8n. (${notesToSend.length} archivos)`, { type: "success" });
+                // alert(`Notas enviadas con éxito a n8n. (${notesToSend.length} archivos)`);
+                alert(`Datos enviados con éxito a n8n. (${notesToSend.length} audios, ${this.state.selectedContacts.length} contactos)`);
                 // OPCIONAL: Si quieres borrar las notas locales después de enviar
-                this.state.notes = []; 
+                this.state.notes = [];
                 this.state.selectedContacts = [];
             } else {
                 const errorText = await response.text();
@@ -261,7 +262,7 @@ removeContact  = (contactId) => {
 
         } catch (error) {
             console.error("Error en la conexión o proceso de envío:", error);
-            alert("Ocurrió un error de red o interno al enviar las notas.");
+            alert("Ocurrió un error de red o interno al enviar las notas."+error.message);
             //this.notification.add("Ocurrió un error de red o interno al enviar las notas.", { type: "danger" });
         } finally {
             this.state.isSending = false;

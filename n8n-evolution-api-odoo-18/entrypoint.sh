@@ -1,6 +1,12 @@
 #!/bin/bash
 set -e
-. /opt/venv/bin/activate
 
-# Redirigir logs a stdout y archivo a la vez
-exec "$@" 2>&1 | tee -a /var/log/odoo/odoo.log
+echo "=== Odoo 18 Debug Mode ==="
+echo "Starting Odoo with debugpy..."
+echo "Working directory: $(pwd)"
+
+# Cambiar al directorio de Odoo (por si acaso)
+cd /opt/odoo/odoo-core
+
+# Ejecutar el comando original
+exec "$@"

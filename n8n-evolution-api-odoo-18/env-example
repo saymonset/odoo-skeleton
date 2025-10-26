@@ -8,11 +8,18 @@ VERSION=18
 ############################
 PGDATA=/var/lib/postgresql/data/pgdata
 POSTGRES_USER=odoo
-POSTGRES_DB=dbodoo18
-POSTGRES_PASSWORD_FILE=/run/secrets/postgres_password
+POSTGRES_DB=odoo
+POSTGRES_PASSWORD=123456
 
 DB_HOST=db
 DB_PORT=5432
+
+############################
+# Odoo
+############################
+HOST=db
+USER=odoo
+PASSWORD=123456
 
 ############################
 # n8n
