@@ -28,9 +28,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # ----------------------------
-# Crear usuario odoo
+# Crear usuario Odoo con UID/GID 1001
 # ----------------------------
-RUN groupadd -r odoo && useradd -r -g odoo -m -d /opt/odoo odoo
+RUN groupadd -g 1001 odoo && \
+    useradd -u 1001 -g odoo -m -d /opt/odoo odoo
 
 # ----------------------------
 # Crear entorno virtual y dependencias Python
@@ -39,21 +40,23 @@ RUN python3 -m venv /opt/venv \
     && pip install --upgrade pip \
     && pip install debugpy
 
-# Copiar requirements.txt e instalar dependencias Python
+# ----------------------------
+# Clonar Odoo 18 completo (SIN CARPETA ANIDADA)
+# ----------------------------
+RUN mkdir -p /opt/odoo/odoo-core && \
+    git clone -b 18.0 --single-branch https://github.com/odoo/odoo.git /opt/odoo/temp-odoo && \
+    mv /opt/odoo/temp-odoo/* /opt/odoo/odoo-core/ && \
+    mv /opt/odoo/temp-odoo/.* /opt/odoo/odoo-core/ 2>/dev/null || true && \
+    rm -rf /opt/odoo/temp-odoo && \
+    chown -R odoo:odoo /opt/odoo/odoo-core
+
+WORKDIR /opt/odoo
+
+# ----------------------------
+# Copiar requirements.txt adicional e instalar dependencias Python
+# ----------------------------
 COPY ./requirements.txt /requirements.txt
 RUN pip install -r /requirements.txt
-
-# ----------------------------
-# Copiar código de Odoo
-# ----------------------------
-WORKDIR /opt/odoo
-COPY ./src/odoo-18 /opt/odoo
-
-# Dar permisos a usuario odoo
-RUN chown -R odoo:odoo /opt/odoo
-
-# Instalar Odoo como paquete
-RUN pip install .
 
 # ----------------------------
 # Copiar entrypoint
@@ -61,12 +64,14 @@ RUN pip install .
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
+# ----------------------------
 # Cambiar a usuario no-root
-USER odoo
+# ----------------------------
+USER 1001
 
 ENTRYPOINT ["/entrypoint.sh"]
 
-# Comando por defecto: arrancar Odoo
-CMD ["python", "-Xfrozen_modules=off", "-m", "odoo"]
-# Para depuración con debugpy:
-# CMD ["python", "-Xfrozen_modules=off", "-m", "debugpy", "--listen", "0.0.0.0:5678", "--wait-for-client", "-m", "odoo"]
+# ----------------------------
+# Comando por defecto: arrancar Odoo usando odoo-bin
+# ----------------------------
+CMD ["/opt/odoo/odoo-core/odoo-bin", "-c", "/etc/odoo/odoo.conf", "-p", "8069", "-d", "dbodoo18"]

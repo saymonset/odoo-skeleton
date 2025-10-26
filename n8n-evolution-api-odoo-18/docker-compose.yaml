@@ -1,4 +1,10 @@
+############################
+# Servicios (solo backend)
+############################
 services:
+  # -----------------------------
+  # Odoo Web (puertos internos)
+  # -----------------------------
   web:
     image: "odoo-pers:${VERSION}"
     container_name: "odoo-${VERSION}"
@@ -6,18 +12,19 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    ports:
-      - "${VERSION}069:8069"
-      - "${VERSION}072:8072"
-      - "${DEBUGPY_PORT}:${DEBUGPY_PORT}"
+      redis:
+        condition: service_healthy
     networks:
       - odoo_network_18
+    ports:
+      - "18069:8069"   # ← NGINX → jumpjibe.com
+      - "18072:8072"   # ← longpolling
     volumes:
       - "./v${VERSION}/odoo-web-data:/var/lib/odoo"
       - "./v${VERSION}/config:/etc/odoo"
-      - "./v${VERSION}/addons/extra:/mnt/extra-addons/extra"
-      - "./v${VERSION}/addons/oca:/mnt/extra-addons/oca"
-      - "./v${VERSION}/addons/enterprise:/mnt/extra-addons/enterprise"
+      - "./v${VERSION}/addons/extra:/opt/odoo/custom-addons/extra"
+      - "./v${VERSION}/addons/oca:/opt/odoo/custom-addons/oca"
+      - "./v${VERSION}/addons/enterprise:/opt/odoo/custom-addons/enterprise"
       - "./v${VERSION}/logs:/var/log/odoo"
       - "./v${VERSION}/filestore:/var/lib/odoo/.local/share/Odoo"
     environment:
@@ -26,7 +33,11 @@ services:
       - PASSWORD_FILE=${POSTGRES_PASSWORD_FILE}
     secrets:
       - postgres_password
+    stop_grace_period: 60s
 
+  # -----------------------------
+  # PostgreSQL con pgvector
+  # -----------------------------
   db:
     image: pgvector/pgvector:pg16
     container_name: "odoo-db${VERSION}"
@@ -35,8 +46,6 @@ services:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD_FILE=${POSTGRES_PASSWORD_FILE}
       - PGDATA=${PGDATA}
-    ports:
-      - "${VERSION}432:5432"
     networks:
       - odoo_network_18
     volumes:
@@ -49,42 +58,48 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
+    stop_grace_period: 60s
 
+  # -----------------------------
+  # Redis con contraseña
+  # -----------------------------
   redis:
     image: redis:7
     container_name: odoo_redis
     restart: always
-    ports:
-      - "6379:6379"
-    command: >
-      sh -c "
-        mkdir -p /usr/local/etc/redis &&
-        REDIS_PASS=$$(cat /run/secrets/redis_password 2>/dev/null || echo '') &&
-        if [ -n \"$$REDIS_PASS\" ]; then
-          echo \"requirepass $$REDIS_PASS\" > /usr/local/etc/redis/redis.conf &&
-          redis-server /usr/local/etc/redis/redis.conf
-        else
-          redis-server --save 60 1 --loglevel warning
-        fi
-      "
-    secrets:
-      - redis_password
     networks:
       - odoo_network_18
+    secrets:
+      - redis_password
+    command: >
+      sh -c '
+        REDIS_PASS=$$(cat /run/secrets/redis_password 2>/dev/null || echo "") &&
+        mkdir -p /usr/local/etc/redis &&
+        if [ -n "$$REDIS_PASS" ]; then
+          echo "requirepass $$REDIS_PASS" > /usr/local/etc/redis/redis.conf &&
+          echo "protected-mode yes" >> /usr/local/etc/redis/redis.conf
+        fi &&
+        exec redis-server /usr/local/etc/redis/redis.conf --save 60 1 --loglevel warning
+      '
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: ["CMD", "redis-cli", "--no-auth-warning", "ping"]
       interval: 5s
       timeout: 3s
       retries: 5
+    stop_grace_period: 30s
 
+  # -----------------------------
+  # n8n (puerto interno)
+  # -----------------------------
   n8n:
-    image: docker.n8n.io/n8nio/n8n
+    image: docker.n8n.io/n8nio/n8n:latest
     container_name: "n8n-container"
     restart: unless-stopped
-    ports:
-      - "5678:5678"
+    user: "1000:1000"
     networks:
       - odoo_network_18
+    ports:
+      - "5678:5678"  # ← NGINX → n8n.jumpjibe.com
     environment:
       - DB_TYPE=postgresdb
       - DB_POSTGRESDB_DATABASE=${POSTGRES_DB}
@@ -96,13 +111,14 @@ services:
       - N8N_BASIC_AUTH_USER=${N8N_USER}
       - N8N_BASIC_AUTH_PASSWORD_FILE=${N8N_PASSWORD_FILE}
       - N8N_ENCRYPTION_KEY_FILE=${N8N_ENCRYPTION_KEY_FILE}
-      - N8N_HOST=${N8N_HOST}
-      - N8N_PROTOCOL=${N8N_PROTOCOL}
-      - WEBHOOK_URL=${WEBHOOK_URL}
+      - N8N_HOST=n8n.jumpjibe.com
+      - N8N_PROTOCOL=https
+      - WEBHOOK_URL=https://n8n.jumpjibe.com/
+      - N8N_EDITOR_BASE_URL=https://n8n.jumpjibe.com/
       - N8N_RUNNERS_ENABLED=${N8N_RUNNERS_ENABLED}
-      - N8N_BLOCK_ENV_ACCESS_IN_NODE=${N8N_BLOCK_ENV_ACCESS_IN_NODE}
-      - N8N_GIT_NODE_DISABLE_BARE_REPOS=${N8N_GIT_NODE_DISABLE_BARE_REPOS}
-    user: "1000:1000"
+      - N8N_BLOCK_ENV_ACCESS_IN_NODE=true
+      - N8N_GIT_NODE_DISABLE_BARE_REPOS=true
+      - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
     volumes:
       - "./v${VERSION}/n8n_data:/home/node/.n8n"
     depends_on:
@@ -112,7 +128,11 @@ services:
       - postgres_password
       - n8n_password
       - n8n_encryption_key
+    stop_grace_period: 60s
 
+############################
+# Secrets
+############################
 secrets:
   postgres_password:
     file: ./secrets/postgres_password.txt
@@ -123,6 +143,10 @@ secrets:
   n8n_encryption_key:
     file: ./secrets/n8n_encryption_key.txt
 
+############################
+# Redes
+############################
 networks:
   odoo_network_18:
     driver: bridge
+    name: odoo_network_18
