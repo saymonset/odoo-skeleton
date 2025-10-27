@@ -12,7 +12,7 @@ ENV ODOO_RC=/etc/odoo/odoo.conf
 ENV PYDEVD_DISABLE_FILE_VALIDATION=1
 
 # ----------------------------
-# Instalar dependencias del sistema + wkhtmltopdf
+# Instalar dependencias del sistema + wkhtmltopdf + postgresql-client
 # ----------------------------
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libxml2-dev libxslt1-dev zlib1g-dev \
@@ -21,6 +21,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libpq-dev libjpeg62-turbo-dev liblcms2-dev \
     libblas-dev liblapack-dev git curl fontconfig \
     libxrender1 xfonts-75dpi xfonts-base \
+    postgresql-client \
     && curl -Lo /usr/local/bin/wkhtmltopdf \
        https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.6/wkhtmltopdf_0.12.6-1.standalone-amd64 \
     && chmod +x /usr/local/bin/wkhtmltopdf \
@@ -59,7 +60,7 @@ COPY ./requirements.txt /requirements.txt
 RUN pip install -r /requirements.txt
 
 # ----------------------------
-# Copiar entrypoint
+# Copiar entrypoint CORREGIDO
 # ----------------------------
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
@@ -72,6 +73,6 @@ USER 1001
 ENTRYPOINT ["/entrypoint.sh"]
 
 # ----------------------------
-# Comando por defecto: arrancar Odoo usando odoo-bin
+# Comando por defecto (sin parámetros redundantes)
 # ----------------------------
-CMD ["/opt/odoo/odoo-core/odoo-bin", "-c", "/etc/odoo/odoo.conf", "-p", "8069", "-d", "dbodoo18"]
+CMD []

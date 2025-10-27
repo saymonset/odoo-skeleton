@@ -38,8 +38,7 @@ sudo chmod 777 ./secrets/*.txt
 # sudo rm -rf ./v18/logs
 
  mkdir -p ./v18/filestore ./v18/addons ./v18/config ./v18/odoo-web-data ./v18/pgdata ./v18/n8n_data ./v18/logs
-# Corrige permisos del volumen
-sudo chown -R 1000:1000 ./v18/n8n_data
+
 # # Recreate directories with proper permissions
 # sudo chown -R 1000:1000 ./v18/n8n_data ./v18/logs
 # sudo chmod -R 777 ./v18
@@ -52,8 +51,12 @@ sudo chown -R 1001:1001 ./config
 sudo chown -R 1001:1001 ./addons/extra
 sudo chown -R 1001:1001 ./addons/oca
 
+
 sudo chown -R 1001:1001 ./addons/enterprise
 sudo chown -R 1001:1001 ./filestore
+
+# Corrige permisos del volumen
+sudo chown -R 1000:1000 ./v18/n8n_data
 # Crea el directorio
 mkdir -p ./v18/filestore
 
