@@ -1,0 +1,57 @@
+services:
+  web_2:
+    image: "odoo-pers:18"
+    container_name: "odoo-18_2"
+    user: "1001:1001"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - odoo_network_18_2
+    ports:
+      - "28069:8069"
+      - "28072:8072"
+    volumes:
+      - "./v18_2/odoo-web-data:/var/lib/odoo"
+      - "./v18_2/config:/etc/odoo"
+      - "./v18_2/addons/extra:/opt/odoo/custom-addons/extra"
+      - "./v18_2/addons/oca:/opt/odoo/custom-addons/oca"
+      - "./v18_2/addons/enterprise:/opt/odoo/custom-addons/enterprise"
+      - "./v18_2/logs:/var/log/odoo"
+      - "./v18_2/filestore:/var/lib/odoo/filestore"  # ← Cambiado para evitar problemas de permisos
+    environment:
+      - DB_HOST=db
+      - POSTGRES_USER=odoo
+      - POSTGRES_DB=dbodoo18  # ← Base de datos ORIGINAL
+    secrets:
+      - postgres_password
+    stop_grace_period: 60s
+
+  db:
+    image: pgvector/pgvector:pg16
+    container_name: "odoo-db18_2"
+    environment:
+      - POSTGRES_DB=dbodoo18  # ← Base de datos ORIGINAL
+      - POSTGRES_USER=odoo    # ← Usuario ORIGINAL
+      - POSTGRES_PASSWORD=123456
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    networks:
+      - odoo_network_18_2
+    volumes:
+      - "./v18_2/pgdata/data:/var/lib/postgresql/data/pgdata"
+      - "./v18_2/pgdata/init:/docker-entrypoint-initdb.d"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U odoo -d dbodoo18"]  # ← ORIGINAL
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    stop_grace_period: 60s
+
+secrets:
+  postgres_password:
+    file: ./secrets/postgres_password.txt
+
+networks:
+  odoo_network_18_2:
+    driver: bridge
+    name: odoo_network_18_2

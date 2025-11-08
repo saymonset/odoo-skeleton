@@ -10,6 +10,8 @@
 /src/
 /filestore/
 /logs/
+
+# Instancia original (v18)
 n8n-evolution-api-odoo-18/v18/pgdata/*
 !n8n-evolution-api-odoo-18/v18/pgdata/.gitkeep
 n8n-evolution-api-odoo-18/v18/n8n_data/*
@@ -26,3 +28,18 @@ n8n-evolution-api-odoo-18/v18/filestore/*
 !n8n-evolution-api-odoo-18/v18/filestore/.gitkeep
 n8n-evolution-api-odoo-18/v18/n8n_data/*
 !n8n-evolution-api-odoo-18/v18/n8n_data/.gitkeep
+
+# Nueva instancia leads (v18_2)
+leads/odoo_instancia_2/v18_2/pgdata/*
+!leads/odoo_instancia_2/v18_2/pgdata/.gitkeep
+leads/odoo_instancia_2/v18_2/n8n_data/*
+!leads/odoo_instancia_2/v18_2/n8n_data/.gitkeep
+leads/odoo_instancia_2/v18_2/odoo-web-data/*
+!leads/odoo_instancia_2/v18_2/odoo-web-data/.gitkeep
+leads/odoo_instancia_2/v18_2/logs/*
+!leads/odoo_instancia_2/v18_2/logs/.gitkeep
+leads/odoo_instancia_2/v18_2/filestore/*
+!leads/odoo_instancia_2/v18_2/filestore/.gitkeep
+
+# Excepción para el archivo de configuración de Odoo
+!leads/odoo_instancia_2/v18_2/config/odoo.conf

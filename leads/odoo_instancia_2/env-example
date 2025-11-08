@@ -1,0 +1,15 @@
+############################
+# App
+############################
+VERSION=18_2
+
+############################
+# PostgreSQL
+############################
+PGDATA=/var/lib/postgresql/data/pgdata
+POSTGRES_USER=odoo      # ← ORIGINAL
+POSTGRES_DB=dbodoo18    # ← ORIGINAL
+POSTGRES_PASSWORD=123456
+
+DB_HOST=db
+DB_PORT=5432
