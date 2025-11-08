@@ -119,6 +119,8 @@ services:
       - N8N_BLOCK_ENV_ACCESS_IN_NODE=true
       - N8N_GIT_NODE_DISABLE_BARE_REPOS=true
       - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
+      - N8N_CORS_ALLOW_ORIGIN=${N8N_CORS_ALLOW_ORIGIN}
+      - N8N_CORS_ALLOW_CREDENTIALS=${N8N_CORS_ALLOW_CREDENTIALS}
     volumes:
       - "./v${VERSION}/n8n_data:/home/node/.n8n"
     depends_on:

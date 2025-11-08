@@ -21,3 +21,5 @@ N8N_USER=admin
 N8N_PASSWORD_FILE=/run/secrets/n8n_password
 N8N_ENCRYPTION_KEY_FILE=/run/secrets/n8n_encryption_key
 N8N_RUNNERS_ENABLED=true
+N8N_CORS_ALLOW_CREDENTIALS=true
+N8N_CORS_ALLOW_ORIGIN=*
