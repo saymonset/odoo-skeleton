@@ -4,7 +4,9 @@
     "category": "Tools",
     "depends": ["web", "base", "bus", "mail"],
     "data": [
+        "security/ir.model.access.csv",
         "views/menu.xml",
+        "views/templates.xml",  # Archivo principal que incluye componentes
     ],
     "assets": {
         "web.assets_backend": [
@@ -13,6 +15,8 @@
             
             # 2. Servicios y managers
             "chatter_voice_note/static/src/components/audio_to_text/contact_manager.js",
+            "chatter_voice_note/static/src/components/audio_to_text/contact_manager_component.js",
+            "chatter_voice_note/static/src/components/audio_to_text/contact_manager_template.xml",
             "chatter_voice_note/static/src/components/audio_to_text/audio_recorder.js",
             "chatter_voice_note/static/src/components/audio_to_text/audio_note_manager.js",
             "chatter_voice_note/static/src/components/audio_to_text/n8n_service.js",
@@ -20,8 +24,9 @@
             "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js",
             "https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js",
             
-           # 3. Componente del reporte médico (NUEVO)
+            # 3. Componente del reporte médico
             "chatter_voice_note/static/src/components/audio_to_text/medical_report.js",
+            "chatter_voice_note/static/src/components/audio_to_text/medical_report.xml",
             
             # 4. Componente principal
             "chatter_voice_note/static/src/components/audio_to_text/voice_recorder.js",
@@ -33,9 +38,8 @@
             "chatter_voice_note/static/src/components/audio_to_text/audio_to_text.js",
             "chatter_voice_note/static/src/components/audio_to_text/audio_to_text.xml",
             
-            # 7. CSS del reporte médico (NUEVO)
+            # 7. CSS del reporte médico
             "chatter_voice_note/static/src/components/audio_to_text/medical_report.css",
-        
         ],
     },
     "installable": True,

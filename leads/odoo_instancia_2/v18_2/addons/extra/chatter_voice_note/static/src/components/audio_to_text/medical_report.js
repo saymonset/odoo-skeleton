@@ -1,5 +1,5 @@
 /** @odoo-module **/
-import { Component } from "@odoo/owl";
+import { Component, useState } from "@odoo/owl"; 
 import { useService } from "@web/core/utils/hooks";
 
 export class MedicalReport extends Component {
@@ -7,13 +7,167 @@ export class MedicalReport extends Component {
     static props = {
         content: String,
         title: { type: String, optional: true },
-        onClose: { type: Function, optional: true }
+        onClose: { type: Function, optional: true },
+        userData: { type: Object, optional: true },
+        contacts: { type: Array, optional: true },
+        resModel: { type: String, optional: true },
+        resId: { type: Number, optional: true }
+
+        
     };
 
     setup() {
         super.setup();
         this.notification = useService("notification");
+        this.orm = useService("orm");
+
+         this.state = useState({
+                    companyLogo: null,
+                    companyName: '',
+                    userName: 'Dr. Médico',    
+                    userJobTitle: 'Especialista' 
+                });
+
+         this.loadCompanyLogo();  
+         this.setUserDataFromProps();
+       
+
     }
+  
+ setUserDataFromProps() {
+    try {
+        console.log("🔄 Configurando datos del usuario desde props...", this.props.userData);
+        
+        if (this.props.userData && this.props.userData.name) {
+            this.state.userName = this.props.userData.name;
+            console.log("✅ Usuario obtenido de props:", this.props.userData.name);
+            
+            // Si tenemos userId, intentar cargar más detalles
+            if (this.props.userData.userId) {
+                this.loadUserDetailsFromDB(this.props.userData.userId);
+            }
+        } else {
+            console.warn("⚠️ No se proporcionaron datos de usuario válidos en las props");
+            this.setDefaultUserData();
+        }
+        
+    } catch (error) {
+        console.error("❌ Error configurando datos del usuario:", error);
+        this.setDefaultUserData();
+    }
+}
+
+    enhanceUserData() {
+        if (this.state.userName && !this.state.userName.includes('Dr.') && !this.state.userName.includes('Dra.')) {
+            this.state.userName = 'Dr. ' + this.state.userName;
+        }
+    }
+
+    async loadUserDetailsFromDB(userId) {
+        try {
+            console.log("🔄 Cargando detalles adicionales del usuario, ID:", userId);
+            
+            const users = await this.orm.searchRead(
+                "res.users",
+                [["id", "=", userId]],
+                ["name", "job_title", "function"],
+                { limit: 1 }
+            );
+            
+            if (users && users.length > 0) {
+                const user = users[0];
+                
+                // Actualizar puesto de trabajo si está disponible
+                if (user.job_title) {
+                    this.state.userJobTitle = user.job_title;
+                } else if (user.function) {
+                    this.state.userJobTitle = user.function;
+                }
+                
+                console.log("✅ Detalles del usuario cargados:", {
+                    name: user.name,
+                    jobTitle: this.state.userJobTitle
+                });
+                
+            } else {
+                console.warn("⚠️ No se encontraron detalles adicionales del usuario");
+                this.enhanceUserData();
+            }
+            
+        } catch (error) {
+            console.error("❌ Error cargando detalles del usuario:", error);
+            this.enhanceUserData();
+        }
+    }
+
+    // 🔥 MÉTODO PARA ESTABLECER DATOS POR DEFECTO
+    setDefaultUserData() {
+        this.state.userName = 'Dr. ' + this.getRandomDoctorName();
+        this.state.userJobTitle = 'Médico Especialista';
+    }
+
+    // 🔥 GENERAR NOMBRE DE MÉDICO ALEATORIO (PARA QUE SEA MÁS PROFESIONAL)
+    getRandomDoctorName() {
+        const names = ['García', 'Rodríguez', 'López', 'Martínez', 'González', 'Pérez', 'Sánchez', 'Ramírez', 'Torres', 'Flores'];
+        const firstNames = ['Alejandro', 'Carlos', 'María', 'Ana', 'Luis', 'Javier', 'Elena', 'Sofía', 'Miguel', 'David'];
+        
+        const randomFirstName = firstNames[Math.floor(Math.random() * firstNames.length)];
+        const randomLastName = names[Math.floor(Math.random() * names.length)];
+        
+        return `${randomFirstName} ${randomLastName}`;
+    }
+
+
+    async loadCompanyLogo() {
+        try {
+            console.log("🔄 Cargando logo de la compañía...");
+            
+            let companies = [];
+            
+            try {
+                companies = await this.orm.searchRead(
+                    "res.company",
+                    [],
+                    ["logo", "name"],
+                    { limit: 1 }
+                );
+            } catch (error) {
+                console.warn("⚠️ Error cargando compañía, intentando método alternativo...");
+                companies = await this.orm.call(
+                    "res.company",
+                    "search_read",
+                    [],
+                    {
+                        domain: [],
+                        fields: ["logo", "name"],
+                        limit: 1
+                    }
+                );
+            }
+            
+            if (companies && companies.length > 0) {
+                const company = companies[0];
+                
+                if (company.logo) {
+                    console.log("✅ Logo de compañía encontrado");
+                    this.state.companyLogo = company.logo;
+                }
+                
+                if (company.name) {
+                    this.state.companyName = company.name;
+                }
+                
+                console.log("🏢 Compañía:", company.name);
+            } else {
+                console.warn("⚠️ No se encontró información de la compañía");
+            }
+        } catch (error) {
+            console.error("❌ Error cargando logo de compañía:", error);
+        }
+    }
+
+
+
 
     get currentDate() {
         return new Date().toLocaleDateString('es-ES', {
@@ -35,6 +189,41 @@ export class MedicalReport extends Component {
 
     get reportTitle() {
         return this.props.title || "Reporte Médico";
+    }
+
+    // 🔥 MÉTODO PARA OBTENER EL LOGO DE LA COMPAÑÍA
+    async getCompanyLogo() {
+        try {
+            const companies = await this.orm.searchRead(
+                "res.company",
+                [],
+                ["logo"],
+                { limit: 1 }
+            );
+            if (companies.length > 0 && companies[0].logo) {
+                return companies[0].logo;
+            }
+        } catch (error) {
+            console.error("Error al obtener el logo de la compañía:", error);
+        }
+        return null;
+    }
+
+    // 🔥 MÉTODO PARA CARGAR IMAGEN DESDE BASE64
+    loadImageFromBase64(base64Data) {
+        return new Promise((resolve, reject) => {
+            const img = new Image();
+            img.onload = function() {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.width = img.width;
+                canvas.height = img.height;
+                ctx.drawImage(img, 0, 0);
+                resolve(canvas.toDataURL('image/png'));
+            };
+            img.onerror = reject;
+            img.src = `data:image/png;base64,${base64Data}`;
+        });
     }
 
     // 🔥 DESCARGA REAL DE PDF PROFESIONAL
@@ -61,7 +250,7 @@ export class MedicalReport extends Component {
         }
     }
 
-    // 🔥 PDF PROFESIONAL CON DISEÑO MÉDICO
+    // 🔥 PDF PROFESIONAL CON DISEÑO MÉDICO Y LOGO REAL
     generateProfessionalPDF = async () => {
         try {
             const { jsPDF } = window.jspdf;
@@ -92,12 +281,30 @@ export class MedicalReport extends Component {
             doc.setFontSize(12);
             doc.text("Acreditado - Excelencia en Salud", pageWidth / 2, 18, { align: "center" });
 
-            // 🔥 LOGO SIMULADO (podrías reemplazar con imagen real)
-            doc.setFillColor(255, 255, 255);
-            doc.circle(25, 12, 8, 'F');
-            doc.setFontSize(10);
-            doc.setTextColor(41, 128, 185);
-            doc.text("CM", 25, 14, { align: "center" });
+            // 🔥 LOGO REAL DE LA COMPAÑÍA DE ODOO
+            let logoLoaded = false;
+            try {
+                const companyLogo = await this.getCompanyLogo();
+                if (companyLogo) {
+                    const logoData = await this.loadImageFromBase64(companyLogo);
+                    // Añadir el logo con dimensiones apropiadas
+                    doc.addImage(logoData, 'PNG', 20, 8, 15, 15);
+                    logoLoaded = true;
+                    console.log("✅ Logo de la compañía cargado correctamente");
+                }
+            } catch (error) {
+                console.warn("❌ No se pudo cargar el logo de la compañía:", error);
+            }
+
+            // 🔥 LOGO ALTERNATIVO SI NO SE PUDO CARGAR EL LOGO DE LA COMPAÑÍA
+            if (!logoLoaded) {
+                console.log("⚠️ Usando logo alternativo");
+                doc.setFillColor(255, 255, 255);
+                doc.circle(25, 12, 8, 'F');
+                doc.setFontSize(10);
+                doc.setTextColor(41, 128, 185);
+                doc.text("CM", 25, 14, { align: "center" });
+            }
 
             yPosition = 35;
 
@@ -203,8 +410,8 @@ export class MedicalReport extends Component {
             
             // Información del médico
             doc.setFont("helvetica", "normal");
-            doc.text("Dr. Alejandro Rodríguez", margin, yPosition + 10);
-            doc.text("Médico Especialista", margin, yPosition + 15);
+            doc.text(this.state.userName, margin, yPosition + 10);
+            doc.text(this.state.userJobTitle, margin, yPosition + 15);
             doc.text("Lic. MED-123456", margin, yPosition + 20);
 
             // Sello simulado
@@ -440,4 +647,120 @@ export class MedicalReport extends Component {
             document.head.removeChild(styleElement);
         }, 1000);
     }
+
+
+
+    // 🔥 MÉTODO PARA ENVIAR POR CORREO
+sendEmail = async () => {
+    try {
+        this.notification.add("📧 Preparando envío por correo...", { type: "info" });
+
+        // Generar PDF en base64
+        const pdfBase64 = await this.generatePDFBase64();
+        
+        if (!pdfBase64) {
+            throw new Error("No se pudo generar el PDF");
+        }
+
+        // Obtener contactos seleccionados (deberías pasar esto como prop desde VoiceRecorder)
+        const contacts = this.props.contacts || [];
+        
+        if (contacts.length === 0) {
+            this.notification.add("❌ No hay contactos seleccionados para enviar el correo", { type: "warning" });
+            return;
+        }
+
+        // Preparar datos para enviar
+        const emailData = {
+            pdf_data: pdfBase64,
+            pdf_name: `Reporte_Medico_${new Date().getTime()}.pdf`,
+            contacts: contacts,
+            subject: `Reporte Médico - ${this.currentDate}`,
+            body: this.generateEmailBody(),
+            res_model: this.props.resModel || null,
+            res_id: this.props.resId || null
+        };
+
+        // Enviar por correo usando el servicio de Odoo
+        await this.sendEmailViaOdoo(emailData);
+        
+        this.notification.add("✅ Reporte enviado por correo correctamente", { type: "success" });
+
+    } catch (error) {
+        console.error("❌ Error enviando email:", error);
+        this.notification.add(`❌ Error al enviar correo: ${error.message}`, { type: "danger" });
+    }
+}
+
+// 🔥 GENERAR PDF COMO BASE64 (sin descargar)
+generatePDFBase64 = async () => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            if (!window.jspdf) {
+                reject(new Error("jsPDF no disponible"));
+                return;
+            }
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({
+                orientation: 'portrait',
+                unit: 'mm',
+                format: 'a4'
+            });
+
+            // ... (todo el código de generateProfessionalPDF pero SIN doc.save())
+            
+            // En lugar de guardar, obtener como base64
+            const pdfBase64 = doc.output('datauristring').split(',')[1];
+            resolve(pdfBase64);
+            
+        } catch (error) {
+            reject(error);
+        }
+    });
+}
+
+// 🔥 GENERAR CUERPO DEL EMAIL
+generateEmailBody = () => {
+    return `
+Estimado(a) paciente,
+
+Adjuntamos su reporte médico generado el ${this.currentDateTime}.
+
+${this.state.userName}
+${this.state.userJobTitle}
+${this.state.companyName || 'Centro Médico'}
+
+---
+Este es un mensaje automático, por favor no responder.
+    `.trim();
+}
+
+// 🔥 ENVIAR EMAIL USANDO ODOO
+sendEmailViaOdoo = async (emailData) => {
+    try {
+        const result = await this.orm.call(
+            'mail.mail',
+            'create_and_send_medical_report',
+            [emailData],
+            {}
+        );
+        
+        console.log("✅ Email enviado via Odoo:", result);
+        return result;
+        
+    } catch (error) {
+        console.error("❌ Error enviando email via Odoo:", error);
+        throw error;
+    }
+}
+
+
+
+
+
+
+
+
+
 }

@@ -2,23 +2,29 @@
 import { Component, useState, onWillUnmount, markup } from "@odoo/owl";
 import { useService } from "@web/core/utils/hooks";
 import { ContactManager } from "./contact_manager";
+import { ContactManagerComponent } from "./contact_manager_component";
 import { AudioRecorder } from "./audio_recorder";
 import { AudioNoteManager } from "./audio_note_manager";
 import { MedicalReport } from "./medical_report";
 import { N8NService } from "./n8n_service";
 
+
 export class VoiceRecorder extends Component {
     static template = "chatter_voice_note.VoiceRecorder";
     static components = {
+        ContactManagerComponent,
         MedicalReport
     };
 
     setup() {
 
-        console.log("🔧 Setup VoiceRecorder - Versión Simplificada");
+
+         
         
         this.initServices();
         this.initManagers();
+
+        this.contactManager = new ContactManager(this.orm);
         
         // ESTADO SIMPLIFICADO
         this.state = useState({
@@ -32,6 +38,7 @@ export class VoiceRecorder extends Component {
             editingFinalMessage: false,
             editedFinalMessage: '',
             showMedicalReport: false,
+            reportUserData: null,
             reportTitle: 'Reporte Médico'
 
         });
@@ -101,13 +108,35 @@ stopPolling() {
         this.state.editingFinalMessage = true;
     }
 
-    saveFinalMessage() {
+    async getUserData() {
+                try {
+                    const result = await this.orm.call("res.users", "get_current_user_info", [], {});
+                    console.log("👤 Datos del usuario obtenidos vía RPC:", result);
+                    return result;
+                } catch (error) {
+                    console.error("❌ Error al obtener usuario:", error);
+                    return {
+                        name: "Usuario desconocido",
+                        userId: null,
+                    };
+                }
+            }
+
+
+       
+    async saveFinalMessage() {
         console.log("💾 Guardando mensaje final editado");
         this.state.final_message = this.state.editedFinalMessage;
         this.state.editingFinalMessage = false;
 
+           // 🔥 OBTENER DATOS DEL USUARIO Y PASARLOS AL REPORTE
+        const userData = await this.getUserData();
+        console.log("🔍 Datos de usuario que se enviarán al reporte:", userData);
+        this.state.reportUserData = userData;
          // 🔥 MOSTRAR REPORTE AUTOMÁTICAMENTE
         this.state.showMedicalReport = true;
+        this.state.reportUserData = userData;
+        this.state.reportContacts = this.contactManager.state.selectedContacts; 
         
         this.notification.add(
             "✅ Mensaje final actualizado correctamente",
@@ -203,8 +232,8 @@ generateUniqueRequestId() {
     this.state.editingFinalMessage = false;
     this.state.editedFinalMessage = '';
     this.state.showMedicalReport = false; 
-    this.state.final_message = '';         // ← LIMPIAR MENSAJE ANTERIOR
-    this.state.answer_ia = '';             // ← LIMPIAR RESPUESTA IA
+    this.state.final_message = '';          
+    this.state.answer_ia = '';              
 
     try {
         await this.n8nService.sendToN8N(
@@ -217,8 +246,10 @@ generateUniqueRequestId() {
         this.startPollingWhenNeeded(); // INICIA POLLING
     } catch (err) {
         console.error("Error envío:", err);
+        this.state.isSending = false; 
+        this.state.debugInfo = 'Error al enviar';
+        this.notification.add("Error al enviar el audio", { type: "danger" });
     } finally {
-        this.state.isSending = false;
     }
 }
 
@@ -300,6 +331,8 @@ generateUniqueRequestId() {
         this.state.debugInfo = 'Procesamiento completado ✓';
         this.state.error = null;
 
+        this.state.isSending = false;
+
          // 🔥 INICIAR AUTOMÁTICAMENTE EN MODO EDICIÓN
         this.state.editedFinalMessage = this.state.final_message;
         this.state.editingFinalMessage = true;
@@ -327,17 +360,18 @@ generateUniqueRequestId() {
         this.state.answer_ia = '';
         this.state.debugInfo = 'Sistema listo para nueva consulta';
         this.state.error = null;
-         // 🔥 LIMPIAR ESTADOS DE EDICIÓN
         this.state.editingFinalMessage = false;
         this.state.editedFinalMessage = '';
         this.state.showMedicalReport = false;  
-        this.stopPolling(); // ← LIMPIEZA
+        this.state.isSending = false; 
+        this.stopPolling(); 
     }
 
-    // 🔥 MÉTODOS EXISTENTES
     async toggleRecording() {
         if (this.state.recording) {
             await this.stopRecording();
+            // 🔥 AUTOMÁTICAMENTE PROCESAR AL TERMINAR LA GRABACIÓN
+            await this.sendToN8N();
         } else {
             await this.startRecording();
         }
