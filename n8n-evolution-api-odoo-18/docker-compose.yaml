@@ -46,6 +46,8 @@ services:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD_FILE=${POSTGRES_PASSWORD_FILE}
       - PGDATA=${PGDATA}
+    ports:
+    - "5432:5432"
     networks:
       - odoo_network_18
     volumes:
