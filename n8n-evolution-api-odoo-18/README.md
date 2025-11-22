@@ -37,13 +37,14 @@ sudo chmod 777 ./secrets/*.txt
 # sudo rm -rf ./v18/n8n_data
 # sudo rm -rf ./v18/logs
 
- mkdir -p ./v18/filestore ./v18/addons ./v18/config ./v18/odoo-web-data ./v18/pgdata ./v18/n8n_data ./v18/logs
+ mkdir -p ./v18/pgadmin-data  ./v18/filestore ./v18/addons ./v18/config ./v18/odoo-web-data ./v18/pgdata ./v18/n8n_data ./v18/logs
 
 # # Recreate directories with proper permissions
 # sudo chown -R 1000:1000 ./v18/n8n_data ./v18/logs
 # sudo chmod -R 777 ./v18
 # En tu servidor (fuera de Docker)
 sudo chown -R 1001:1001 ./v18
+sudo chown -R 5050:5050 ./v18/pgadmin-data
  # Todos los directorios que monta Odoo deben ser del UID 1001
  cd v18
 sudo chown -R 1001:1001 ./odoo-web-data

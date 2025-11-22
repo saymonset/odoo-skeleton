@@ -27,6 +27,8 @@ n8n-evolution-api-odoo-18/src/odoo-stubs/*
 n8n-evolution-api-odoo-18/v18/filestore/*
 !n8n-evolution-api-odoo-18/v18/filestore/.gitkeep
 n8n-evolution-api-odoo-18/v18/n8n_data/*
+n8n-evolution-api-odoo-18/v18/pgadmin-data/*
+
 !n8n-evolution-api-odoo-18/v18/n8n_data/.gitkeep
 
 # Nueva instancia leads (v18_2)
