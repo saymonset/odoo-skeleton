@@ -23,3 +23,5 @@ N8N_ENCRYPTION_KEY_FILE=/run/secrets/n8n_encryption_key
 N8N_RUNNERS_ENABLED=true
 N8N_CORS_ALLOW_CREDENTIALS=true
 N8N_CORS_ALLOW_ORIGIN=*
+#saymon_set@hotmail.com
+#Ci10169949.
