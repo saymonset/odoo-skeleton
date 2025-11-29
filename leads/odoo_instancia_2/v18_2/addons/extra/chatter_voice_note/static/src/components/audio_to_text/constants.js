@@ -1,7 +1,7 @@
 /** @odoo-module **/
 //TEST
 // En path del webhook, se coloca test-audios para entorno de pruebas
-//  export const N8N_WEBHOOK_URL = "https://n8n.jumpjibe.com/webhook/test-audios";
+ // export const N8N_WEBHOOK_URL = "https://n8n.jumpjibe.com/webhook/test-audios";
 
 // En path del webhook, se coloca audios para entorno de produccion
   //#  PRODUCCION

@@ -1,5 +1,5 @@
 /** @odoo-module **/
-import { Component, useState } from "@odoo/owl"; 
+import { Component, useState } from "@odoo/owl";
 import { useService } from "@web/core/utils/hooks";
 
 export class MedicalReport extends Component {
@@ -11,185 +11,81 @@ export class MedicalReport extends Component {
         userData: { type: Object, optional: true },
         contacts: { type: Array, optional: true },
         resModel: { type: String, optional: true },
-        resId: { type: Number, optional: true }
-
-        
+        resId: { type: Number, optional: true },
     };
 
     setup() {
         super.setup();
         this.notification = useService("notification");
         this.orm = useService("orm");
-
-         this.state = useState({
-                    companyLogo: null,
-                    companyName: '',
-                    userName: 'Dr. Médico',    
-                    userJobTitle: 'Especialista' 
-                });
-
-         this.loadCompanyLogo();  
-         this.setUserDataFromProps();
+        
+        // SOLUCIÓN: Usar el servicio HTTP en lugar de RPC
+        this.http = useService("http");
+        
        
+        this.state = useState({
+            companyLogo: null,
+            companyName: '',
+            userName: 'Dr. Médico',
+            userJobTitle: 'Especialista'
+        });
 
+        this.loadCompanyData();
+        this.setUserDataFromProps();
     }
-  
- setUserDataFromProps() {
-    try {
-        console.log("🔄 Configurando datos del usuario desde props...", this.props.userData);
-        
-        if (this.props.userData && this.props.userData.name) {
-            this.state.userName = this.props.userData.name;
-            console.log("✅ Usuario obtenido de props:", this.props.userData.name);
-            
-            // Si tenemos userId, intentar cargar más detalles
-            if (this.props.userData.userId) {
-                this.loadUserDetailsFromDB(this.props.userData.userId);
+
+    // ==================================================================
+    // CARGA DE DATOS (Mantener igual)
+    // ==================================================================
+    async loadCompanyData() {
+        debugger
+        try {
+            const companies = await this.orm.searchRead("res.company", [], ["logo", "name"], { limit: 1 });
+            if (companies?.length) {
+                this.state.companyLogo = companies[0].logo || null;
+                this.state.companyName = companies[0].name || "CENTRO MÉDICO";
             }
-        } else {
-            console.warn("⚠️ No se proporcionaron datos de usuario válidos en las props");
-            this.setDefaultUserData();
+        } catch (err) {
+            console.warn("Error cargando datos de compañía", err);
         }
-        
-    } catch (error) {
-        console.error("❌ Error configurando datos del usuario:", error);
-        this.setDefaultUserData();
     }
-}
+
+    setUserDataFromProps() {
+        if (this.props.userData?.name) {
+            this.state.userName = this.props.userData.name;
+            if (this.props.userData.userId) this.loadUserDetailsFromDB(this.props.userData.userId);
+        }
+        this.enhanceUserData();
+    }
+
+    async loadUserDetailsFromDB(userId) {
+        try {
+            const users = await this.orm.searchRead("res.users", [["id", "=", userId]], ["name", "job_id"], { limit: 1 });
+            if (users?.length && users[0].job_id) {
+                this.state.userJobTitle = users[0].job_id[1];
+            }
+        } catch (err) { /* silencioso */ }
+        this.enhanceUserData();
+    }
 
     enhanceUserData() {
-        if (this.state.userName && !this.state.userName.includes('Dr.') && !this.state.userName.includes('Dra.')) {
-            this.state.userName = 'Dr. ' + this.state.userName;
+        if (this.state.userName && !/^Dr(a|\.)?\s/i.test(this.state.userName)) {
+            const lastName = this.state.userName.trim().split(" ").pop();
+            this.state.userName = `Dr. ${lastName}`;
         }
     }
 
-async loadUserDetailsFromDB(userId) {
-    if (!userId) {
-        console.warn("No userId para cargar detalles");
-        this.enhanceUserData();
-        return;
-    }
-
-    try {
-        console.log("Cargando detalles del usuario, ID:", userId);
-
-        // CAMPOS REALES EN res.users
-        const users = await this.orm.searchRead(
-            "res.users",
-            [["id", "=", userId]],
-            ["name", "job_id", "phone", "mobile", "image_1920"],
-            { limit: 1 }
-        );
-
-        if (users?.length > 0) {
-            const user = users[0];
-
-            // job_id es [id, "Nombre del puesto"]
-            const jobTitle = user.job_id ? user.job_id[1] : "Médico";
-
-            this.state.userJobTitle = jobTitle;
-
-            console.log("Detalles del usuario cargados:", {
-                name: user.name,
-                jobTitle: jobTitle
-            });
-        } else {
-            console.warn("Usuario no encontrado en DB");
-            this.enhanceUserData();
-        }
-    } catch (error) {
-        console.error("Error RPC al cargar usuario:", error);
-        // Fallback seguro
-        this.state.userJobTitle = this.props.userData?.name?.includes("Dr.") 
-            ? "Médico" 
-            : "Profesional de Salud";
-        this.enhanceUserData();
-    }
-}
-    // 🔥 MÉTODO PARA ESTABLECER DATOS POR DEFECTO
-    setDefaultUserData() {
-        this.state.userName = 'Dr. ' + this.getRandomDoctorName();
-        this.state.userJobTitle = 'Médico Especialista';
-    }
-
-    // 🔥 GENERAR NOMBRE DE MÉDICO ALEATORIO (PARA QUE SEA MÁS PROFESIONAL)
-    getRandomDoctorName() {
-        const names = ['García', 'Rodríguez', 'López', 'Martínez', 'González', 'Pérez', 'Sánchez', 'Ramírez', 'Torres', 'Flores'];
-        const firstNames = ['Alejandro', 'Carlos', 'María', 'Ana', 'Luis', 'Javier', 'Elena', 'Sofía', 'Miguel', 'David'];
-        
-        const randomFirstName = firstNames[Math.floor(Math.random() * firstNames.length)];
-        const randomLastName = names[Math.floor(Math.random() * names.length)];
-        
-        return `${randomFirstName} ${randomLastName}`;
-    }
-
-
-    async loadCompanyLogo() {
-        try {
-            console.log("🔄 Cargando logo de la compañía...");
-            
-            let companies = [];
-            
-            try {
-                companies = await this.orm.searchRead(
-                    "res.company",
-                    [],
-                    ["logo", "name"],
-                    { limit: 1 }
-                );
-            } catch (error) {
-                console.warn("⚠️ Error cargando compañía, intentando método alternativo...");
-                companies = await this.orm.call(
-                    "res.company",
-                    "search_read",
-                    [],
-                    {
-                        domain: [],
-                        fields: ["logo", "name"],
-                        limit: 1
-                    }
-                );
-            }
-            
-            if (companies && companies.length > 0) {
-                const company = companies[0];
-                
-                if (company.logo) {
-                    console.log("✅ Logo de compañía encontrado");
-                    this.state.companyLogo = company.logo;
-                }
-                
-                if (company.name) {
-                    this.state.companyName = company.name;
-                }
-                
-                console.log("🏢 Compañía:", company.name);
-            } else {
-                console.warn("⚠️ No se encontró información de la compañía");
-            }
-        } catch (error) {
-            console.error("❌ Error cargando logo de compañía:", error);
-        }
-    }
-
-
-
-
+    // ==================================================================
+    // UTILIDADES (Mantener igual)
+    // ==================================================================
     get currentDate() {
-        return new Date().toLocaleDateString('es-ES', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        });
+        return new Date().toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' });
     }
 
     get currentDateTime() {
         return new Date().toLocaleString('es-ES', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
+            year: 'numeric', month: 'long', day: 'numeric',
+            hour: '2-digit', minute: '2-digit'
         });
     }
 
@@ -197,590 +93,541 @@ async loadUserDetailsFromDB(userId) {
         return this.props.title || "Reporte Médico";
     }
 
-    // 🔥 MÉTODO PARA OBTENER EL LOGO DE LA COMPAÑÍA
-    async getCompanyLogo() {
-        try {
-            const companies = await this.orm.searchRead(
-                "res.company",
-                [],
-                ["logo"],
-                { limit: 1 }
-            );
-            if (companies.length > 0 && companies[0].logo) {
-                return companies[0].logo;
-            }
-        } catch (error) {
-            console.error("Error al obtener el logo de la compañía:", error);
+    // ==================================================================
+    // SOLUCIÓN: Método mejorado para generar PDF
+    // ==================================================================
+
+downloadPDF = async () => {
+    try {
+        
+        this.notification.add("Generando PDF...", { type: "info" });
+
+        // Preparar datos médicos
+        const medicalData = await this.prepareMedicalDataForPDFMake();
+          
+        // DEBUG: Verificar datos antes de enviar (usando console.log directamente)
+        console.log("=== DATOS MÉDICOS PARA PDF ===");
+        console.log("Diagnóstico:", medicalData.diagnosis);
+        console.log("Tipo de diagnóstico:", typeof medicalData.diagnosis);
+        console.log("Datos completos:", medicalData);
+        
+        // Verificar específicamente el diagnóstico
+        if (!medicalData.diagnosis || medicalData.diagnosis.trim() === '') {
+            throw new Error("El diagnóstico está vacío");
         }
-        return null;
-    }
 
-    // 🔥 MÉTODO PARA CARGAR IMAGEN DESDE BASE64
-    loadImageFromBase64(base64Data) {
-        return new Promise((resolve, reject) => {
-            const img = new Image();
-            img.onload = function() {
-                const canvas = document.createElement('canvas');
-                const ctx = canvas.getContext('2d');
-                canvas.width = img.width;
-                canvas.height = img.height;
-                ctx.drawImage(img, 0, 0);
-                resolve(canvas.toDataURL('image/png'));
-            };
-            img.onerror = reject;
-            img.src = `data:image/png;base64,${base64Data}`;
-        });
-    }
+        let result;
 
-    // 🔥 DESCARGA REAL DE PDF PROFESIONAL
-    downloadPDF = async () => {
+        // PRIMERO: Usar HTTP endpoint
         try {
-            this.notification.add("📄 Generando PDF profesional...", { type: "info" });
-
-            // Pequeña pausa para que el usuario vea el mensaje
-            await new Promise(resolve => setTimeout(resolve, 500));
-
-            // Verificar si jsPDF está disponible
-            if (window.jspdf && typeof window.jspdf !== 'undefined') {
-                console.log("📄 Usando jsPDF para generar PDF profesional...");
-                await this.generateProfessionalPDF();
-            } else {
-                console.log("📄 jsPDF no disponible, usando método alternativo...");
-                await this.generateAlternativePDF();
-            }
-
-            this.notification.add("✅ PDF profesional descargado correctamente", { type: "success" });
-        } catch (error) {
-            console.error("❌ Error generando PDF:", error);
-            this.notification.add("❌ Error al generar PDF: " + error.message, { type: "danger" });
-        }
-    }
-
-    // 🔥 PDF PROFESIONAL CON DISEÑO MÉDICO Y LOGO REAL
-    generateProfessionalPDF = async () => {
-        try {
-            const { jsPDF } = window.jspdf;
+            console.log("1. Intentando endpoint HTTP...");
+            result = await this.generatePDFWithHTTP(medicalData);
+            console.log("✅ HTTP exitoso:", result);
+        } catch (httpError) {
+            console.warn("HTTP falló:", httpError);
             
-            // Crear nuevo documento PDF en formato A4
-            const doc = new jsPDF({
-                orientation: 'portrait',
-                unit: 'mm',
-                format: 'a4'
-            });
-            
-            const pageWidth = doc.internal.pageSize.getWidth();
-            const pageHeight = doc.internal.pageSize.getHeight();
-            const margin = 15;
-            const contentWidth = pageWidth - (margin * 2);
-            let yPosition = margin;
-
-            // 🔥 ENCABEZADO PROFESIONAL CON FONDO
-            doc.setFillColor(41, 128, 185); // Azul médico
-            doc.rect(0, 0, pageWidth, 25, 'F');
-            
-            // Título principal en blanco
-            doc.setFontSize(16);
-            doc.setFont("helvetica", "bold");
-            doc.setTextColor(255, 255, 255);
-            doc.text("CENTRO MÉDICO ESPECIALIZADO", pageWidth / 2, 12, { align: "center" });
-            
-            doc.setFontSize(12);
-            doc.text("Acreditado - Excelencia en Salud", pageWidth / 2, 18, { align: "center" });
-
-            // 🔥 LOGO REAL DE LA COMPAÑÍA DE ODOO
-            let logoLoaded = false;
+            // SEGUNDO: Intentar con QWEB endpoint
             try {
-                const companyLogo = await this.getCompanyLogo();
-                if (companyLogo) {
-                    const logoData = await this.loadImageFromBase64(companyLogo);
-                    // Añadir el logo con dimensiones apropiadas
-                    doc.addImage(logoData, 'PNG', 20, 8, 15, 15);
-                    logoLoaded = true;
-                    console.log("✅ Logo de la compañía cargado correctamente");
-                }
-            } catch (error) {
-                console.warn("❌ No se pudo cargar el logo de la compañía:", error);
-            }
-
-            // 🔥 LOGO ALTERNATIVO SI NO SE PUDO CARGAR EL LOGO DE LA COMPAÑÍA
-            if (!logoLoaded) {
-                console.log("⚠️ Usando logo alternativo");
-                doc.setFillColor(255, 255, 255);
-                doc.circle(25, 12, 8, 'F');
-                doc.setFontSize(10);
-                doc.setTextColor(41, 128, 185);
-                doc.text("CM", 25, 14, { align: "center" });
-            }
-
-            yPosition = 35;
-
-            // 🔥 INFORMACIÓN DEL REPORTE
-            doc.setFontSize(14);
-            doc.setFont("helvetica", "bold");
-            doc.setTextColor(0, 0, 0);
-            doc.text(this.reportTitle.toUpperCase(), pageWidth / 2, yPosition, { align: "center" });
-            
-            yPosition += 10;
-
-            // Línea decorativa
-            doc.setDrawColor(41, 128, 185);
-            doc.setLineWidth(0.5);
-            doc.line(margin, yPosition, pageWidth - margin, yPosition);
-            
-            yPosition += 15;
-
-            // 🔥 DATOS DEL PACIENTE (simulados - en producción vendrían de la base de datos)
-            doc.setFontSize(10);
-            doc.setFont("helvetica", "bold");
-            doc.text("INFORMACIÓN DEL PACIENTE:", margin, yPosition);
-            
-            yPosition += 6;
-            doc.setFont("helvetica", "normal");
-            
-            const patientData = [
-                { label: "Nombre del Paciente:", value: "Juan Pérez García" },
-                { label: "Edad:", value: "45 años" },
-                { label: "Historial Clínico:", value: "HC-2024-001234" },
-                { label: "Fecha de Consulta:", value: this.currentDate },
-                { label: "Médico Tratante:", value: "Dr. Alejandro Rodríguez" },
-                { label: "Especialidad:", value: "Medicina General" }
-            ];
-
-            patientData.forEach((data, index) => {
-                if (index % 2 === 0 && index > 0) {
-                    yPosition += 6;
-                }
+                console.log("2. Intentando endpoint QWEB...");
+                result = await this.generatePDFWithHTTP(medicalData);
+                console.log("✅ QWEB exitoso");
+            } catch (qwebError) {
+                console.warn("QWEB falló:", qwebError);
                 
-                const xPos = index % 2 === 0 ? margin : pageWidth / 2 + 5;
-                
-                doc.setFont("helvetica", "bold");
-                doc.text(data.label, xPos, yPosition);
-                doc.setFont("helvetica", "normal");
-                doc.text(data.value, xPos + (index % 2 === 0 ? 45 : 40), yPosition);
-                
-                if (index % 2 !== 0) {
-                    yPosition += 6;
+                // TERCERO: Fallback a jsPDF
+                try {
+                    console.log("3. Usando fallback jsPDF...");
+                    result = await this.generatePDFFallback(medicalData);
+                    console.log("✅ jsPDF exitoso");
+                } catch (fallbackError) {
+                    console.warn("jsPDF falló:", fallbackError);
+                    throw new Error("Todos los métodos de generación fallaron");
                 }
-            });
-
-            yPosition += 12;
-
-            // 🔥 CONTENIDO PRINCIPAL DEL REPORTE
-            doc.setFillColor(245, 245, 245);
-            doc.roundedRect(margin, yPosition, contentWidth, 10, 2, 2, 'F');
-            
-            doc.setFontSize(11);
-            doc.setFont("helvetica", "bold");
-            doc.setTextColor(0, 0, 0);
-            doc.text("INFORME MÉDICO DETALLADO", margin + 5, yPosition + 6);
-            
-            yPosition += 15;
-
-            // Procesar el contenido
-            const cleanContent = this.extractTextContent(this.props.content);
-            
-            // Configurar estilo para el contenido
-            doc.setFontSize(10);
-            doc.setFont("helvetica", "normal");
-            doc.setTextColor(60, 60, 60);
-
-            // Dividir el texto en líneas
-            const lines = doc.splitTextToSize(cleanContent, contentWidth - 10);
-            
-            // Agregar cada línea al PDF con sangría
-            lines.forEach(line => {
-                if (yPosition > pageHeight - margin - 40) {
-                    this.addNewPageWithHeader(doc, pageWidth);
-                    yPosition = margin + 25;
-                }
-                doc.text("  " + line, margin + 5, yPosition);
-                yPosition += 5;
-            });
-
-            yPosition += 10;
-
-            // 🔥 FIRMA Y SELLO PROFESIONAL
-            if (yPosition > pageHeight - margin - 50) {
-                this.addNewPageWithHeader(doc, pageWidth);
-                yPosition = margin + 25;
-            }
-
-            // Línea de firma
-            doc.setDrawColor(150, 150, 150);
-            doc.setLineWidth(0.3);
-            doc.line(margin, yPosition, margin + 60, yPosition);
-            
-            doc.setFontSize(9);
-            doc.setFont("helvetica", "bold");
-            doc.text("Firma del Médico", margin, yPosition + 5);
-            
-            // Información del médico
-            doc.setFont("helvetica", "normal");
-            doc.text(this.state.userName, margin, yPosition + 10);
-            doc.text(this.state.userJobTitle, margin, yPosition + 15);
-            doc.text("Lic. MED-123456", margin, yPosition + 20);
-
-            // Sello simulado
-            doc.setDrawColor(200, 0, 0);
-            doc.setLineWidth(0.5);
-            doc.circle(pageWidth - margin - 30, yPosition + 10, 15, 'S');
-            doc.setFontSize(6);
-            doc.setTextColor(200, 0, 0);
-            doc.text("SELLO OFICIAL", pageWidth - margin - 30, yPosition + 10, { align: "center" });
-            doc.text("CENTRO MÉDICO", pageWidth - margin - 30, yPosition + 13, { align: "center" });
-
-            yPosition += 35;
-
-            // 🔥 PIE DE PÁGINA PROFESIONAL
-            doc.setDrawColor(41, 128, 185);
-            doc.setLineWidth(0.5);
-            doc.line(margin, yPosition, pageWidth - margin, yPosition);
-            
-            yPosition += 5;
-            
-            doc.setFontSize(7);
-            doc.setFont("helvetica", "italic");
-            doc.setTextColor(100, 100, 100);
-            doc.text(`Reporte generado automáticamente el ${this.currentDateTime} - Centro Médico Especializado - Tel: (123) 456-7890 - www.centromedico.com`, 
-                    pageWidth / 2, yPosition, { align: "center" });
-            
-            doc.text(`Página 1 de 1 - Documento confidencial - No copiar ni distribuir sin autorización`, 
-                    pageWidth / 2, yPosition + 4, { align: "center" });
-
-            // 🔥 GUARDAR PDF CON NOMBRE PROFESIONAL
-            const timestamp = new Date().toISOString().slice(0, 10).replace(/-/g, '');
-            const fileName = `Reporte_Medico_${timestamp}_${new Date().getTime()}.pdf`;
-            doc.save(fileName);
-            
-        } catch (error) {
-            console.error("❌ Error en generateProfessionalPDF:", error);
-            throw new Error("No se pudo generar el PDF profesional");
-        }
-    }
-
-    // 🔥 MÉTODO PARA AÑADIR NUEVA PÁGINA CON ENCABEZADO
-    addNewPageWithHeader(doc, pageWidth) {
-        doc.addPage();
-        
-        // Encabezado en páginas siguientes
-        doc.setFillColor(41, 128, 185);
-        doc.rect(0, 0, pageWidth, 15, 'F');
-        
-        doc.setFontSize(10);
-        doc.setFont("helvetica", "bold");
-        doc.setTextColor(255, 255, 255);
-        doc.text("CENTRO MÉDICO ESPECIALIZADO - CONTINUACIÓN DEL REPORTE", pageWidth / 2, 8, { align: "center" });
-        
-        return 25; // Retorna la posición Y inicial
-    }
-
-    // 🔥 MÉTODO ALTERNATIVO PARA PDF (cuando jsPDF no está disponible)
-    generateAlternativePDF = () => {
-        try {
-            const cleanContent = this.extractTextContent(this.props.content);
-            
-            // Crear contenido HTML profesional para PDF
-            const htmlContent = `
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>${this.reportTitle}</title>
-    <style>
-        @page {
-            size: A4;
-            margin: 20mm;
-            @top-left {
-                content: "CENTRO MÉDICO ESPECIALIZADO";
-                font-size: 10pt;
-                color: #2980b9;
-            }
-            @bottom-center {
-                content: "Página " counter(page) " de " counter(pages);
-                font-size: 8pt;
-                color: #666;
             }
         }
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            margin: 0;
-            padding: 0;
+
+        if (result.success) {
+            this.downloadPDFFile(result.pdf_content, result.filename);
+            this.notification.add("PDF descargado exitosamente", { type: "success" });
+        } else {
+            throw new Error(result.error || "Error desconocido generando PDF");
         }
-        .header {
-            text-align: center;
-            border-bottom: 3px solid #2980b9;
-            padding-bottom: 15px;
-            margin-bottom: 20px;
-        }
-        .title {
-            font-size: 18pt;
-            font-weight: bold;
-            color: #2980b9;
-            margin-bottom: 10px;
-        }
-        .patient-info {
-            background: #f8f9fa;
-            border: 1px solid #dee2e6;
-            border-radius: 5px;
-            padding: 15px;
-            margin: 20px 0;
-        }
-        .content {
-            margin: 25px 0;
-            white-space: pre-line;
-            font-size: 11pt;
-        }
-        .signature {
-            margin-top: 50px;
-            border-top: 1px solid #ccc;
-            padding-top: 20px;
-        }
-        .footer {
-            font-size: 8pt;
-            color: #666;
-            text-align: center;
-            margin-top: 30px;
-        }
-    </style>
-</head>
-<body>
-    <div class="header">
-        <div class="title">${this.reportTitle}</div>
-        <div><strong>Centro Médico Especializado</strong></div>
-        <div>Fecha de emisión: ${this.currentDateTime}</div>
-    </div>
-    
-    <div class="patient-info">
-        <strong>INFORMACIÓN DEL PACIENTE:</strong><br>
-        Nombre: Juan Pérez García | Edad: 45 años<br>
-        Historial Clínico: HC-2024-001234 | Médico: Dr. Alejandro Rodríguez
-    </div>
-    
-    <div class="content">
-        <strong>INFORME MÉDICO:</strong><br><br>
-        ${cleanContent.replace(/\n/g, '<br>')}
-    </div>
-    
-    <div class="signature">
-        <div>_________________________</div>
-        <div><strong>Dr. Alejandro Rodríguez</strong></div>
-        <div>Médico Especialista - Lic. MED-123456</div>
-    </div>
-    
-    <div class="footer">
-        Reporte generado automáticamente - Centro Médico Especializado<br>
-        Documento confidencial - No copiar ni distribuir sin autorización
-    </div>
-</body>
-</html>
-            `;
-            
-            // Crear blob como PDF (aunque será HTML, muchos navegadores lo abren como PDF)
-            const blob = new Blob([htmlContent], { type: 'text/html' });
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = `reporte_medico_${new Date().getTime()}.html`;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(url);
-            
-        } catch (error) {
-            console.error("❌ Error en generateAlternativePDF:", error);
-            throw new Error("No se pudo generar el archivo alternativo");
-        }
+
+    } catch (err) {
+        console.error("Error generando PDF:", err);
+        this.notification.add(`Error generando PDF: ${err.message}`, { type: "danger" });
     }
+};
+    // ==================================================================
+    // MÉTODOS MEJORADOS PARA GENERAR PDF
+    // ==================================================================
 
-    // 🔥 EXTRAER TEXTO DEL CONTENIDO
-    extractTextContent = (content) => {
-        if (!content) return 'No hay contenido disponible para el reporte médico.';
-        
-        if (typeof content === 'string') {
-            return content
-                .replace(/<br\s*\/?>/gi, '\n')
-                .replace(/<p>/gi, '\n')
-                .replace(/<\/p>/gi, '\n')
-                .replace(/<strong>(.*?)<\/strong>/gi, '**$1**')
-                .replace(/<em>(.*?)<\/em>/gi, '*$1*')
-                .replace(/<[^>]+>/g, '')
-                .replace(/&nbsp;/g, ' ')
-                .replace(/&amp;/g, '&')
-                .replace(/&lt;/g, '<')
-                .replace(/&gt;/g, '>')
-                .replace(/\n\s*\n/g, '\n\n')
-                .trim();
-        }
-        
-        return String(content);
-    }
-
-    // 🔥 IMPRESIÓN MEJORADA
-    printReport = () => {
-        // Forzar los estilos de impresión
-        const printStyles = `
-            <style>
-                ${document.querySelector('style[data-print]')?.innerHTML || ''}
-                @media print {
-                    body * { visibility: hidden; }
-                    .medical-report-container, 
-                    .medical-report-container * { 
-                        visibility: visible; 
-                    }
-                    .medical-report-container {
-                        position: absolute !important;
-                        top: 0 !important;
-                        left: 0 !important;
-                        width: 100% !important;
-                        background: white !important;
-                    }
-                }
-            </style>
-        `;
-        
-        // Agregar estilos temporalmente
-        const styleElement = document.createElement('style');
-        styleElement.innerHTML = printStyles;
-        document.head.appendChild(styleElement);
-        
-        // Imprimir
-        window.print();
-        
-        // Remover estilos después de imprimir
-        setTimeout(() => {
-            document.head.removeChild(styleElement);
-        }, 1000);
-    }
-
-
-
-    // 🔥 MÉTODO PARA ENVIAR POR CORREO
-sendEmail = async () => {
+   
+  // MÉTODO PRINCIPAL RECOMENDADO - ORM
+async generatePDFWithORM(medicalData) {
     try {
-        this.notification.add("📧 Preparando envío por correo...", { type: "info" });
-
-        // Generar PDF en base64
-        const pdfBase64 = await this.generatePDFBase64();
-        
-        if (!pdfBase64) {
-            throw new Error("No se pudo generar el PDF");
-        }
-
-        // Obtener contactos seleccionados (deberías pasar esto como prop desde VoiceRecorder)
-        const contacts = this.props.contacts || [];
-        
-        if (contacts.length === 0) {
-            this.notification.add("❌ No hay contactos seleccionados para enviar el correo", { type: "warning" });
-            return;
-        }
-
-
-         // EXTRAER SOLO LOS EMAILS
-        // const emails = contacts
-        //     .map(c => c.email)
-        //     .filter(email => !!email); // Solo los que tengan email
-
-        // if (emails.length === 0) {
-        //     this.notification.add("⚠️ Ningún contacto tiene email válido", { type: "warning" });
-        //     return;
-        // }
-
-        
-
-        // Preparar datos para enviar
-        const emailData = {
-            pdf_data: pdfBase64,
-            pdf_name: `Reporte_Medico_${new Date().getTime()}.pdf`,
-            contacts: contacts,
-            subject: `Reporte Médico - ${this.currentDate}`,
-            body: this.generateEmailBody(),
-            res_model: this.props.resModel || null,
-            res_id: this.props.resId || null
-        };
-
-        // Enviar por correo usando el servicio de Odoo
-        await this.sendEmailViaOdoo(emailData);
-        
-        this.notification.add("✅ Reporte enviado por correo correctamente", { type: "success" });
-
-    } catch (error) {
-        console.error("❌ Error enviando email:", error);
-        this.notification.add(`❌ Error al enviar correo: ${error.message}`, { type: "danger" });
-    }
-}
-
-// 🔥 GENERAR PDF COMO BASE64 (sin descargar)
-generatePDFBase64 = async () => {
-    return new Promise(async (resolve, reject) => {
-        try {
-            if (!window.jspdf) {
-                reject(new Error("jsPDF no disponible"));
-                return;
-            }
-
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF({
-                orientation: 'portrait',
-                unit: 'mm',
-                format: 'a4'
-            });
-
-            // ... (todo el código de generateProfessionalPDF pero SIN doc.save())
-            
-            // En lugar de guardar, obtener como base64
-            const pdfBase64 = doc.output('datauristring').split(',')[1];
-            resolve(pdfBase64);
-            
-        } catch (error) {
-            reject(error);
-        }
-    });
-}
-
-// 🔥 GENERAR CUERPO DEL EMAIL
-generateEmailBody = () => {
-    return `
-Estimado(a) paciente,
-
-Adjuntamos su reporte médico generado el ${this.currentDateTime}.
-
-${this.state.userName}
-${this.state.userJobTitle}
-${this.state.companyName || 'Centro Médico'}
-
----
-Este es un mensaje automático, por favor no responder.
-    `.trim();
-}
-
-// 🔥 ENVIAR EMAIL USANDO ODOO
-sendEmailViaOdoo = async (emailData) => {
-    try {
+        debugger
+        console.log("Generando PDF via ORM (método recomendado):", medicalData);
         
         const result = await this.orm.call(
-            'mail.mail',
-            'create_and_send_medical_report',
-            [emailData],
-            {}
+            "pdfmake.service",           // Modelo
+            "generate_medical_pdf",      // Método (según tu controlador)
+            [medicalData],               // Parámetros como lista
+            {}                           // Opciones adicionales
         );
-        
-        console.log("✅ Email enviado via Odoo:", result);
+
+        console.log("✅ ORM call exitoso:", result);
         return result;
         
     } catch (error) {
-        console.error("❌ Error enviando email via Odoo:", error);
+        console.error('Error en generatePDFWithORM:', error);
         throw error;
     }
 }
 
+// MÉTODO SIMPLIFICADO - Usa JSON simple
+async generatePDFWithHTTP(medicalData) {
+    try {
+        console.log("Enviando datos al endpoint JSON:", medicalData);
+        
+        // Enviar JSON simple como Postman
+        const response = await fetch('/pdfmake/medical-report/service', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                medical_data: medicalData
+            }),
+            credentials: 'include'
+        });
+
+        console.log("Estado de respuesta:", response.status, response.statusText);
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const result = await response.json();
+        console.log("Respuesta completa:", result);
+        
+        return result;
+        
+    } catch (error) {
+        console.error('Error en generatePDFWithHTTP:', error);
+        throw error;
+    }
+}
+// Método alternativo usando endpoint QWEB (sin validación estricta)
+async generatePDFWithQWEB(medicalData) {
+    try {
+        // Convertir datos a parámetros URL
+        const params = new URLSearchParams();
+        
+        // Asegurarse de que todos los valores sean strings
+        Object.keys(medicalData).forEach(key => {
+            let value = medicalData[key];
+            if (value === null || value === undefined) {
+                value = '';
+            } else if (typeof value === 'boolean') {
+                value = value.toString();
+            }
+            params.append(key, String(value));
+        });
+
+        const url = `/pdfmake/medical-report-qweb?${params.toString()}`;
+        console.log("URL QWEB:", url);
+
+        const response = await fetch(url, {
+            method: 'GET',
+            credentials: 'same-origin',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        // Obtener el PDF como blob y convertirlo a base64
+        const pdfBlob = await response.blob();
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => {
+                const base64 = reader.result.split(',')[1];
+                resolve({
+                    success: true,
+                    pdf_content: base64,
+                    filename: `reporte_medico_${medicalData.patient_name || 'paciente'}.pdf`
+                });
+            };
+            reader.onerror = () => reject(new Error('Error leyendo el blob del PDF'));
+            reader.readAsDataURL(pdfBlob);
+        });
+        
+    } catch (error) {
+        console.error('Error en generatePDFWithQWEB:', error);
+        throw error;
+    }
+}
+    // Método 3: Fallback con jsPDF
+    async generatePDFFallback(medicalData) {
+        if (window.jspdf?.jsPDF) {
+            const doc = await this._buildPDFWithJsPDF();
+            const pdfOutput = doc.output('datauristring').split(',')[1]; // Extraer base64
+            return {
+                success: true,
+                pdf_content: pdfOutput,
+                filename: `Reporte_Medico_${new Date().toISOString().slice(0,10)}.pdf`
+            };
+        } else {
+            throw new Error("No hay método de generación de PDF disponible");
+        }
+    }
+
+    // ==================================================================
+    // MANTENER LOS MÉTODOS EXISTENTES (con pequeñas mejoras)
+    // ==================================================================
+
+async prepareMedicalDataForPDFMake() {
+    const extractedData = this.extractMedicalDataFromContent();
+    
+    // FUNCIÓN PARA CONVERTIR OBJETO A STRING
+    const convertToString = (data) => {
+        if (typeof data === 'string') return data;
+        if (typeof data === 'object' && data !== null) {
+            // Si es un objeto con claves numéricas (como {0: 'H', 1: 'o', ...})
+            if (Object.keys(data).every(key => !isNaN(key))) {
+                return Object.values(data).join('');
+            }
+            // Si es un objeto normal, convertirlo a JSON string
+            return JSON.stringify(data);
+        }
+        return String(data || '');
+    };
+
+    // Convertir todos los campos que puedan ser objetos a strings
+    const diagnosis = convertToString(extractedData.diagnosis || this.props.content || 'Diagnóstico no especificado.');
+    const originalContent = convertToString(this.props.content);
+    
+    const medicalData = {
+        patient_name: convertToString(extractedData.patientName || 'Paciente'),
+        patient_age: convertToString(extractedData.patientAge || ''),
+        patient_gender: convertToString(extractedData.patientGender || ''),
+        diagnosis: diagnosis,
+        recommendations: convertToString(extractedData.recommendations || 'Seguir controles médicos periódicos.'),
+        treatment: convertToString(extractedData.treatment || ''),
+        doctor_name: convertToString(this.state.userName),
+        doctor_specialty: convertToString(this.state.userJobTitle),
+        medical_center: convertToString(this.state.companyName),
+        report_type: 'detailed',
+        include_signature: true,
+        issue_date: this.currentDate,
+        current_datetime: this.currentDateTime,
+        original_content: originalContent,
+        source_module: 'chatter_voice_note',
+        res_model: this.props.resModel,
+        res_id: this.props.resId
+    };
+
+    // VERIFICACIÓN FINAL: Asegurar que diagnosis sea string no vacío
+    if (!medicalData.diagnosis || medicalData.diagnosis.trim() === '') {
+        medicalData.diagnosis = 'Diagnóstico no especificado.';
+    }
+
+    return medicalData;
+} 
+extractMedicalDataFromContent() {
+    // Convertir content a string primero
+    const convertToString = (data) => {
+        if (typeof data === 'string') return data;
+        if (typeof data === 'object' && data !== null) {
+            if (Object.keys(data).every(key => !isNaN(key))) {
+                return Object.values(data).join('');
+            }
+            return JSON.stringify(data);
+        }
+        return String(data || '');
+    };
+
+    const content = convertToString(this.props.content || '');
+    const extracted = {
+        patientName: '',
+        patientAge: '',
+        patientGender: '',
+        diagnosis: '',
+        recommendations: '',
+        treatment: ''
+    };
+
+    try {
+        const patterns = {
+            patientName: /(paciente|sr|sra|srta)[:\s]*([^\n,.]+)/i,
+            patientAge: /(\d+)\s*años|edad[:\s]*(\d+)/i,
+            patientGender: /(masculino|femenino|hombre|mujer)/i,
+            diagnosis: /(diagnóstico|dx|impresión)[:\s]*([^]+?)(?=tratamiento|recomendaciones|$)/i,
+            treatment: /(tratamiento|rx|medicación)[:\s]*([^]+?)(?=recomendaciones|$)/i,
+            recommendations: /(recomendaciones|indicaciones)[:\s]*([^]+?)$/i
+        };
+
+        const nameMatch = content.match(patterns.patientName);
+        if (nameMatch) {
+            extracted.patientName = nameMatch[2]?.trim() || nameMatch[1]?.trim();
+        }
+
+        const ageMatch = content.match(patterns.patientAge);
+        if (ageMatch) {
+            extracted.patientAge = ageMatch[1] || ageMatch[2];
+        }
+
+        const genderMatch = content.match(patterns.patientGender);
+        if (genderMatch) {
+            extracted.patientGender = this.formatGender(genderMatch[1]);
+        }
+
+        // Si no encontramos diagnóstico específico, usar todo el contenido
+        if (!extracted.diagnosis) {
+            extracted.diagnosis = content;
+        }
+
+    } catch (error) {
+        console.warn("Error extrayendo datos médicos:", error);
+        extracted.diagnosis = content;
+    }
+
+    return extracted;
+}
+    formatGender(gender) {
+        const genderMap = {
+            'masculino': 'Masculino',
+            'hombre': 'Masculino', 
+            'femenino': 'Femenino',
+            'mujer': 'Femenino'
+        };
+        return genderMap[gender.toLowerCase()] || gender;
+    }
+
+    downloadPDFFile(pdfBase64, filename = null) {
+        try {
+            const byteCharacters = atob(pdfBase64);
+            const byteNumbers = new Array(byteCharacters.length);
+            
+            for (let i = 0; i < byteCharacters.length; i++) {
+                byteNumbers[i] = byteCharacters.charCodeAt(i);
+            }
+            
+            const byteArray = new Uint8Array(byteNumbers);
+            const blob = new Blob([byteArray], { type: 'application/pdf' });
+
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            
+            const finalFilename = filename || 
+                `Reporte_Medico_${this.state.userName.replace('Dr. ', '').replace(/ /g, '_')}_${new Date().toISOString().slice(0,10)}.pdf`;
+            
+            link.download = finalFilename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+
+        } catch (error) {
+            console.error("Error descargando PDF:", error);
+            throw new Error("Error al descargar el archivo PDF");
+        }
+    }
+
+    // ==================================================================
+    // MÉTODOS ORIGINALES (mantener para compatibilidad)
+    // ==================================================================
+
+    async _buildPDFWithJsPDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+
+        const pageWidth = doc.internal.pageSize.getWidth();
+        const pageHeight = doc.internal.pageSize.getHeight();
+        const margin = 15;
+        let y = margin;
+
+        // Encabezado azul
+        doc.setFillColor(41, 128, 185);
+        doc.rect(0, 0, pageWidth, 30, "F");
+        doc.setTextColor(255, 255, 255);
+        doc.setFontSize(16);
+        doc.setFont("helvetica", "bold");
+        doc.text("CENTRO MÉDICO ESPECIALIZADO", pageWidth / 2, 15, { align: "center" });
+        doc.setFontSize(11);
+        doc.text("Acreditado - Excelencia en Salud", pageWidth / 2, 22, { align: "center" });
+
+        // Logo
+        if (this.state.companyLogo) {
+            try {
+                doc.addImage(`data:image/png;base64,${this.state.companyLogo}`, "PNG", 15, 8, 20, 20);
+            } catch (e) { /* ignorar */ }
+        }
+
+        y = 40;
+        doc.setTextColor(0, 0, 0);
+        doc.setFontSize(18);
+        doc.setFont("helvetica", "bold");
+        doc.text(this.reportTitle.toUpperCase(), pageWidth / 2, y, { align: "center" });
+        y += 15;
+
+        doc.setDrawColor(41, 128, 185);
+        doc.setLineWidth(0.5);
+        doc.line(margin, y, pageWidth - margin, y);
+        y += 15;
+
+        // Contenido
+        const text = this._extractCleanText();
+        doc.setFontSize(11);
+        doc.setTextColor(50, 50, 50);
+        const lines = doc.splitTextToSize(text, pageWidth - margin * 2 - 10);
+        lines.forEach(line => {
+            if (y > pageHeight - 50) {
+                doc.addPage();
+                y = 30;
+            }
+            doc.text(line, margin + 5, y);
+            y += 6;
+        });
+
+        // Firma y pie
+        this._addSignatureAndFooter(doc, pageWidth, pageHeight);
+
+        return doc;
+    }
+
+    _extractCleanText() {
+        const div = document.createElement("div");
+        div.innerHTML = this.props.content || "";
+        return (div.textContent || div.innerText || "").trim() || "Sin contenido.";
+    }
+
+    _addSignatureAndFooter(doc, pageWidth, pageHeight) {
+        let y = doc.lastAutoTable ? doc.lastAutoTable.finalY + 30 : pageHeight - 70;
+
+        doc.setDrawColor(100, 100, 100);
+        doc.setLineWidth(0.3);
+        doc.line(15, y, 75, y);
+        doc.setFontSize(10);
+        doc.setFont("helvetica", "bold");
+        doc.text(this.state.userName, 15, y + 8);
+        doc.setFont("helvetica", "normal");
+        doc.text(this.state.userJobTitle, 15, y + 14);
+
+        // Pie de página
+        doc.setDrawColor(41, 128, 185);
+        doc.line(15, pageHeight - 20, pageWidth - 15, pageHeight - 20);
+        doc.setFontSize(8);
+        doc.setTextColor(100, 100, 100);
+        doc.text(`Reporte generado el ${this.currentDateTime} - Confidencial`, pageWidth / 2, pageHeight - 10, { align: "center" });
+    }
+
+    // ==================================================================
+    // MÉTODOS DE EMAIL E IMPRESIÓN (mantener igual)
+    // ==================================================================
+
+    sendEmail = async () => {
+                    if (!this.props.contacts?.length) {
+                        this.notification.add("Selecciona al menos un contacto", { type: "warning" });
+                        return;
+                    }
+                    try {
+                        this.notification.add("📧 Preparando envío de email...", { type: "info" });
+                        
+                        // 1. Generar PDF
+                        const medicalData = await this.prepareMedicalDataForPDFMake();
+                        const pdfResult = await this.generatePDFWithHTTP(medicalData);
+
+                        if (!pdfResult.success) {
+                            throw new Error(pdfResult.error || "Error generando PDF para email");
+                        }
+
+                        // 2. Preparar payload para el email - FORMATO CORREGIDO
+                        const payload = {
+                            pdf_data: pdfResult.pdf_content,
+                            pdf_name: pdfResult.filename,
+                            contacts: this.props.contacts,
+                            subject: `Reporte Médico - ${medicalData.patient_name} - ${this.currentDate}`,
+                            body: this.generateEmailBody(medicalData),
+                            res_model: this.props.resModel,
+                            res_id: this.props.resId,
+                            timestamp: new Date().toISOString(),
+                            company_name: this.state.companyName,
+                            doctor_name: this.state.userName,
+                            doctor_title: this.state.userJobTitle,
+                        };
+
+                        console.log("📤 Enviando email con payload:", payload);
+
+                        // 3. SOLUCIÓN: Usar fetch directamente con el formato correcto
+                        const response = await fetch("/medical_report/send_to_n8n", {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-Requested-With': 'XMLHttpRequest',
+                            },
+                            body: JSON.stringify({
+                                params: payload  // Envolver en "params" para JSON-RPC
+                            }),
+                            credentials: 'include'
+                        });
+
+                        console.log("Estado de respuesta:", response.status, response.statusText);
+
+                        if (!response.ok) {
+                            const errorText = await response.text();
+                            console.error("❌ Error response:", errorText);
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+
+                        const emailResult = await response.json();
+                        console.log("✅ Respuesta del envío de email:", emailResult);
+
+                        if (emailResult.error) {
+                            throw new Error(emailResult.error);
+                        }
+
+                        this.notification.add(
+                            `✅ ${emailResult.message || 'Email enviado correctamente'}`,
+                            { type: "success" }
+                        );
+                        
+                    } catch (err) {
+                        console.error("❌ Error en sendEmail:", err);
+                        this.notification.add(
+                            `❌ Error enviando email: ${err.message}`,
+                            { type: "danger" }
+                        );
+                    }
+                };
+            // Método auxiliar para generar el cuerpo del email
+            generateEmailBody(medicalData) {
+                        return `
+                    Estimado/a ${medicalData.patient_name},
+
+                    Adjuntamos su reporte médico generado el ${this.currentDateTime}.
+
+                    **Resumen del reporte:**
+                    - Paciente: ${medicalData.patient_name}
+                    - Diagnóstico: ${medicalData.diagnosis.substring(0, 150)}${medicalData.diagnosis.length > 150 ? '...' : ''}
+                    - Médico: ${medicalData.doctor_name}
+                    - Centro Médico: ${medicalData.medical_center}
+
+                    Atentamente,
+                    ${medicalData.doctor_name}
+                    ${medicalData.doctor_specialty}
+                    ${medicalData.medical_center}
+
+                    ---
+                    *Este es un mensaje automático generado por el sistema.*
+                        `.trim();
+                    }
 
 
-
-
-
-
-
-
+    printReport = () => window.print();
 }
