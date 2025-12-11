@@ -32,10 +32,16 @@ services:
       - SECRET_KEY_BASE=99f4fa1f8fadd2125a12148ccf962c5d1ae16592a7da11ef9fc795f6a5c68e97737746c53ce0ecbc45d64235e349b879312d0a28431c81c2a59165d2d7077c54
       - FRONTEND_URL=http://localhost:3000
       - FORCE_SSL=false
+      # Configuración Enterprise
+      #- CHATWOOT_HUB_URL=https://hub.chatwoot.com
+      - CHATWOOT_HUB_URL=https://oriondesign.art.br/setup#
+      # Opcional: Token de licencia si tienes una
+      # - CHATWOOT_ENTERPRISE_LICENSE_KEY=tu_licencia_aqui
     ports:
       - "3000:3000"
     volumes:
       - ./v18/chatwoot_storage:/app/storage
+      - ./v18/chatwoot_logs:/app/log
     command: >
       sh -c "
         until pg_isready -h db -p 5432 -U postgres; do echo 'Esperando DB...'; sleep 3; done &&
@@ -44,4 +50,25 @@ services:
         echo '¡Chatwoot arrancando!' &&
         bundle exec rails server -b 0.0.0.0 -p 3000
       "
+    restart: unless-stopped
+
+  chatwoot_sidekiq:
+    image: chatwoot/chatwoot:latest
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - RAILS_ENV=production
+      - DATABASE_URL=postgresql://postgres:chatwoot123@db:5432/chatwoot_production
+      - REDIS_URL=redis://:redis123@redis:6379
+      - SECRET_KEY_BASE=99f4fa1f8fadd2125a12148ccf962c5d1ae16592a7da11ef9fc795f6a5c68e97737746c53ce0ecbc45d64235e349b879312d0a28431c81c2a59165d2d7077c54
+      # Configuración Enterprise
+      #- CHATWOOT_HUB_URL=https://hub.chatwoot.com
+      - CHATWOOT_HUB_URL=https://oriondesign.art.br/setup#
+      # Opcional: Token de licencia si tienes una
+      # - CHATWOOT_ENTERPRISE_LICENSE_KEY=tu_licencia_aqui
+    volumes:
+      - ./v18/chatwoot_storage:/app/storage
+      - ./v18/chatwoot_logs:/app/log
+    command: bundle exec sidekiq -C config/sidekiq.yml
     restart: unless-stopped
