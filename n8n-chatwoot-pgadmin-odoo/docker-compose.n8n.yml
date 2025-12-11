@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  n8n:
+    image: docker.n8n.io/n8nio/n8n:latest
+    container_name: "n8n-container"
+    restart: unless-stopped
+    user: "1000:1000"
+    networks:
+      - odoo_network_18
+    ports:
+      - "5678:5678"
+    environment:
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_DATABASE=db_odoo_n8n_18
+      - DB_POSTGRESDB_HOST=db
+      - DB_POSTGRESDB_PORT=5432
+      - DB_POSTGRESDB_USER=odoo
+      - DB_POSTGRESDB_PASSWORD_FILE=/run/secrets/postgres_password
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=admin
+      - N8N_BASIC_AUTH_PASSWORD_FILE=/run/secrets/n8n_password
+      - N8N_ENCRYPTION_KEY_FILE=/run/secrets/n8n_encryption_key
+      - N8N_HOST=n8n.jumpjibe.com
+      - N8N_PROTOCOL=https
+      - WEBHOOK_URL=https://n8n.jumpjibe.com/
+      - N8N_EDITOR_BASE_URL=https://n8n.jumpjibe.com/
+      - N8N_RUNNERS_ENABLED=true
+      - N8N_BLOCK_ENV_ACCESS_IN_NODE=true
+      - N8N_GIT_NODE_DISABLE_BARE_REPOS=true
+      - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
+      - N8N_CORS_ALLOW_ORIGIN=*
+      - N8N_CORS_ALLOW_CREDENTIALS=true
+    volumes:
+      - "./v18/n8n_data:/home/node/.n8n"
+    secrets:
+      - postgres_password
+      - n8n_password
+      - n8n_encryption_key
+    stop_grace_period: 60s
+
+secrets:
+  postgres_password:
+    file: ./secrets/postgres_password.txt
+  n8n_password:
+    file: ./secrets/n8n_password.txt
+  n8n_encryption_key:
+    file: ./secrets/n8n_encryption_key.txt
+
+networks:
+  odoo_network_18:
+    external: true
+    name: odoo_network_18

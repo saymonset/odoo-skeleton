@@ -1,47 +1,41 @@
 # dotfiles, with exceptions:
 .*
 !.gitignore
+
 # python compiled files
 *.py[co]
+
 # emacs backup files
 *~
+
 # not tracked subdirectories
 /env/
 /src/
 /filestore/
 /logs/
 
-# Instancia original (v18)
-n8n-evolution-api-odoo-18/v18/pgdata/*
-!n8n-evolution-api-odoo-18/v18/pgdata/.gitkeep
-n8n-evolution-api-odoo-18/v18/n8n_data/*
-!n8n-evolution-api-odoo-18/v18/n8n_data/.gitkeep
-n8n-evolution-api-odoo-18/v18/odoo-web-data/* 
-!n8n-evolution-api-odoo-18/v18/odoo-web-data/.gitkeep
-n8n-evolution-api-odoo-18/v18/logs/*
-!n8n-evolution-api-odoo-18/v18/logs/.gitkeep
-n8n-evolution-api-odoo-18/src/odoo-18/*
-!n8n-evolution-api-odoo-18/src/odoo-18/.gitkeep
-n8n-evolution-api-odoo-18/src/odoo-stubs/*
-!n8n-evolution-api-odoo-18/src/odoo-stubs/.gitkeep
-n8n-evolution-api-odoo-18/v18/filestore/*
-!n8n-evolution-api-odoo-18/v18/filestore/.gitkeep
-n8n-evolution-api-odoo-18/v18/n8n_data/*
-n8n-evolution-api-odoo-18/v18/pgadmin-data/*
+# Instancia original (v18) - IGNORAR DIRECTORIOS ENTEROS
+n8n-chatwoot-pgadmin-odoo/v18/pgdata/
+n8n-chatwoot-pgadmin-odoo/v18/odoo_n8n_pgdata/
+n8n-chatwoot-pgadmin-odoo/v18/chatwoot_pgdata/
+n8n-chatwoot-pgadmin-odoo/v18/pgadmin-data/
+n8n-chatwoot-pgadmin-odoo/v18/n8n_data/
+n8n-chatwoot-pgadmin-odoo/v18/odoo-web-data/
+n8n-chatwoot-pgadmin-odoo/v18/logs/
+n8n-chatwoot-pgadmin-odoo/v18/filestore/
 
-!n8n-evolution-api-odoo-18/v18/n8n_data/.gitkeep
+# NO usar excepciones .gitkeep para directorios con permisos de root
+
+# Repositorios embebidos - ignorar completamente
+n8n-chatwoot-pgadmin-odoo/src/odoo-18/
+n8n-chatwoot-pgadmin-odoo/src/odoo-stubs/
 
 # Nueva instancia leads (v18_2)
-leads/odoo_instancia_2/v18_2/pgdata/*
-!leads/odoo_instancia_2/v18_2/pgdata/.gitkeep
-leads/odoo_instancia_2/v18_2/n8n_data/*
-!leads/odoo_instancia_2/v18_2/n8n_data/.gitkeep
-leads/odoo_instancia_2/v18_2/odoo-web-data/*
-!leads/odoo_instancia_2/v18_2/odoo-web-data/.gitkeep
-leads/odoo_instancia_2/v18_2/logs/*
-!leads/odoo_instancia_2/v18_2/logs/.gitkeep
-leads/odoo_instancia_2/v18_2/filestore/*
-!leads/odoo_instancia_2/v18_2/filestore/.gitkeep
+leads/odoo_instancia_2/v18_2/pgdata/
+leads/odoo_instancia_2/v18_2/n8n_data/
+leads/odoo_instancia_2/v18_2/odoo-web-data/
+leads/odoo_instancia_2/v18_2/logs/
+leads/odoo_instancia_2/v18_2/filestore/
 
 # Excepción para el archivo de configuración de Odoo
 !leads/odoo_instancia_2/v18_2/config/odoo.conf

@@ -1,0 +1,93 @@
+services:
+  # PostgreSQL con pgvector
+  db:
+    image: ankane/pgvector:latest
+    container_name: "odoo-db18-n8n"
+    environment:
+      POSTGRES_DB: db_odoo_n8n_18
+      POSTGRES_USER: odoo
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    networks:
+      - odoo_network_18
+    volumes:
+      - "./v18/odoo_n8n_pgdata/data:/var/lib/postgresql/data/pgdata"
+      - "./v18/odoo_n8n_pgdata/init:/docker-entrypoint-initdb.d"
+    secrets:
+      - postgres_password
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U odoo -d dbodoo18"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    stop_grace_period: 60s
+
+  # Redis
+  redis:
+    image: redis:7
+    container_name: odoo_redis
+    restart: always
+    networks:
+      - odoo_network_18
+    secrets:
+      - redis_password
+    command: >
+      sh -c '
+        REDIS_PASS=$$(cat /run/secrets/redis_password 2>/dev/null || echo "") &&
+        mkdir -p /usr/local/etc/redis &&
+        if [ -n "$$REDIS_PASS" ]; then
+          echo "requirepass $$REDIS_PASS" > /usr/local/etc/redis/redis.conf &&
+          echo "protected-mode yes" >> /usr/local/etc/redis/redis.conf
+        fi &&
+        exec redis-server /usr/local/etc/redis/redis.conf --save 60 1 --loglevel warning
+      '
+    healthcheck:
+      test: ["CMD", "redis-cli", "--no-auth-warning", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    stop_grace_period: 30s
+
+  # Odoo Web
+  web:
+    image: "odoo-pers:18"
+    container_name: "odoo-18-web"
+    user: "1001:1001"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - odoo_network_18
+    ports:
+      - "18069:8069"
+      - "18072:8072"
+    volumes:
+      - "./v18/odoo-web-data:/var/lib/odoo"
+      - "./v18/config:/etc/odoo"
+      - "./v18/addons/extra:/opt/odoo/custom-addons/extra"
+      - "./v18/addons/oca:/opt/odoo/custom-addons/oca"
+      - "./v18/addons/enterprise:/opt/odoo/custom-addons/enterprise"
+      - "./v18/logs:/var/log/odoo"
+      - "./v18/filestore:/var/lib/odoo/.local/share/Odoo"
+    environment:
+      HOST: db
+      USER: odoo
+      PASSWORD_FILE: /run/secrets/postgres_password
+    secrets:
+      - postgres_password
+    stop_grace_period: 60s
+
+secrets:
+  postgres_password:
+    file: ./secrets/postgres_password.txt
+  redis_password:
+    file: ./secrets/redis_password.txt
+
+networks:
+  odoo_network_18:
+    driver: bridge
+    name: odoo_network_18

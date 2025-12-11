@@ -1,0 +1,52 @@
+# Este archivo une todos los servicios
+services:
+  # Incluir servicios de Odoo
+  db:
+    extends:
+      file: docker-compose.odoo.yml
+      service: db
+  
+  redis:
+    extends:
+      file: docker-compose.odoo.yml
+      service: redis
+  
+  web:
+    extends:
+      file: docker-compose.odoo.yml
+      service: web
+  
+  # Incluir n8n
+  n8n:
+    extends:
+      file: docker-compose.n8n.yml
+      service: n8n
+  
+  # Incluir Chatwoot
+  chatwoot:
+    extends:
+      file: docker-compose.chatwoot.yml
+      service: chatwoot
+  
+  
+  # Incluir pgAdmin (opcional)
+  pgadmin:
+    extends:
+      file: docker-compose.pgadmin.yml
+      service: pgadmin
+
+# Secrets globales
+secrets:
+  postgres_password:
+    file: ./secrets/postgres_password.txt
+  redis_password:
+    file: ./secrets/redis_password.txt
+  n8n_password:
+    file: ./secrets/n8n_password.txt
+  n8n_encryption_key:
+    file: ./secrets/n8n_encryption_key.txt
+
+networks:
+  odoo_network_18:
+    driver: bridge
+    name: odoo_network_18
