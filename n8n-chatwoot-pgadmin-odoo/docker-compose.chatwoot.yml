@@ -1,7 +1,10 @@
 services:
-  db:
-    image: ankane/pgvector:latest
+  postgres:
+    image: pgvector/pgvector:pg12  # ← Cambia esto
+    container_name: chatwoot-db
+    restart: always
     environment:
+      POSTGRES_USER: chatwoot
       POSTGRES_PASSWORD: chatwoot123
       POSTGRES_DB: chatwoot_production
     volumes:
@@ -9,66 +12,122 @@ services:
     ports:
       - "5433:5432"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U chatwoot -d chatwoot_production"]  # ← Agrega -d
       interval: 10s
       timeout: 5s
       retries: 10
-
+    networks:
+      - chatwoot-net
+    
   redis:
     image: redis:7-alpine
+    container_name: chatwoot-redis
+    restart: always
     command: redis-server --requirepass redis123
+    volumes:
+      - ./v18/chatwoot_redis_data:/data
     ports:
       - "6380:6379"
+    networks:
+      - chatwoot-net
 
-  chatwoot:
+  rails:
     image: chatwoot/chatwoot:latest
+    container_name: chatwoot-app
+    restart: always
     depends_on:
-      db:
+      postgres:
         condition: service_healthy
     environment:
+      # Configuración crítica de Rails
       - RAILS_ENV=production
-      - DATABASE_URL=postgresql://postgres:chatwoot123@db:5432/chatwoot_production
+      - INSTALLATION_ENV=docker
+      
+      # Variables de PostgreSQL - ¡USAR 'chatwoot' NO 'chatwoot_prod'!
+      - POSTGRES_USER=chatwoot
+      - POSTGRES_PASSWORD=chatwoot123
+      - POSTGRES_DB=chatwoot_production
+      - POSTGRES_HOST=postgres
+      
+      # También incluye DATABASE_URL para mayor compatibilidad
+      - DATABASE_URL=postgresql://chatwoot:chatwoot123@postgres:5432/chatwoot_production
+      
+      # Redis
+      - REDIS_PASSWORD=redis123
       - REDIS_URL=redis://:redis123@redis:6379
+      
+      # Claves secretas
       - SECRET_KEY_BASE=99f4fa1f8fadd2125a12148ccf962c5d1ae16592a7da11ef9fc795f6a5c68e97737746c53ce0ecbc45d64235e349b879312d0a28431c81c2a59165d2d7077c54
+      - RAILS_MASTER_KEY=99f4fa1f8fadd2125a12148ccf962c5d1ae16592a7da11ef9fc795f6a5c68e97737746c53ce0ecbc45d64235e349b879312d0a28431c81c2a59165d2d7077c54
+      
+      # Configuración de la aplicación
       - FRONTEND_URL=http://localhost:3000
       - FORCE_SSL=false
-      # Configuración Enterprise
-      #- CHATWOOT_HUB_URL=https://hub.chatwoot.com
-      - CHATWOOT_HUB_URL=https://oriondesign.art.br/setup#
-      # Opcional: Token de licencia si tienes una
+      - DEFAULT_LOCALE=es
+      - ENABLE_ACCOUNT_SIGNUP=true
+      
+      # Enterprise (opcional)
+      # - CHATWOOT_HUB_URL=https://hub.chatwoot.com
       # - CHATWOOT_ENTERPRISE_LICENSE_KEY=tu_licencia_aqui
     ports:
       - "3000:3000"
     volumes:
       - ./v18/chatwoot_storage:/app/storage
       - ./v18/chatwoot_logs:/app/log
+    networks:
+      - chatwoot-net
     command: >
-      sh -c "
-        until pg_isready -h db -p 5432 -U postgres; do echo 'Esperando DB...'; sleep 3; done &&
-        echo 'DB lista → Ejecutando migraciones...' &&
+       sh -c "
+        echo 'Esperando PostgreSQL...' &&
+        # Cambia esta línea para usar la base de datos correcta
+        until pg_isready -h postgres -p 5432 -U chatwoot -d chatwoot_production; do
+          sleep 3;
+          echo 'Todavía esperando PostgreSQL...';
+        done &&
+        echo 'PostgreSQL listo → Ejecutando migraciones...' &&
         bundle exec rails db:chatwoot_prepare &&
         echo '¡Chatwoot arrancando!' &&
-        bundle exec rails server -b 0.0.0.0 -p 3000
-      "
-    restart: unless-stopped
+        bundle exec rails s -p 3000 -b '0.0.0.0'"
 
-  chatwoot_sidekiq:
+  sidekiq:
     image: chatwoot/chatwoot:latest
+    container_name: chatwoot-sidekiq
+    restart: always
     depends_on:
-      db:
+      postgres:
         condition: service_healthy
     environment:
+      # Configuración crítica de Rails
       - RAILS_ENV=production
-      - DATABASE_URL=postgresql://postgres:chatwoot123@db:5432/chatwoot_production
+      - INSTALLATION_ENV=docker
+      
+      # Variables de PostgreSQL - ¡USAR 'chatwoot' NO 'chatwoot_prod'!
+      - POSTGRES_USER=chatwoot
+      - POSTGRES_PASSWORD=chatwoot123
+      - POSTGRES_DB=chatwoot_production
+      - POSTGRES_HOST=postgres
+      
+      # También incluye DATABASE_URL para mayor compatibilidad
+      - DATABASE_URL=postgresql://chatwoot:chatwoot123@postgres:5432/chatwoot_production
+      
+      # Redis
+      - REDIS_PASSWORD=redis123
       - REDIS_URL=redis://:redis123@redis:6379
+      
+      # Claves secretas
       - SECRET_KEY_BASE=99f4fa1f8fadd2125a12148ccf962c5d1ae16592a7da11ef9fc795f6a5c68e97737746c53ce0ecbc45d64235e349b879312d0a28431c81c2a59165d2d7077c54
-      # Configuración Enterprise
-      #- CHATWOOT_HUB_URL=https://hub.chatwoot.com
-      - CHATWOOT_HUB_URL=https://oriondesign.art.br/setup#
-      # Opcional: Token de licencia si tienes una
+      - RAILS_MASTER_KEY=99f4fa1f8fadd2125a12148ccf962c5d1ae16592a7da11ef9fc795f6a5c68e97737746c53ce0ecbc45d64235e349b879312d0a28431c81c2a59165d2d7077c54
+      
+      # Enterprise (opcional)
+      # - CHATWOOT_HUB_URL=https://hub.chatwoot.com
       # - CHATWOOT_ENTERPRISE_LICENSE_KEY=tu_licencia_aqui
     volumes:
       - ./v18/chatwoot_storage:/app/storage
       - ./v18/chatwoot_logs:/app/log
+    networks:
+      - chatwoot-net
     command: bundle exec sidekiq -C config/sidekiq.yml
-    restart: unless-stopped
+
+networks:
+  chatwoot-net:
+    driver: bridge

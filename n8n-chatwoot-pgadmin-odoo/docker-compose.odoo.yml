@@ -4,7 +4,7 @@ services:
     image: ankane/pgvector:latest
     container_name: "odoo-db18-n8n"
     environment:
-      POSTGRES_DB: db_odoo_n8n_18
+      POSTGRES_DB: dbodoo18
       POSTGRES_USER: odoo
       POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
       PGDATA: /var/lib/postgresql/data/pgdata

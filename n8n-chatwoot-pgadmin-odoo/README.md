@@ -17,27 +17,15 @@ docker build -t odoo-pers:18 .
 #git clone -b 18.0 --single-branch --depth 1 https://github.com/odoo-ide/odoo-stubs.git
 ``` 
 
- 2. Generación de Secretos de Forma Segura
-# Crear directorio para secretos
-mkdir -p secrets
-
-# Generar contraseñas aleatorias
-echo "Generando secretos..."
-openssl rand -hex 32 | tee secrets/postgres_password.txt
-openssl rand -hex 32 | tee secrets/evolution_password.txt
-openssl rand -hex 32 | tee secrets/redis_password.txt
-openssl rand -hex 32 | tee secrets/n8n_password.txt
-openssl rand -hex 64 | tee secrets/n8n_encryption_key.txt
-
-# Proteger los secretos
-sudo chown -R $(whoami):$(whoami) secrets
  
- 3. Configuración de Usuarios y Permisos
+ 3. Configuración de Usuarios y Permisos, screts
 bash
 # Ejecutar script de configuración
+```bash
 chmod +x setup_odoo_user.sh
-sudo ./setup_odo_user.sh
-
+sudo ./setup_odoo_user.sh
+ sudo ./fix_chatwoot_permissions.sh
+ ```
 
 
  # Copiar el archivo env-example a .env
@@ -54,15 +42,6 @@ docker network create odoo-network-${VERSION} 2>/dev/null || echo "Red ya existe
 
 # Verificar red creada
 docker network ls | grep odoo-network
- ```
- # Dar permisos
- ```bash
- # Configurar script de backup
-chmod +x backup/backup.sh
-
-# Probar backup manualmente
-./backup/backup.sh test
-
  ```
 ###
 ```bash
@@ -84,8 +63,15 @@ sleep 10
 # Luego n8n
 docker compose -f docker-compose.n8n.yml up -d
 
+# pgadmin 
+docker compose -f  docker-compose.pgadmin.yml  up -d
+
 # Finalmente Chatwoot (después de arreglar los problemas)
 docker compose -f docker-compose.chatwoot.yml up
+
+
+
+
 
 
 ## Verificar backup

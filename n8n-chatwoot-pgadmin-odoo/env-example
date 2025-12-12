@@ -8,12 +8,11 @@ VERSION=18
 ############################
 PGDATA=/var/lib/postgresql/data/pgdata
 POSTGRES_USER=odoo
-POSTGRES_DB=db_odoo_n8n_18
+POSTGRES_DB=dbodoo18
 POSTGRES_PASSWORD_FILE=/run/secrets/postgres_password
 
 DB_HOST=db
 DB_PORT=5432
-
 
 ############################
 # n8n
@@ -26,23 +25,44 @@ N8N_CORS_ALLOW_CREDENTIALS=true
 N8N_CORS_ALLOW_ORIGIN=*
 
 ############################
-# Chatwoot - CONFIGURACIÓN CORREGIDA
+# Chatwoot - CONFIGURACIÓN SIMPLIFICADA y FUNCIONAL
 ############################
-CHATWOOT_SECRET_KEY_BASE=99f4fa1f8fadd2125a12148ccf962c5d1ae16592a7da11ef9fc795f6a5c68e97737746c53ce0ecbc45d64235e349b879312d0a28431c81c2a59165d2d7077c54
 
-# IMPORTANTE: Variables específicas de PostgreSQL para Chatwoot
-RAILS_MASTER_KEY=${CHATWOOT_SECRET_KEY_BASE}
+# Clave secreta
+SECRET_KEY_BASE=99f4fa1f8fadd2125a12148ccf962c5d1ae16592a7da11ef9fc795f6a5c68e97737746c53ce0ecbc45d64235e349b879312d0a28431c81c2a59165d2d7077c54
+RAILS_MASTER_KEY=${SECRET_KEY_BASE}
+
+# PostgreSQL - usa 'postgres' que es el usuario por defecto
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=chatwoot123
+POSTGRES_DB=chatwoot_production
+
+# Variables de conexión para Chatwoot
 DATABASE_HOST=db
 DATABASE_PORT=5432
-DATABASE_NAME=chatwoot_production  # Chatwoot creará su propia base de datos
-DATABASE_USERNAME=chatwoot_prod  # ← Cambia a 'chatwoot_prod'
-DATABASE_PASSWORD_FILE=/run/secrets/postgres_password
+DATABASE_NAME=chatwoot_production
+DATABASE_USERNAME=postgres        # ← USA POSTGRES
+DATABASE_PASSWORD=chatwoot123     # ← MISMA CONTRASEÑA
 
 # Redis
-REDIS_PASSWORD=2974d8b4b3a3aa50b238fae7e5f4bfb6887d350d2ac57688a5bc3c6b4e702a1c
+REDIS_PASSWORD=redis123
 REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379
 
-# URLs
-FRONTEND_URL=http://localhost:3000  # Para pruebas locales
-# FRONTEND_URL=https://chatwoot.tudominio.com  # Para producción
+# URLs y entorno
+FRONTEND_URL=http://localhost:3000
+RAILS_ENV=production
+NODE_ENV=production
+FORCE_SSL=false
+DEFAULT_LOCALE=es
+ENABLE_ACCOUNT_SIGNUP=true
 
+# Puertos
+CHATWOOT_WEB_PORT=3000
+CHATWOOT_DB_PORT=5433
+CHATWOOT_REDIS_PORT=6380
+
+# Directorios
+CHATWOOT_POSTGRES_DIR=./v18/chatwoot_pgdata
+CHATWOOT_REDIS_DIR=./v18/chatwoot_redis_data
+CHATWOOT_STORAGE_DIR=./v18/chatwoot_storage
+CHATWOOT_LOGS_DIR=./v18/chatwoot_logs
