@@ -24,6 +24,7 @@ n8n-chatwoot-pgadmin-odoo/v18/odoo-web-data/
 n8n-chatwoot-pgadmin-odoo/v18/logs/
 n8n-chatwoot-pgadmin-odoo/v18/filestore/
 n8n-chatwoot-pgadmin-odoo/v18/chatwoot_redis_data/
+n8n-chatwoot-pgadmin-odoo/v18/chatwoot_tmp/
 
 # NO usar excepciones .gitkeep para directorios con permisos de root
 
