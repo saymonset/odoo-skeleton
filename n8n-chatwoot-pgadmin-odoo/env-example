@@ -49,7 +49,7 @@ REDIS_PASSWORD=redis123
 REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379
 
 # URLs y entorno
-FRONTEND_URL=http://localhost:3000
+FRONTEND_URL=https://chatwoot.jumpjibe.com
 RAILS_ENV=production
 NODE_ENV=production
 FORCE_SSL=false

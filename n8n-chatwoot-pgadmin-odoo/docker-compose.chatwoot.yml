@@ -73,7 +73,7 @@ services:
       RAILS_MASTER_KEY: 99f4fa1f8fadd2125a12148ccf962c5d1ae16592a7da11ef9fc795f6a5c68e97737746c53ce0ecbc45d64235e349b879312d0a28431c81c2a59165d2d7077c54
       
       # Configuración de la aplicación
-      FRONTEND_URL: http://localhost:3000
+      FRONTEND_URL: https://chatwoot.jumpjibe.com
       FORCE_SSL: "false"
       DEFAULT_LOCALE: es
       ENABLE_ACCOUNT_SIGNUP: "true"
@@ -114,7 +114,7 @@ services:
         
         # Iniciar servidor
         echo '=== CHATWOOT INICIANDO ===' &&
-        echo 'Accede en: http://localhost:3000' &&
+        echo 'Accede en: https://chatwoot.jumpjibe.com' &&
         bundle exec rails server -p 3000 -b 0.0.0.0
       "
 
