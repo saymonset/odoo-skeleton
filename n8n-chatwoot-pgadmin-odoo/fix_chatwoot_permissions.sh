@@ -32,6 +32,8 @@ mkdir -p "./v18/pgadmin-data"
 sudo chown -R 5050:5050 v18/pgadmin-data
 chmod -R 775 "v${VERSION}/pgadmin-data"
 
+sudo chown -R 1001:1001 ./v18/chatwoot_storage
+sudo chmod -R 755 ./v18/chatwoot_storage
 
 # # 4. Reiniciar
 # echo "4. Reiniciando servicios..."

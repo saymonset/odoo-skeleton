@@ -4,7 +4,7 @@
 VERSION=18
 
 ############################
-# PostgreSQL
+# PostgreSQL Odoo 18
 ############################
 PGDATA=/var/lib/postgresql/data/pgdata
 POSTGRES_USER=odoo
@@ -25,44 +25,63 @@ N8N_CORS_ALLOW_CREDENTIALS=true
 N8N_CORS_ALLOW_ORIGIN=*
 
 ############################
-# Chatwoot - CONFIGURACIÓN SIMPLIFICADA y FUNCIONAL
+# CHATWOOT - CONFIGURACIÓN PARA IMÁGENES
 ############################
 
+# 🔴 TOKEN DE API PARA n8n (CRÍTICO)
+CHATWOOT_API_TOKEN=chatwoot_api_token_1234567890
+
 # Clave secreta
-SECRET_KEY_BASE=99f4fa1f8fadd2125a12148ccf962c5d1ae16592a7da11ef9fc795f6a5c68e97737746c53ce0ecbc45d64235e349b879312d0a28431c81c2a59165d2d7077c54
-RAILS_MASTER_KEY=${SECRET_KEY_BASE}
+CHATWOOT_SECRET_KEY_BASE=99f4fa1f8fadd2125a12148ccf962c5d1ae16592a7da11ef9fc795f6a5c68e97737746c53ce0ecbc45d64235e349b879312d0a28431c81c2a59165d2d7077c54
+CHATWOOT_RAILS_MASTER_KEY=${CHATWOOT_SECRET_KEY_BASE}
 
-# PostgreSQL - usa 'postgres' que es el usuario por defecto
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=chatwoot123
-POSTGRES_DB=chatwoot_production
+# PostgreSQL Chatwoot
+CHATWOOT_POSTGRES_USER=chatwoot
+CHATWOOT_POSTGRES_PASSWORD=chatwoot123
+CHATWOOT_POSTGRES_DB=chatwoot_production
 
-# Variables de conexión para Chatwoot
-DATABASE_HOST=db
-DATABASE_PORT=5432
-DATABASE_NAME=chatwoot_production
-DATABASE_USERNAME=postgres        # ← USA POSTGRES
-DATABASE_PASSWORD=chatwoot123     # ← MISMA CONTRASEÑA
+# Variables de conexión Chatwoot
+CHATWOOT_POSTGRES_HOST=postgres
+CHATWOOT_POSTGRES_PORT=5432
+CHATWOOT_DATABASE_URL=postgresql://chatwoot:chatwoot123@postgres:5432/chatwoot_production
 
-# Redis
-REDIS_PASSWORD=redis123
-REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379
+# Redis Chatwoot
+CHATWOOT_REDIS_PASSWORD=redis123
+CHATWOOT_REDIS_URL=redis://:redis123@redis:6379
 
-# URLs y entorno
-FRONTEND_URL=https://chatwoot.jumpjibe.com
-RAILS_ENV=production
-NODE_ENV=production
-FORCE_SSL=false
-DEFAULT_LOCALE=es
-ENABLE_ACCOUNT_SIGNUP=true
+# URLs Chatwoot
+CHATWOOT_FRONTEND_URL=https://chatwoot.jumpjibe.com
+CHATWOOT_RAILS_ENV=production
+CHATWOOT_NODE_ENV=production
+CHATWOOT_FORCE_SSL=false
+CHATWOOT_DEFAULT_LOCALE=es
+CHATWOOT_ENABLE_ACCOUNT_SIGNUP=true
+CHATWOOT_INSTALLATION_ENV=docker
+CHATWOOT_RAILS_HOST=https://chatwoot.jumpjibe.com
 
-# Puertos
-CHATWOOT_WEB_PORT=3000
-CHATWOOT_DB_PORT=5433
-CHATWOOT_REDIS_PORT=6380
+# 🔴 CONFIGURACIÓN CRÍTICA PARA IMÁGENES - TODAS EN STRING
+ACTIVE_STORAGE_SERVICE=local
+FILE_ATTACHMENT_ENABLED="true"
+ENABLE_FILE_PICKER="true"
+MAXIMUM_FILE_SIZE="10485760"
+ENABLED_FILE_TYPES="image/*,audio/*,video/*,text/*,application/pdf"
+ASSET_HOST=https://chatwoot.jumpjibe.com
+ACTIVE_STORAGE_HOST=https://chatwoot.jumpjibe.com
+RAILS_STORAGE_HOST=https://chatwoot.jumpjibe.com
+RAILS_STORAGE_SERVICE=local
+RAILS_STORAGE_PATH=/app/storage
+
+# Logs Chatwoot
+RAILS_LOG_TO_STDOUT="true"
+RAILS_SERVE_STATIC_FILES="true"
+
+# 🔴 NUEVO: CONFIGURACIÓN PARA ACTIVE STORAGE
+ACTIVE_STORAGE_ROOT=/app/storage
+ACTIVE_STORAGE_SERVICE_NAME=local
+AWS_ACCESS_KEY_ID=""
+AWS_SECRET_ACCESS_KEY=""
+AWS_REGION=""
+AWS_BUCKET=""
 
 # Directorios
-CHATWOOT_POSTGRES_DIR=./v18/chatwoot_pgdata
-CHATWOOT_REDIS_DIR=./v18/chatwoot_redis_data
-CHATWOOT_STORAGE_DIR=./v18/chatwoot_storage
-CHATWOOT_LOGS_DIR=./v18/chatwoot_logs
+CHATWOOT_ACTIVE_STORAGE_DIR=./v18/chatwoot_active_storage

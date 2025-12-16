@@ -45,21 +45,43 @@ services:
       postgres:
         condition: service_healthy
       redis:
-        condition: service_healthy  # Usar healthcheck de Redis
+        condition: service_healthy
     environment:
-      # Configuración crítica de Rails
+      # 🔴 CONFIGURACIÓN BÁSICA
       RAILS_ENV: production
       INSTALLATION_ENV: docker
       NODE_ENV: production
       
-      # Variables de PostgreSQL
+      # 🔴 URLs CRÍTICAS (TODAS DEBEN SER IGUALES)
+      RAILS_HOST: https://chatwoot.jumpjibe.com
+      FRONTEND_URL: https://chatwoot.jumpjibe.com      # ← AÑADIDA (CLAVE PARA RESOLVER EL ERROR)
+      APP_HOST: https://chatwoot.jumpjibe.com
+      
+      # 🔴 HOSTS PARA ASSETS Y ARCHIVOS
+      ASSET_HOST: https://chatwoot.jumpjibe.com
+      ACTIVE_STORAGE_HOST: https://chatwoot.jumpjibe.com
+      RAILS_STORAGE_HOST: https://chatwoot.jumpjibe.com
+      
+      # 🔴 Configuración ActiveStorage
+      ACTIVE_STORAGE_SERVICE: local
+      FILE_ATTACHMENT_ENABLED: "true"
+      ENABLE_FILE_PICKER: "true"
+      MAXIMUM_FILE_SIZE: "10485760"
+      ENABLED_FILE_TYPES: "image/*,audio/*,video/*,text/*,application/pdf"
+      
+      # 🔴 Configuración adicional
+      ACTIVE_STORAGE_ROOT: /app/storage
+      RAILS_STORAGE_PATH: /app/storage
+      RAILS_ASSET_HOST: https://chatwoot.jumpjibe.com
+      ACTIVE_STORAGE_URL_HOST: https://chatwoot.jumpjibe.com
+      ACTIVE_STORAGE_SERVICE_URLS_EXPIRE_IN: "604800"
+      
+      # PostgreSQL
       POSTGRES_USER: chatwoot
       POSTGRES_PASSWORD: chatwoot123
       POSTGRES_DB: chatwoot_production
       POSTGRES_HOST: postgres
       POSTGRES_PORT: 5432
-      
-      # DATABASE_URL
       DATABASE_URL: postgresql://chatwoot:chatwoot123@postgres:5432/chatwoot_production
       
       # Redis
@@ -72,15 +94,22 @@ services:
       SECRET_KEY_BASE: 99f4fa1f8fadd2125a12148ccf962c5d1ae16592a7da11ef9fc795f6a5c68e97737746c53ce0ecbc45d64235e349b879312d0a28431c81c2a59165d2d7077c54
       RAILS_MASTER_KEY: 99f4fa1f8fadd2125a12148ccf962c5d1ae16592a7da11ef9fc795f6a5c68e97737746c53ce0ecbc45d64235e349b879312d0a28431c81c2a59165d2d7077c54
       
-      # Configuración de la aplicación
-      FRONTEND_URL: https://chatwoot.jumpjibe.com
+      # Configuración aplicación
       FORCE_SSL: "false"
+      ALLOW_INSECURE_SSL: "true"
       DEFAULT_LOCALE: es
       ENABLE_ACCOUNT_SIGNUP: "true"
       
-      # Otros ajustes importantes
+      # CORS para API n8n
+      CORS_ALLOWED_ORIGINS: "*"
+      CORS_ALLOW_CREDENTIALS: "true"
+      
+      # Logs
       RAILS_LOG_TO_STDOUT: "true"
       RAILS_SERVE_STATIC_FILES: "true"
+      
+      # API Token para n8n
+      API_AUTH_TOKEN: chatwoot_api_token_1234567890  
     ports:
       - "3000:3000"
     volumes:
@@ -91,30 +120,21 @@ services:
       - chatwoot-net
     command: >
       sh -c "
-        # Limpiar PID anterior si existe
-        echo 'Limpiando archivos anteriores...' &&
         rm -f /app/tmp/pids/server.pid 2>/dev/null &&
         
         # Esperar PostgreSQL
-        echo 'Esperando PostgreSQL...' &&
         until pg_isready -h postgres -p 5432 -U chatwoot -d chatwoot_production 2>/dev/null; do
-          echo 'PostgreSQL no listo, esperando...' &&
+          echo 'Esperando PostgreSQL...' &&
           sleep 5;
         done &&
-        echo 'PostgreSQL listo ✓' &&
         
-        # Verificar Redis usando un método simple (no redis-cli)
-        echo 'Verificando Redis...' &&
-        # Esperar un momento para que Redis esté completamente listo
+        # Esperar Redis
         sleep 10 &&
         
-        # Ejecutar migraciones
-        echo 'Ejecutando migraciones de base de datos...' &&
+        # Inicializar base de datos
         bundle exec rails db:chatwoot_prepare &&
         
         # Iniciar servidor
-        echo '=== CHATWOOT INICIANDO ===' &&
-        echo 'Accede en: https://chatwoot.jumpjibe.com' &&
         bundle exec rails server -p 3000 -b 0.0.0.0
       "
 
@@ -126,8 +146,15 @@ services:
       - postgres
       - redis
     environment:
+      # 🔴 CONFIGURACIÓN BÁSICA
       RAILS_ENV: production
       INSTALLATION_ENV: docker
+      
+      # 🔴 URLs CRÍTICAS (IGUALES QUE EN RAILS)
+      RAILS_HOST: https://chatwoot.jumpjibe.com
+      FRONTEND_URL: https://chatwoot.jumpjibe.com      # ← AÑADIDA (ESENCIAL EN SIDEKIQ)
+      ASSET_HOST: https://chatwoot.jumpjibe.com
+      ACTIVE_STORAGE_HOST: https://chatwoot.jumpjibe.com
       
       # PostgreSQL
       POSTGRES_USER: chatwoot
@@ -143,6 +170,11 @@ services:
       # Claves secretas
       SECRET_KEY_BASE: 99f4fa1f8fadd2125a12148ccf962c5d1ae16592a7da11ef9fc795f6a5c68e97737746c53ce0ecbc45d64235e349b879312d0a28431c81c2a59165d2d7077c54
       RAILS_MASTER_KEY: 99f4fa1f8fadd2125a12148ccf962c5d1ae16592a7da11ef9fc795f6a5c68e97737746c53ce0ecbc45d64235e349b879312d0a28431c81c2a59165d2d7077c54
+      
+      # Active Storage
+      ACTIVE_STORAGE_SERVICE: local
+      FILE_ATTACHMENT_ENABLED: "true"
+      
     volumes:
       - ./v18/chatwoot_storage:/app/storage
       - ./v18/chatwoot_logs:/app/log

@@ -128,6 +128,8 @@ chown -R 1001:1001 "v${VERSION}/chatwoot_redis_data"
 chmod -R 775 "v${VERSION}/chatwoot_redis_data"
 echo "  ✅ v${VERSION}/chatwoot_redis_data"
 
+
+
 # Storage y logs Chatwoot - usuario chatwoot (UID 1001)
 for dir in chatwoot_storage chatwoot_logs chatwoot_overrides; do
     if [ -d "v${VERSION}/$dir" ]; then
