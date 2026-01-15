@@ -34,11 +34,20 @@ services:
       - N8N_CORS_ALLOW_ORIGIN=*
       - N8N_CORS_ALLOW_CREDENTIALS=true
       
-      # ✅ CONFIGURACIÓN REDIS PARA N8N - SOLO CACHE Y COLAS
-      - N8N_REDIS_HOST=redis
-      - N8N_REDIS_PORT=6379
-      - N8N_REDIS_PASSWORD=${REDIS_PASSWORD:-redis123}
-      - N8N_REDIS_DB_INDEX=1
+      # 🔴 CONFIGURACIÓN REDIS - SOLO CACHE (sin colas Bull)
+      - N8N_CACHE_ENABLED=true
+      - N8N_CACHE_BACKEND=memory  # Cambia temporalmente a memory
+      # - N8N_CACHE_BACKEND=redis  # Comentado temporalmente
+      # - N8N_CACHE_REDIS_HOST=redis
+      # - N8N_CACHE_REDIS_PORT=6379
+      # - N8N_CACHE_REDIS_PASSWORD=redis123
+      # - N8N_CACHE_REDIS_DB=1
+      
+      # 🔴 MODO REGULAR (sin Redis para colas)
+      - EXECUTIONS_MODE=regular
+      
+      # 🔴 QUITAR TODAS las configuraciones Bull Redis
+      # NO usar: QUEUE_BULL_REDIS_* ni N8N_QUEUE_BULL_REDIS_*
       
       # Configuración de ejecuciones
       - EXECUTIONS_DATA_SAVE_ON_ERROR=all
@@ -47,36 +56,15 @@ services:
       - EXECUTIONS_DATA_PRUNE=true
       - EXECUTIONS_DATA_MAX_AGE=168
       
-      # Cache Redis
-      - N8N_CACHE_TYPE=redis
-      - N8N_CACHE_REDIS_HOST=redis
-      - N8N_CACHE_REDIS_PORT=6379
-      - N8N_CACHE_REDIS_PASSWORD=${REDIS_PASSWORD:-redis123}
-      - N8N_CACHE_REDIS_DB=1
-      
-      # Colas Redis (para múltiples workers)
-      - N8N_QUEUE_BULL_REDIS_HOST=redis
-      - N8N_QUEUE_BULL_REDIS_PORT=6379
-      - N8N_QUEUE_BULL_REDIS_PASSWORD=${REDIS_PASSWORD:-redis123}
-      - N8N_QUEUE_BULL_REDIS_DB=1
-      
-      # 🔴 CAMBIO CRÍTICO: Usar WebSockets para push en lugar de Redis
+      # WebSockets para push (funciona sin Redis)
       - N8N_PUSH_BACKEND=websocket
-      # Nota: No necesitamos configurar Redis para push porque ahora usamos WebSockets
-      
-      # Configuración de WebSocket (si es necesario)
       - N8N_PUSH_FRONTEND_BASE_URL=https://n8n.jumpjibe.com
       
       # Para workflows con webhooks
       - N8N_WEBHOOK_URL=https://n8n.jumpjibe.com
       
-      # 🔴 REMOVER estas líneas que causan problemas:
-      # - N8N_CACHE_ENABLED=true  # Esto ya está incluido en N8N_CACHE_TYPE=redis
-      # - N8N_CACHE_TTL=3600
-      # - N8N_CACHE_NODES_ENABLED=true
-      # - N8N_CACHE_CREDENTIALS_ENABLED=true
-      # - N8N_LOG_LEVEL=debug     # Esto genera demasiados logs
-      # - N8N_CACHE_LOG_ENABLED=true
+      # Logs normales
+      - N8N_LOG_LEVEL=info
       
     volumes:
       - "./v18/n8n_data:/home/node/.n8n"
@@ -87,7 +75,6 @@ services:
     depends_on:
       redis:
         condition: service_healthy
-    stop_grace_period: 60s
 
 secrets:
   postgres_password:
@@ -97,8 +84,7 @@ secrets:
   n8n_encryption_key:
     file: ./secrets/n8n_encryption_key.txt
 
-# CORRECCIÓN: Elimina también la definición de red aquí
-# networks:
-#   odoo_network_18:
-#     external: true
-#     name: odoo_network_18
+networks:
+  odoo_network_18:
+    external: true
+    name: odoo_network_18

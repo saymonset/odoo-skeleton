@@ -67,6 +67,9 @@ mkdir -p "v${VERSION}/odoo-web-data"
 
 # Directorios de n8n
 mkdir -p "v${VERSION}/n8n_data"
+mkdir -p "v${VERSION}/n8n_node_modules"
+mkdir -p "v${VERSION}/redis_data"
+
 
 # Directorios de logs y backups
 mkdir -p "v${VERSION}/logs"
@@ -106,6 +109,10 @@ done
 echo "Configurando permisos para n8n..."
 chown -R 1000:1000 "v${VERSION}/n8n_data"
 chmod -R 775 "v${VERSION}/n8n_data"
+chown -R 1000:1000 "v${VERSION}/n8n_node_modules"
+chmod -R 775  "v${VERSION}/n8n_node_modules"
+chown -R 1000:1000 "v${VERSION}/n8n_data"
+chmod -R 775  "v${VERSION}/n8n_data"
 
 
 

@@ -25,34 +25,41 @@ services:
     stop_grace_period: 60s
 
   # Redis
+    # Redis (servicio compartido con n8n y Chatwoot)
   redis:
-    image: redis:7
+    image: redis:7-alpine
     container_name: odoo_redis
     restart: always
     networks:
       - odoo_network_18
-    secrets:
-      - redis_password
+    # 🔴 Exponer puerto para debugging
+    ports:
+      - "6379:6379"
+    # 🔴 Configuración optimizada
     command: >
-      sh -c '
-        REDIS_PASS=$$(cat /run/secrets/redis_password 2>/dev/null || echo "") &&
-        mkdir -p /usr/local/etc/redis &&
-        if [ -n "$$REDIS_PASS" ]; then
-          echo "requirepass $$REDIS_PASS" > /usr/local/etc/redis/redis.conf &&
-          echo "protected-mode yes" >> /usr/local/etc/redis/redis.conf &&
-          echo "databases 16" >> /usr/local/etc/redis/redis.conf &&
-          echo "save 900 1" >> /usr/local/etc/redis/redis.conf &&
-          echo "save 300 10" >> /usr/local/etc/redis/redis.conf &&
-          echo "save 60 10000" >> /usr/local/etc/redis/redis.conf
-        fi &&
-        exec redis-server /usr/local/etc/redis/redis.conf --loglevel warning
-      '
+      redis-server 
+      --requirepass redis123 
+      --bind 0.0.0.0
+      --protected-mode no
+      --maxmemory 256mb
+      --maxmemory-policy allkeys-lru
+      --databases 16
+      --save 900 1
+      --save 300 10
+      --save 60 10000
+      --loglevel notice
+      --tcp-keepalive 300
+      --timeout 0
     healthcheck:
-      test: ["CMD", "redis-cli", "--no-auth-warning", "ping"]
-      interval: 5s
-      timeout: 3s
+      test: ["CMD", "redis-cli", "-a", "redis123", "ping"]
+      interval: 10s
+      timeout: 5s
       retries: 5
+      start_period: 30s
     stop_grace_period: 30s
+    # 🔴 Volumen opcional para persistencia
+    volumes:
+      - "./v18/redis_data:/data" 
 
   # Odoo Web
   web:

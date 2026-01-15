@@ -16,6 +16,7 @@
 
 # Instancia original (v18) - IGNORAR DIRECTORIOS ENTEROS
 n8n-chatwoot-pgadmin-odoo/v18/pgdata/
+n8n-chatwoot-pgadmin-odoo/v18/redis_data/
 n8n-chatwoot-pgadmin-odoo/v18/odoo_n8n_pgdata/
 n8n-chatwoot-pgadmin-odoo/v18/chatwoot_pgdata/
 n8n-chatwoot-pgadmin-odoo/v18/pgadmin-data/
