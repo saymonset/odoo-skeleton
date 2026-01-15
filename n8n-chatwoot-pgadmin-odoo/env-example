@@ -24,52 +24,56 @@ N8N_RUNNERS_ENABLED=true
 N8N_CORS_ALLOW_CREDENTIALS=true
 N8N_CORS_ALLOW_ORIGIN=*
 
-# Redis configuration for n8n (using same Redis instance as Chatwoot, different DB)
+# Redis para n8n (mismo Redis que Odoo, DB diferente)
 N8N_REDIS_HOST=redis
 N8N_REDIS_PORT=6379
 N8N_REDIS_PASSWORD=redis123
-N8N_REDIS_DB_INDEX=1  # Chatwoot uses DB 0 by default, n8n will use DB 1
-N8N_REDIS_URL=redis://:redis123@redis:6379/1
+N8N_REDIS_DB_INDEX=1
 
-# Cache configuration for n8n
+# Cache configuration
 N8N_CACHE_TYPE=redis
 N8N_CACHE_REDIS_HOST=redis
 N8N_CACHE_REDIS_PORT=6379
 N8N_CACHE_REDIS_PASSWORD=redis123
 N8N_CACHE_REDIS_DB=1
 
-# Queue configuration for n8n (if using multiple workers)
+# Queue configuration
 N8N_QUEUE_BULL_REDIS_HOST=redis
 N8N_QUEUE_BULL_REDIS_PORT=6379
 N8N_QUEUE_BULL_REDIS_PASSWORD=redis123
 N8N_QUEUE_BULL_REDIS_DB=1
 
+# Redis for workflow execution state
+N8N_EDITOR_BASE_URL=https://n8n.jumpjibe.com
+N8N_PUSH_BACKEND=websocket
+N8N_PUSH_REDIS_HOST=redis
+N8N_PUSH_REDIS_PORT=6379
+N8N_PUSH_REDIS_PASSWORD=redis123
+N8N_PUSH_REDIS_DB=1
+
+# ⚠️ IMPORTANTE: Esta contraseña debe coincidir en todos los servicios
+REDIS_PASSWORD=redis123
+
 ############################
-# CHATWOOT - CONFIGURACIÓN PARA IMÁGENES
+# CHATWOOT
 ############################
 
-# 🔴 TOKEN DE API PARA n8n (CRÍTICO)
 CHATWOOT_API_TOKEN=chatwoot_api_token_1234567890
 
-# Clave secreta
 CHATWOOT_SECRET_KEY_BASE=99f4fa1f8fadd2125a12148ccf962c5d1ae16592a7da11ef9fc795f6a5c68e97737746c53ce0ecbc45d64235e349b879312d0a28431c81c2a59165d2d7077c54
 CHATWOOT_RAILS_MASTER_KEY=${CHATWOOT_SECRET_KEY_BASE}
 
-# PostgreSQL Chatwoot
 CHATWOOT_POSTGRES_USER=chatwoot
 CHATWOOT_POSTGRES_PASSWORD=chatwoot123
 CHATWOOT_POSTGRES_DB=chatwoot_production
 
-# Variables de conexión Chatwoot
-CHATWOOT_POSTGRES_HOST=postgres
+CHATWOOT_POSTGRES_HOST=chatwoot-postgres
 CHATWOOT_POSTGRES_PORT=5432
-CHATWOOT_DATABASE_URL=postgresql://chatwoot:chatwoot123@postgres:5432/chatwoot_production
+CHATWOOT_DATABASE_URL=postgresql://chatwoot:chatwoot123@chatwoot-postgres:5432/chatwoot_production
 
-# Redis Chatwoot (original configuration remains unchanged)
 CHATWOOT_REDIS_PASSWORD=redis123
 CHATWOOT_REDIS_URL=redis://:redis123@redis:6379
 
-# URLs Chatwoot
 CHATWOOT_FRONTEND_URL=https://chatwoot.jumpjibe.com
 CHATWOOT_RAILS_ENV=production
 CHATWOOT_NODE_ENV=production
@@ -79,7 +83,6 @@ CHATWOOT_ENABLE_ACCOUNT_SIGNUP=true
 CHATWOOT_INSTALLATION_ENV=docker
 CHATWOOT_RAILS_HOST=https://chatwoot.jumpjibe.com
 
-# 🔴 CONFIGURACIÓN CRÍTICA PARA IMÁGENES - TODAS EN STRING
 ACTIVE_STORAGE_SERVICE=local
 FILE_ATTACHMENT_ENABLED="true"
 ENABLE_FILE_PICKER="true"
@@ -91,11 +94,9 @@ RAILS_STORAGE_HOST=https://chatwoot.jumpjibe.com
 RAILS_STORAGE_SERVICE=local
 RAILS_STORAGE_PATH=/app/storage
 
-# Logs Chatwoot
 RAILS_LOG_TO_STDOUT="true"
 RAILS_SERVE_STATIC_FILES="true"
 
-# 🔴 NUEVO: CONFIGURACIÓN PARA ACTIVE STORAGE
 ACTIVE_STORAGE_ROOT=/app/storage
 ACTIVE_STORAGE_SERVICE_NAME=local
 AWS_ACCESS_KEY_ID=""
@@ -103,5 +104,4 @@ AWS_SECRET_ACCESS_KEY=""
 AWS_REGION=""
 AWS_BUCKET=""
 
-# Directorios
 CHATWOOT_ACTIVE_STORAGE_DIR=./v18/chatwoot_active_storage
