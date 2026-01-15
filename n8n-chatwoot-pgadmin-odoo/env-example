@@ -24,6 +24,26 @@ N8N_RUNNERS_ENABLED=true
 N8N_CORS_ALLOW_CREDENTIALS=true
 N8N_CORS_ALLOW_ORIGIN=*
 
+# Redis configuration for n8n (using same Redis instance as Chatwoot, different DB)
+N8N_REDIS_HOST=redis
+N8N_REDIS_PORT=6379
+N8N_REDIS_PASSWORD=redis123
+N8N_REDIS_DB_INDEX=1  # Chatwoot uses DB 0 by default, n8n will use DB 1
+N8N_REDIS_URL=redis://:redis123@redis:6379/1
+
+# Cache configuration for n8n
+N8N_CACHE_TYPE=redis
+N8N_CACHE_REDIS_HOST=redis
+N8N_CACHE_REDIS_PORT=6379
+N8N_CACHE_REDIS_PASSWORD=redis123
+N8N_CACHE_REDIS_DB=1
+
+# Queue configuration for n8n (if using multiple workers)
+N8N_QUEUE_BULL_REDIS_HOST=redis
+N8N_QUEUE_BULL_REDIS_PORT=6379
+N8N_QUEUE_BULL_REDIS_PASSWORD=redis123
+N8N_QUEUE_BULL_REDIS_DB=1
+
 ############################
 # CHATWOOT - CONFIGURACIÓN PARA IMÁGENES
 ############################
@@ -45,7 +65,7 @@ CHATWOOT_POSTGRES_HOST=postgres
 CHATWOOT_POSTGRES_PORT=5432
 CHATWOOT_DATABASE_URL=postgresql://chatwoot:chatwoot123@postgres:5432/chatwoot_production
 
-# Redis Chatwoot
+# Redis Chatwoot (original configuration remains unchanged)
 CHATWOOT_REDIS_PASSWORD=redis123
 CHATWOOT_REDIS_URL=redis://:redis123@redis:6379
 

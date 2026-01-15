@@ -22,12 +22,27 @@ services:
       file: docker-compose.n8n.yml
       service: n8n
   
-  # Incluir Chatwoot
-  chatwoot:
+  # Incluir Chatwoot - SERVICIOS INDIVIDUALES
+  chatwoot-postgres:
     extends:
       file: docker-compose.chatwoot.yml
-      service: chatwoot
+      service: chatwoot-postgres
   
+  chatwoot-app:
+    extends:
+      file: docker-compose.chatwoot.yml
+      service: chatwoot-app
+  
+  chatwoot-sidekiq:
+    extends:
+      file: docker-compose.chatwoot.yml
+      service: chatwoot-sidekiq
+  
+  # Opcional: Worker de Chatwoot
+  # chatwoot-worker:
+  #   extends:
+  #     file: docker-compose.chatwoot.yml
+  #     service: chatwoot-worker
   
   # Incluir pgAdmin (opcional)
   pgadmin:
@@ -46,7 +61,7 @@ secrets:
   n8n_encryption_key:
     file: ./secrets/n8n_encryption_key.txt
 
+# CORRECCIÓN: La red debe ser external: true porque ya existe
 networks:
   odoo_network_18:
-    driver: bridge
-    name: odoo_network_18
+    external: true

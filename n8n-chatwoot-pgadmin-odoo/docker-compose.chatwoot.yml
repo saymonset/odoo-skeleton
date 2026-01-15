@@ -1,10 +1,10 @@
 services:
-  postgres:
+  chatwoot-postgres:
     image: pgvector/pgvector:pg12
     container_name: chatwoot-db
     restart: unless-stopped
     environment:
-      POSTGRES_USER: chatwoot
+      POSTGRES_USER: chatwoot 
       POSTGRES_PASSWORD: chatwoot123
       POSTGRES_DB: chatwoot_production
     volumes:
@@ -18,97 +18,68 @@ services:
       retries: 5
       start_period: 30s
     networks:
-      - chatwoot-net
-    
-  redis:
-    image: redis:7-alpine
-    container_name: chatwoot-redis
-    restart: unless-stopped
-    command: redis-server --requirepass redis123
-    volumes:
-      - ./v18/chatwoot_redis_data:/data
-    ports:
-      - "6380:6379"
-    networks:
-      - chatwoot-net
-    healthcheck:
-      test: ["CMD", "redis-cli", "-a", "redis123", "ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      - odoo_network_18
 
-  rails:
+  chatwoot-app:
     image: chatwoot/chatwoot:latest
     container_name: chatwoot-app
     restart: unless-stopped
     depends_on:
-      postgres:
+      chatwoot-postgres:
         condition: service_healthy
       redis:
         condition: service_healthy
     environment:
-      # 🔴 CONFIGURACIÓN BÁSICA
       RAILS_ENV: production
       INSTALLATION_ENV: docker
       NODE_ENV: production
       
-      # 🔴 URLs CRÍTICAS (TODAS DEBEN SER IGUALES)
       RAILS_HOST: https://chatwoot.jumpjibe.com
-      FRONTEND_URL: https://chatwoot.jumpjibe.com      # ← AÑADIDA (CLAVE PARA RESOLVER EL ERROR)
+      FRONTEND_URL: https://chatwoot.jumpjibe.com
       APP_HOST: https://chatwoot.jumpjibe.com
       
-      # 🔴 HOSTS PARA ASSETS Y ARCHIVOS
       ASSET_HOST: https://chatwoot.jumpjibe.com
       ACTIVE_STORAGE_HOST: https://chatwoot.jumpjibe.com
       RAILS_STORAGE_HOST: https://chatwoot.jumpjibe.com
       
-      # 🔴 Configuración ActiveStorage
       ACTIVE_STORAGE_SERVICE: local
       FILE_ATTACHMENT_ENABLED: "true"
       ENABLE_FILE_PICKER: "true"
       MAXIMUM_FILE_SIZE: "10485760"
       ENABLED_FILE_TYPES: "image/*,audio/*,video/*,text/*,application/pdf"
       
-      # 🔴 Configuración adicional
       ACTIVE_STORAGE_ROOT: /app/storage
       RAILS_STORAGE_PATH: /app/storage
       RAILS_ASSET_HOST: https://chatwoot.jumpjibe.com
       ACTIVE_STORAGE_URL_HOST: https://chatwoot.jumpjibe.com
       ACTIVE_STORAGE_SERVICE_URLS_EXPIRE_IN: "604800"
       
-      # PostgreSQL
       POSTGRES_USER: chatwoot
       POSTGRES_PASSWORD: chatwoot123
       POSTGRES_DB: chatwoot_production
-      POSTGRES_HOST: postgres
+      POSTGRES_HOST: chatwoot-postgres
       POSTGRES_PORT: 5432
-      DATABASE_URL: postgresql://chatwoot:chatwoot123@postgres:5432/chatwoot_production
+      DATABASE_URL: postgresql://chatwoot:chatwoot123@chatwoot-postgres:5432/chatwoot_production
       
-      # Redis
       REDIS_PASSWORD: redis123
       REDIS_URL: redis://:redis123@redis:6379
       REDIS_HOST: redis
       REDIS_PORT: 6379
       
-      # Claves secretas
       SECRET_KEY_BASE: 99f4fa1f8fadd2125a12148ccf962c5d1ae16592a7da11ef9fc795f6a5c68e97737746c53ce0ecbc45d64235e349b879312d0a28431c81c2a59165d2d7077c54
       RAILS_MASTER_KEY: 99f4fa1f8fadd2125a12148ccf962c5d1ae16592a7da11ef9fc795f6a5c68e97737746c53ce0ecbc45d64235e349b879312d0a28431c81c2a59165d2d7077c54
       
-      # Configuración aplicación
       FORCE_SSL: "false"
       ALLOW_INSECURE_SSL: "true"
       DEFAULT_LOCALE: es
       ENABLE_ACCOUNT_SIGNUP: "true"
       
-      # CORS para API n8n
       CORS_ALLOWED_ORIGINS: "*"
       CORS_ALLOW_CREDENTIALS: "true"
       
-      # Logs
       RAILS_LOG_TO_STDOUT: "true"
       RAILS_SERVE_STATIC_FILES: "true"
       
-      # API Token para n8n
       API_AUTH_TOKEN: chatwoot_api_token_1234567890  
     ports:
       - "3000:3000"
@@ -117,19 +88,21 @@ services:
       - ./v18/chatwoot_logs:/app/log
       - ./v18/chatwoot_tmp:/app/tmp
     networks:
-      - chatwoot-net
+      - odoo_network_18
+    # SOLUCIÓN: Comando simplificado sin redis-cli
     command: >
       sh -c "
         rm -f /app/tmp/pids/server.pid 2>/dev/null &&
         
         # Esperar PostgreSQL
-        until pg_isready -h postgres -p 5432 -U chatwoot -d chatwoot_production 2>/dev/null; do
+        until pg_isready -h chatwoot-postgres -p 5432 -U chatwoot -d chatwoot_production 2>/dev/null; do
           echo 'Esperando PostgreSQL...' &&
           sleep 5;
         done &&
         
-        # Esperar Redis
-        sleep 10 &&
+        # Esperar un momento para Redis (sin redis-cli)
+        echo 'Esperando a que Redis esté listo...' &&
+        sleep 15 &&
         
         # Inicializar base de datos
         bundle exec rails db:chatwoot_prepare &&
@@ -138,40 +111,34 @@ services:
         bundle exec rails server -p 3000 -b 0.0.0.0
       "
 
-  sidekiq:
+  chatwoot-sidekiq:
     image: chatwoot/chatwoot:latest
     container_name: chatwoot-sidekiq
     restart: unless-stopped
     depends_on:
-      - postgres
+      - chatwoot-postgres
       - redis
     environment:
-      # 🔴 CONFIGURACIÓN BÁSICA
       RAILS_ENV: production
       INSTALLATION_ENV: docker
       
-      # 🔴 URLs CRÍTICAS (IGUALES QUE EN RAILS)
       RAILS_HOST: https://chatwoot.jumpjibe.com
-      FRONTEND_URL: https://chatwoot.jumpjibe.com      # ← AÑADIDA (ESENCIAL EN SIDEKIQ)
+      FRONTEND_URL: https://chatwoot.jumpjibe.com
       ASSET_HOST: https://chatwoot.jumpjibe.com
       ACTIVE_STORAGE_HOST: https://chatwoot.jumpjibe.com
       
-      # PostgreSQL
       POSTGRES_USER: chatwoot
       POSTGRES_PASSWORD: chatwoot123
       POSTGRES_DB: chatwoot_production
-      POSTGRES_HOST: postgres
-      DATABASE_URL: postgresql://chatwoot:chatwoot123@postgres:5432/chatwoot_production
+      POSTGRES_HOST: chatwoot-postgres
+      DATABASE_URL: postgresql://chatwoot:chatwoot123@chatwoot-postgres:5432/chatwoot_production
       
-      # Redis
       REDIS_PASSWORD: redis123
       REDIS_URL: redis://:redis123@redis:6379
       
-      # Claves secretas
       SECRET_KEY_BASE: 99f4fa1f8fadd2125a12148ccf962c5d1ae16592a7da11ef9fc795f6a5c68e97737746c53ce0ecbc45d64235e349b879312d0a28431c81c2a59165d2d7077c54
       RAILS_MASTER_KEY: 99f4fa1f8fadd2125a12148ccf962c5d1ae16592a7da11ef9fc795f6a5c68e97737746c53ce0ecbc45d64235e349b879312d0a28431c81c2a59165d2d7077c54
       
-      # Active Storage
       ACTIVE_STORAGE_SERVICE: local
       FILE_ATTACHMENT_ENABLED: "true"
       
@@ -180,9 +147,19 @@ services:
       - ./v18/chatwoot_logs:/app/log
       - ./v18/chatwoot_tmp:/app/tmp
     networks:
-      - chatwoot-net
-    command: bundle exec sidekiq -C config/sidekiq.yml
+      - odoo_network_18
+    # SOLUCIÓN: Comando simplificado sin redis-cli
+    command: >
+      sh -c "
+        # Esperar un momento para que Redis esté listo
+        echo 'Esperando a que Redis esté disponible...' &&
+        sleep 20 &&
+        
+        # Iniciar Sidekiq
+        bundle exec sidekiq -C config/sidekiq.yml
+      "
 
 networks:
-  chatwoot-net:
-    driver: bridge
+  odoo_network_18:
+    external: true
+    name: odoo_network_18
