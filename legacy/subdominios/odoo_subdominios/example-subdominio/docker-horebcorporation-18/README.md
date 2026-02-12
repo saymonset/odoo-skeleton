@@ -26,9 +26,9 @@ Para iniciar los contenedores en segundo plano, utiliza el siguiente comando:
 docker-compose up -d
 ```
 
- El archivo `jumpjibe.com.conf tiene la nueva configuracion del nuevo subdominio` y su direccion en el servidor remoto es para el ngnix: /etc/nginx/sites-available/jumpjibe.com.conf la nueva configuracion del nuevo subdominio:
+ El archivo `integraia.lat.conf tiene la nueva configuracion del nuevo subdominio` y su direccion en el servidor remoto es para el ngnix: /etc/nginx/sites-available/integraia.lat.conf la nueva configuracion del nuevo subdominio:
 
 ```bash 
-mv /etc/nginx/sites-available/jumpjibe.com.conf /etc/nginx/sites-available/jumpjibe.com.confcopydate
-cp jumpjibe.com.conf /etc/nginx/sites-available
+mv /etc/nginx/sites-available/integraia.lat.conf /etc/nginx/sites-available/integraia.lat.confcopydate
+cp integraia.lat.conf /etc/nginx/sites-available
 ```

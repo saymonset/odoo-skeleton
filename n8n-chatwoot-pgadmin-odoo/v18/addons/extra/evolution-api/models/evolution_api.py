@@ -15,7 +15,7 @@ class Evolution_api(models.Model):
     _description = 'Evolution_api'
 
     name = fields.Char(string='Name', required=True)
-    api_url = fields.Char(string='API URL', required=True, default='https://evolution.jumpjibe.com')
+    api_url = fields.Char(string='API URL', required=True, default='https://evolution.integraia.lat')
     api_key = fields.Char(string='API Key', required=True)
     instance_id = fields.Char(string='Instance ID')
     status = fields.Selection([

@@ -44,7 +44,7 @@ N8N_QUEUE_BULL_REDIS_PASSWORD=redis123
 N8N_QUEUE_BULL_REDIS_DB=1
 
 # Redis for workflow execution state
-N8N_EDITOR_BASE_URL=https://n8n.jumpjibe.com
+N8N_EDITOR_BASE_URL=https://n8n.integraia.lat
 N8N_PUSH_BACKEND=websocket
 N8N_PUSH_REDIS_HOST=redis
 N8N_PUSH_REDIS_PORT=6379
@@ -74,23 +74,23 @@ CHATWOOT_DATABASE_URL=postgresql://chatwoot:chatwoot123@chatwoot-postgres:5432/c
 CHATWOOT_REDIS_PASSWORD=redis123
 CHATWOOT_REDIS_URL=redis://:redis123@redis:6379
 
-CHATWOOT_FRONTEND_URL=https://chatwoot.jumpjibe.com
+CHATWOOT_FRONTEND_URL=https://chatwoot.integraia.lat
 CHATWOOT_RAILS_ENV=production
 CHATWOOT_NODE_ENV=production
 CHATWOOT_FORCE_SSL=false
 CHATWOOT_DEFAULT_LOCALE=es
 CHATWOOT_ENABLE_ACCOUNT_SIGNUP=true
 CHATWOOT_INSTALLATION_ENV=docker
-CHATWOOT_RAILS_HOST=https://chatwoot.jumpjibe.com
+CHATWOOT_RAILS_HOST=https://chatwoot.integraia.lat
 
 ACTIVE_STORAGE_SERVICE=local
 FILE_ATTACHMENT_ENABLED="true"
 ENABLE_FILE_PICKER="true"
 MAXIMUM_FILE_SIZE="10485760"
 ENABLED_FILE_TYPES="image/*,audio/*,video/*,text/*,application/pdf"
-ASSET_HOST=https://chatwoot.jumpjibe.com
-ACTIVE_STORAGE_HOST=https://chatwoot.jumpjibe.com
-RAILS_STORAGE_HOST=https://chatwoot.jumpjibe.com
+ASSET_HOST=https://chatwoot.integraia.lat
+ACTIVE_STORAGE_HOST=https://chatwoot.integraia.lat
+RAILS_STORAGE_HOST=https://chatwoot.integraia.lat
 RAILS_STORAGE_SERVICE=local
 RAILS_STORAGE_PATH=/app/storage
 

@@ -67,7 +67,7 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "https://jumpjibe.com/chat-bot-unisa/capturar_lead",
+        "url": "https://integraia.lat/chat-bot-unisa/capturar_lead",
         "sendBody": true,
         "specifyBody": "json",
         "jsonBody": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('JSON', ``, 'json') }}",

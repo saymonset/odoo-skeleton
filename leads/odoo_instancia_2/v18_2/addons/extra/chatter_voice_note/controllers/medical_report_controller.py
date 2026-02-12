@@ -58,7 +58,7 @@ class MedicalReportController(http.Controller):
             # URL del webhook de n8n
             n8n_webhook_url = request.env['ir.config_parameter'].sudo().get_param(
                 'medical_report.n8n_webhook_url',
-                'https://n8n.jumpjibe.com/webhook/medical-report'
+                'https://n8n.integraia.lat/webhook/medical-report'
             )
             
             _logger.info(f"🌐 Usando webhook n8n: {n8n_webhook_url}")

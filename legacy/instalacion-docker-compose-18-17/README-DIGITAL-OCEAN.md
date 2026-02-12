@@ -261,7 +261,7 @@ http://5.189.161.7:18069/
 ```
 # En  DNS records actualiza el A para la nueva ip del droplet a jumpjibe
 ```bash
-jumpjibe.com
+integraia.lat
 ```
 
 

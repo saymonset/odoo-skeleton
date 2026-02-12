@@ -20,7 +20,7 @@ class ProcesarMessageController(http.Controller):
             
             
             # Ahora la URL usa tu instancia "odoosaymon"
-            evolution_url = f"https://evolution.jumpjibe.com/message/sendText/{info.get('instance')}"
+            evolution_url = f"https://evolution.integraia.lat/message/sendText/{info.get('instance')}"
             payload = {
             "number": info.get('client_phone'),
              "text": (

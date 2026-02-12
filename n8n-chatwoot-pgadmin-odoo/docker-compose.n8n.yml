@@ -23,10 +23,10 @@ services:
       - N8N_BASIC_AUTH_USER=admin
       - N8N_BASIC_AUTH_PASSWORD_FILE=/run/secrets/n8n_password
       - N8N_ENCRYPTION_KEY_FILE=/run/secrets/n8n_encryption_key
-      - N8N_HOST=n8n.jumpjibe.com
+      - N8N_HOST=n8n.integraia.lat
       - N8N_PROTOCOL=https
-      - WEBHOOK_URL=https://n8n.jumpjibe.com/
-      - N8N_EDITOR_BASE_URL=https://n8n.jumpjibe.com/
+      - WEBHOOK_URL=https://n8n.integraia.lat/
+      - N8N_EDITOR_BASE_URL=https://n8n.integraia.lat/
       - N8N_RUNNERS_ENABLED=true
       - N8N_BLOCK_ENV_ACCESS_IN_NODE=true
       - N8N_GIT_NODE_DISABLE_BARE_REPOS=true
@@ -58,10 +58,10 @@ services:
       
       # WebSockets para push (funciona sin Redis)
       - N8N_PUSH_BACKEND=websocket
-      - N8N_PUSH_FRONTEND_BASE_URL=https://n8n.jumpjibe.com
+      - N8N_PUSH_FRONTEND_BASE_URL=https://n8n.integraia.lat
       
       # Para workflows con webhooks
-      - N8N_WEBHOOK_URL=https://n8n.jumpjibe.com
+      - N8N_WEBHOOK_URL=https://n8n.integraia.lat
       
       # Logs normales
       - N8N_LOG_LEVEL=info

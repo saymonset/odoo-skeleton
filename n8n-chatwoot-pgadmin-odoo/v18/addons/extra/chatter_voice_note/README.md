@@ -23,7 +23,7 @@ cp -r /home/odoo/odoo-from-13-to-18/arquitectura/odoo18/clientes/cliente1/extra-
 
 2-) En Ajustes/tecnico/Parámetros del sistema configurar clave/valor
 clave: medical_report.n8n_webhook_url
-valor: https://n8n.jumpjibe.com/webhook/test-medical-report
+valor: https://n8n.integraia.lat/webhook/test-medical-report
 
 cp -r /home/odoo/odoo-from-13-to-18/arquitectura/odoo18/clientes/cliente1/extra-addons/extra/chatter_voice_note /home/odoo/odoo-skeleton/n8n-evolution-api-odoo-18/v18/addons/extra
 ```
@@ -39,7 +39,7 @@ cp -r /home/odoo/odoo-from-13-to-18/arquitectura/odoo18/clientes/cliente1/extra-
 
 2-) En Ajustes/Tecnico/Parametros -> Parámetros del sistema,  configurar clave/valor
 clave: medical_report.n8n_webhook_url
-valor: https://n8n.jumpjibe.com/webhook/medical-report
+valor: https://n8n.integraia.lat/webhook/medical-report
 ```
 # Pasar tu modulo a produccion
 ```bash

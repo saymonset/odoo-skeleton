@@ -1,5 +1,7 @@
 {
   "name": "installed-nodes",
   "private": true,
-  "dependencies": {}
+  "dependencies": {
+    "@mendable/n8n-nodes-firecrawl": "2.0.1"
+  }
 }
