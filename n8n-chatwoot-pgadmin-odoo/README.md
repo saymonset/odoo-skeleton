@@ -1,3 +1,4 @@
+ 
  1. Construcción de la Imagen Personalizada
  # Eliminar recursos anteriores (opcional)
 docker rm -f odoo-pers-18 2>/dev/null || true
@@ -110,3 +111,7 @@ project/
  seguridad_UFW_Nginx_odoo.md
  ```
  # ####################################
+
+### INSTALAR POSTIZ
+ . Despues de hacer los  paso, no se te olvide Instalar
+  README_POSTIZ.md 

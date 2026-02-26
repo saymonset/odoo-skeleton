@@ -1,0 +1,15 @@
+limit.maxIDLength:
+  - value: 255
+    constraints: {}
+system.forceSearchAttributesCacheRefreshOnRead:
+  - value: true
+    constraints: {}
+frontend.visibilityMaxPageSize:
+  - value: 10000
+    constraints: {}
+frontend.enableServerVersionCheck:
+  - value: true
+    constraints: {}
+history.EnableConsistentQueryByNamespace:
+  - value: true
+    constraints: {}

@@ -64,7 +64,38 @@ mkdir -p "v${VERSION}/filestore"
 mkdir -p "v${VERSION}/addons"
 mkdir -p "v${VERSION}/config"
 mkdir -p "v${VERSION}/odoo-web-data"
+mkdir -p "v${VERSION}/postiz_config"
+mkdir -p "v${VERSION}/postiz_uploads"
+mkdir -p "v${VERSION}/temporal_elasticsearch_data"
 
+# si v$VERSIONceate esta carpeta
+```bash
+mkdir -p dynamicconfig
+sudo chown -R 1000:1000 dynamicconfig
+Create el archivo development-sql.yaml dentro de dynamicconfig
+touch dynamicconfig/development-sql.yaml
+sudo chown 1000:1000 dynamicconfig/development-sql.yaml
+
+Este es el contendo:
+
+```yaml
+limit.maxIDLength:
+  - value: 255
+    constraints: {}
+system.forceSearchAttributesCacheRefreshOnRead:
+  - value: true
+    constraints: {}
+frontend.visibilityMaxPageSize:
+  - value: 10000
+    constraints: {}
+frontend.enableServerVersionCheck:
+  - value: true
+    constraints: {}
+history.EnableConsistentQueryByNamespace:
+  - value: true
+    constraints: {}
+
+```
 # Directorios de n8n
 mkdir -p "v${VERSION}/n8n_data"
 mkdir -p "v${VERSION}/n8n_node_modules"
@@ -94,6 +125,9 @@ echo "🔐 Configurando permisos..."
 echo "Configurando permisos para PostgreSQL Odoo..."
 chown -R 999:999 "v${VERSION}/pgdata"
 chmod -R 770 "v${VERSION}/pgdata"
+
+sudo chown -R 1000:1000 "v${VERSION}/temporal_elasticsearch_data"
+
 
 # 2. Directorios de Odoo - usuario odoo
 echo "Configurando permisos para Odoo..."

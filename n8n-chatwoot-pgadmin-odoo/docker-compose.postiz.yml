@@ -1,0 +1,141 @@
+# docker-compose.postiz.yml
+services:
+  # --------------------------------------------
+  # Postiz App (usa la BD y Redis compartidos)
+  # --------------------------------------------
+  postiz:
+    image: ghcr.io/gitroomhq/postiz-app:latest
+    container_name: postiz
+    restart: always
+    depends_on:
+      db:
+        condition: service_healthy      # espera a que PostgreSQL esté listo
+      redis:
+        condition: service_healthy      # espera a que Redis esté listo
+      temporal:
+        condition: service_started      # opcional (si usas Temporal)
+    environment:
+      # === Configuración básica (ajusta tus dominios)
+      MAIN_URL: 'https://postiz.integraia.lat'
+      FRONTEND_URL: 'https://postiz.integraia.lat'
+      NEXT_PUBLIC_BACKEND_URL: 'https://postiz.integraia.lat/api'
+      JWT_SECRET: 'pon_aqui_un_secreto_muy_largo_y_aleatorio'  # cámbialo por uno real
+      IS_GENERAL: 'true'
+      DISABLE_REGISTRATION: 'false'
+      RUN_CRON: 'true'
+
+      # === Base de datos (usando PostgreSQL compartido con usuario 'odoo')
+      DATABASE_URL: 'postgresql://odoo:${POSTGRES_PASSWORD}@db:5432/postiz?sslmode=disable'
+
+      # === Redis (usando Redis compartido)
+      REDIS_URL: 'redis://:${REDIS_PASSWORD}@redis:6379'
+
+      # === Backend interno
+      BACKEND_INTERNAL_URL: 'http://postiz:3000'
+
+      # === Temporal
+      TEMPORAL_ADDRESS: "temporal:7233"
+
+      # === Almacenamiento local (bind mounts)
+      STORAGE_PROVIDER: 'local'
+      UPLOAD_DIRECTORY: '/uploads'
+      NEXT_PUBLIC_UPLOAD_DIRECTORY: '/uploads'
+
+    volumes:
+      - ./v18/postiz_config:/config        # bind mount en lugar de volumen con nombre
+      - ./v18/postiz_uploads:/uploads      # bind mount
+    ports:
+      - "4007:5000"
+    networks:
+      - odoo_network_18
+
+  # --------------------------------------------
+  # Temporal Stack
+  # --------------------------------------------
+  temporal-elasticsearch:
+    image: elasticsearch:7.17.27
+    container_name: temporal-elasticsearch
+    environment:
+      - cluster.routing.allocation.disk.threshold_enabled=true
+      - cluster.routing.allocation.disk.watermark.low=512mb
+      - cluster.routing.allocation.disk.watermark.high=256mb
+      - cluster.routing.allocation.disk.watermark.flood_stage=128mb
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms256m -Xmx256m
+      - xpack.security.enabled=false
+    networks:
+      - odoo_network_18
+    expose:
+      - 9200
+    volumes:
+      - ./v18/temporal_elasticsearch_data:/usr/share/elasticsearch/data   # bind mount
+
+  temporal:
+    image: temporalio/auto-setup:1.28.1
+    container_name: temporal
+    depends_on:
+      db:
+        condition: service_healthy
+      temporal-elasticsearch:
+        condition: service_started
+    environment:
+      # Configuración para usar PostgreSQL compartido (usuario 'odoo')
+      DB: postgres12
+      DB_PORT: 5432
+      POSTGRES_USER: odoo
+      POSTGRES_PWD: ${POSTGRES_PASSWORD}
+      POSTGRES_SEEDS: db
+      # Base de datos para Temporal (se creará automáticamente en la DB 'temporal')
+      DYNAMIC_CONFIG_FILE_PATH: config/dynamicconfig/development-sql.yaml
+      # Elasticsearch
+      ENABLE_ES: true
+      ES_SEEDS: temporal-elasticsearch
+      ES_VERSION: v7
+      TEMPORAL_NAMESPACE: default
+    networks:
+      - odoo_network_18
+    ports:
+      - "7233:7233"
+    volumes:
+      - ./dynamicconfig:/etc/temporal/config/dynamicconfig   # opcional, crea la carpeta si la usas
+
+  temporal-admin-tools:
+    image: temporalio/admin-tools:1.28.1-tctl-1.18.4-cli-1.4.1
+    container_name: temporal-admin-tools
+    environment:
+      - TEMPORAL_ADDRESS=temporal:7233
+      - TEMPORAL_CLI_ADDRESS=temporal:7233
+    networks:
+      - odoo_network_18
+    depends_on:
+      - temporal
+    stdin_open: true
+    tty: true
+
+  temporal-ui:
+    image: temporalio/ui:2.34.0
+    container_name: temporal-ui
+    environment:
+      - TEMPORAL_ADDRESS=temporal:7233
+      - TEMPORAL_CORS_ORIGINS=http://localhost:4007
+    networks:
+      - odoo_network_18
+    ports:
+      - "8180:8080"
+    depends_on:
+      - temporal
+
+  spotlight:
+    image: ghcr.io/getsentry/spotlight:latest
+    container_name: spotlight
+    pull_policy: always
+    ports:
+      - "8969:8969/tcp"
+    networks:
+      - odoo_network_18
+
+# Red compartida (externa)
+networks:
+  odoo_network_18:
+    external: true
+    name: odoo_network_18

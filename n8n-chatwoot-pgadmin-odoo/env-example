@@ -105,3 +105,10 @@ AWS_REGION=""
 AWS_BUCKET=""
 
 CHATWOOT_ACTIVE_STORAGE_DIR=./v18/chatwoot_active_storage
+
+## POSTIZ
+JWT_SECRET=pon_aqui_un_secreto_muy_largo_y_aleatorio
+MAIN_URL=https://postiz.integraia.lat
+FRONTEND_URL=https://postiz.integraia.lat  
+
+POSTGRES_PASSWORD=14cc36a5ebbb6007723771006e2e3dec57ff24f88559c591be8f001f34274a27 
