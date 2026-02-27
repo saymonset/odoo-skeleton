@@ -15,24 +15,24 @@
 /logs/
 
 # Instancia original (v18) - IGNORAR DIRECTORIOS ENTEROS
-n8n-chatwoot-pgadmin-odoo/v18/pgdata/
-n8n-chatwoot-pgadmin-odoo/v18/redis_data/
-n8n-chatwoot-pgadmin-odoo/v18/odoo_n8n_pgdata/
-n8n-chatwoot-pgadmin-odoo/v18/chatwoot_pgdata/
-n8n-chatwoot-pgadmin-odoo/v18/pgadmin-data/
-n8n-chatwoot-pgadmin-odoo/v18/n8n_data/
-n8n-chatwoot-pgadmin-odoo/v18/odoo-web-data/
-n8n-chatwoot-pgadmin-odoo/v18/logs/
-n8n-chatwoot-pgadmin-odoo/v18/filestore/
-n8n-chatwoot-pgadmin-odoo/v18/chatwoot_redis_data/
-n8n-chatwoot-pgadmin-odoo/v18/chatwoot_tmp/
+postiz-n8n-chatwoot-pgadmin-odoo/v18/pgdata/
+postiz-n8n-chatwoot-pgadmin-odoo/v18/redis_data/
+postiz-n8n-chatwoot-pgadmin-odoo/v18/odoo_n8n_pgdata/
+postiz-n8n-chatwoot-pgadmin-odoo/v18/chatwoot_pgdata/
+postiz-n8n-chatwoot-pgadmin-odoo/v18/pgadmin-data/
+postiz-n8n-chatwoot-pgadmin-odoo/v18/n8n_data/
+postiz-n8n-chatwoot-pgadmin-odoo/v18/odoo-web-data/
+postiz-n8n-chatwoot-pgadmin-odoo/v18/logs/
+postiz-n8n-chatwoot-pgadmin-odoo/v18/filestore/
+postiz-n8n-chatwoot-pgadmin-odoo/v18/chatwoot_redis_data/
+postiz-n8n-chatwoot-pgadmin-odoo/v18/chatwoot_tmp/
 # Todas las carpetas de chatwoot en v18
-n8n-chatwoot-pgadmin-odoo/v18/chatwoot_*/
+postiz-n8n-chatwoot-pgadmin-odoo/v18/chatwoot_*/
 # NO usar excepciones .gitkeep para directorios con permisos de root
 
 # Repositorios embebidos - ignorar completamente
-n8n-chatwoot-pgadmin-odoo/src/odoo-18/
-n8n-chatwoot-pgadmin-odoo/src/odoo-stubs/
+postiz-n8n-chatwoot-pgadmin-odoo/src/odoo-18/
+postiz-n8n-chatwoot-pgadmin-odoo/src/odoo-stubs/
 
 # Nueva instancia leads (v18_2)
 leads/odoo_instancia_2/v18_2/pgdata/
