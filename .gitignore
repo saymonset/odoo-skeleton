@@ -35,6 +35,7 @@ postiz-n8n-chatwoot-pgadmin-odoo/src/odoo-18/
 postiz-n8n-chatwoot-pgadmin-odoo/src/odoo-stubs/
 
 # Nueva instancia leads (v18_2)
+leads/odoo_instancia_2/v18_2/addons/extra/chat-bot-unisa/
 leads/odoo_instancia_2/v18_2/pgdata/
 leads/odoo_instancia_2/v18_2/n8n_data/
 leads/odoo_instancia_2/v18_2/odoo-web-data/
