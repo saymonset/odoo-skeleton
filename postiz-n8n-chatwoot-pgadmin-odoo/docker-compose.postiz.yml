@@ -40,6 +40,11 @@ services:
       STORAGE_PROVIDER: 'local'
       UPLOAD_DIRECTORY: '/uploads'
       NEXT_PUBLIC_UPLOAD_DIRECTORY: '/uploads'
+      OPENAI_API_KEY: '${OPENAI_API_KEY}'
+      INSTAGRAM_APP_ID: '${INSTAGRAM_APP_ID}'
+      INSTAGRAM_APP_SECRET: '${INSTAGRAM_APP_SECRET}'
+      FACEBOOK_APP_ID: '${FACEBOOK_APP_ID}'
+      FACEBOOK_APP_SECRET: '${FACEBOOK_APP_SECRET}'
 
     volumes:
       - ./v18/postiz_config:/config        # bind mount en lugar de volumen con nombre
