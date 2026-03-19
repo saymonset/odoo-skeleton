@@ -44,3 +44,5 @@ leads/odoo_instancia_2/v18_2/filestore/
 
 # Excepción para el archivo de configuración de Odoo
 !leads/odoo_instancia_2/v18_2/config/odoo.conf
+
+**/temporal_elasticsearch_data/
