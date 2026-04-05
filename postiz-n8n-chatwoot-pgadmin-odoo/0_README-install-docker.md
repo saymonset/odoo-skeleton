@@ -33,8 +33,24 @@ sudo usermod -aG docker $USER
 newgrp docker
 ```
 
+# Agregar simon al grupo odoogroup
+```bash
+sudo usermod -aG odoogroup simon
+
+# Verificar (DEBE aparecer odoogroup)
+groups simon
+```
+
 # 6. Verificar la instalación
 ```bash
  sudo docker --version
 sudo docker compose version
 ```
+```bash
+
+groups $USER
+# sesión de Ubuntu y volver a entrar
+newgrp odoogroup
+```
+# Opción C: Reiniciar Antigravity completamente
+

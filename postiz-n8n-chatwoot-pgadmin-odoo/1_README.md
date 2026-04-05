@@ -1,4 +1,6 @@
  
+
+
  1. Construcción de la Imagen Personalizada
  # Eliminar recursos anteriores (opcional)
 docker rm -f odoo-pers-18 2>/dev/null || true
