@@ -1,0 +1,33 @@
+n8n Backup Information
+======================
+Date: 2026-04-17_14-40-53
+Database: dbodoo18
+Database User: odoo
+Container: n8n-container
+Backup Directory: ./backup_n8n/out/backup_n8n_2026-04-17_14-40-53
+
+Files Generated:
+-rw-rw-r-- 1 odoo odoo       0 Apr 17 14:40 backup_metadata_2026-04-17_14-40-53.txt
+-rw------- 1 odoo odoo     152 Apr 17 14:40 n8n_config_2026-04-17_14-40-53.json
+-rw-rw-r-- 1 odoo odoo   10221 Apr 17 14:40 n8n_credentials_only_2026-04-17_14-40-53.sql
+-rw-rw-r-- 1 odoo odoo 7785664 Apr 17 14:40 n8n_db_2026-04-17_14-40-53.dump
+-rw-rw-r-- 1 odoo odoo  527002 Apr 17 14:40 n8n_files_2026-04-17_14-40-53.tar.gz
+-rw-rw-r-- 1 odoo odoo  465320 Apr 17 14:40 n8n_workflows_only_2026-04-17_14-40-53.sql
+-rw-rw-r-- 1 odoo odoo      25 Apr 17 14:40 workflows_list_2026-04-17_14-40-53.txt
+
+Retention Policy: 7 days
+
+Quick Restore Commands:
+-----------------------
+1. Restore database:
+   docker exec -i odoo-db18-n8n pg_restore -U odoo -d dbodoo18 -c < backup_file.dump
+
+2. Restore files:
+   tar -xzf n8n_files_*.tar.gz -C ./v18/
+
+3. Full restore (stop n8n first):
+   docker stop n8n-container
+   docker exec -i odoo-db18-n8n pg_restore -U odoo -d dbodoo18 -c < backup_file.dump
+   rm -rf ./v18/n8n_data/*
+   tar -xzf n8n_files_*.tar.gz -C ./v18/
+   docker start n8n-container
