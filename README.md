@@ -27,3 +27,7 @@ CMD ["python", "-Xfrozen_modules=off", "-m", "debugpy", "--listen", "0.0.0.0:567
  ```bash
 command: ["python", "-Xfrozen_modules=off", "-m", "odoo", "--db-filter=^dbodoo18$$", "-i", "base"]
  ```
+# Bajar los contenedores 
+```bash
+docker compose -p postiz-n8n-chatwoot-pgadmin-odoo_19 down
+```
