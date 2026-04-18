@@ -114,7 +114,7 @@ MAIN_URL=https://postiz.integraia.lat
 FRONTEND_URL=https://postiz.integraia.lat  
 
 POSTGRES_PASSWORD=123456 
-OPENAI_API_KEY=
+OPENAI_API_KEY=tu_clave_aqui
 
 # ... tus otras variables (como POSTGRES_PASSWORD, etc.)
 INSTAGRAM_APP_ID='2010546012863720'
