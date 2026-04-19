@@ -22,7 +22,7 @@ services:
       file: docker-compose.n8n.yml
       service: n8n
   
-  # Incluir Chatwoot - SERVICIOS INDIVIDUALES
+  # Incluir Chatwoot
   chatwoot-postgres:
     extends:
       file: docker-compose.chatwoot.yml
@@ -37,14 +37,8 @@ services:
     extends:
       file: docker-compose.chatwoot.yml
       service: chatwoot-sidekiq
-  
-  # Opcional: Worker de Chatwoot
-  # chatwoot-worker:
-  #   extends:
-  #     file: docker-compose.chatwoot.yml
-  #     service: chatwoot-worker
 
-    # Incluir Postiz
+  # ✅ DESCOMENTADO - Incluir Postiz y sus servicios
   postiz:
     extends:
       file: docker-compose.postiz.yml
@@ -75,7 +69,7 @@ services:
       file: docker-compose.postiz.yml
       service: spotlight
   
-  # Incluir pgAdmin (opcional)
+  # Incluir pgAdmin
   pgadmin:
     extends:
       file: docker-compose.pgadmin.yml
@@ -92,7 +86,7 @@ secrets:
   n8n_encryption_key:
     file: ./secrets/n8n_encryption_key.txt
 
-# CORRECCIÓN: La red debe ser external: true porque ya existe
+# Red compartida
 networks:
   odoo_network_18:
     external: true

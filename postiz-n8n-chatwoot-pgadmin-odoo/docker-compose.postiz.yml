@@ -1,7 +1,7 @@
-# docker-compose.postiz.yml
+# docker-compose.postiz.yml - Versión oficial corregida
 services:
   # --------------------------------------------
-  # Postiz App (usa la BD y Redis compartidos)
+  # Postiz App (usa BD y Redis compartidos)
   # --------------------------------------------
   postiz:
     image: ghcr.io/gitroomhq/postiz-app:v2.21.6
@@ -9,53 +9,101 @@ services:
     restart: always
     depends_on:
       db:
-        condition: service_healthy      # espera a que PostgreSQL esté listo
+        condition: service_healthy
       redis:
-        condition: service_healthy      # espera a que Redis esté listo
+        condition: service_healthy
       temporal:
-        condition: service_started      # opcional (si usas Temporal)
+        condition: service_started
     environment:
-      # === Configuración básica (ajusta tus dominios)
-      MAIN_URL: 'https://postiz.integraia.lat'
-      FRONTEND_URL: 'https://postiz.integraia.lat'
-      NEXT_PUBLIC_BACKEND_URL: 'https://postiz.integraia.lat/api'
-      JWT_SECRET: 'pon_aqui_un_secreto_muy_largo_y_aleatorio'  # cámbialo por uno real
+      # === Required Settings (usando variables del .env)
+      MAIN_URL: '${MAIN_URL:-https://postiz.integraia.lat}'
+      FRONTEND_URL: '${FRONTEND_URL:-https://postiz.integraia.lat}'
+      NEXT_PUBLIC_BACKEND_URL: '${FRONTEND_URL:-https://postiz.integraia.lat}/api'
+      JWT_SECRET: '${JWT_SECRET:-pon_aqui_un_secreto_muy_largo_y_aleatorio}'
+      
+      # === Base de datos (usando PostgreSQL compartido con usuario 'odoo')
+      DATABASE_URL: 'postgresql://odoo:${POSTGRES_PASSWORD}@db:5432/postiz?sslmode=disable'
+      
+      # === Redis (usando Redis compartido con contraseña)
+      REDIS_URL: 'redis://:${REDIS_PASSWORD:-redis123}@redis:6379'
+      
+      # === Backend interno
+      BACKEND_INTERNAL_URL: 'http://postiz:3000'
+      
+      # === Temporal
+      TEMPORAL_ADDRESS: "temporal:7233"
+      
+      # === Configuración general
       IS_GENERAL: 'true'
       DISABLE_REGISTRATION: 'false'
       RUN_CRON: 'true'
 
-      # === Base de datos (usando PostgreSQL compartido con usuario 'odoo')
-      DATABASE_URL: 'postgresql://odoo:${POSTGRES_PASSWORD}@db:5432/postiz?sslmode=disable'
-
-      # === Redis (usando Redis compartido)
-      REDIS_URL: 'redis://:${REDIS_PASSWORD}@redis:6379'
-
-      # === Backend interno
-      BACKEND_INTERNAL_URL: 'http://postiz:3000'
-
-      # === Temporal
-      TEMPORAL_ADDRESS: "temporal:7233"
-
-      # === Almacenamiento local (bind mounts)
+      # === Storage Settings
       STORAGE_PROVIDER: 'local'
       UPLOAD_DIRECTORY: '/uploads'
       NEXT_PUBLIC_UPLOAD_DIRECTORY: '/uploads'
-      OPENAI_API_KEY: '${OPENAI_API_KEY}'
-      INSTAGRAM_APP_ID: '${INSTAGRAM_APP_ID}'
-      INSTAGRAM_APP_SECRET: '${INSTAGRAM_APP_SECRET}'
-      FACEBOOK_APP_ID: '${FACEBOOK_APP_ID}'
-      FACEBOOK_APP_SECRET: '${FACEBOOK_APP_SECRET}'
+
+      # === Social Media API Settings (desde .env)
+      X_API_KEY: '${X_API_KEY:-}'
+      X_API_SECRET: '${X_API_SECRET:-}'
+      INSTAGRAM_APP_ID: '${INSTAGRAM_APP_ID:-}'
+      INSTAGRAM_APP_SECRET: '${INSTAGRAM_APP_SECRET:-}'
+      FACEBOOK_APP_ID: '${FACEBOOK_APP_ID:-}'
+      FACEBOOK_APP_SECRET: '${FACEBOOK_APP_SECRET:-}'
+      LINKEDIN_CLIENT_ID: '${LINKEDIN_CLIENT_ID:-}'
+      LINKEDIN_CLIENT_SECRET: '${LINKEDIN_CLIENT_SECRET:-}'
+      REDDIT_CLIENT_ID: '${REDDIT_CLIENT_ID:-}'
+      REDDIT_CLIENT_SECRET: '${REDDIT_CLIENT_SECRET:-}'
+      GITHUB_CLIENT_ID: '${GITHUB_CLIENT_ID:-}'
+      GITHUB_CLIENT_SECRET: '${GITHUB_CLIENT_SECRET:-}'
+      BEEHIIVE_API_KEY: '${BEEHIIVE_API_KEY:-}'
+      BEEHIIVE_PUBLICATION_ID: '${BEEHIIVE_PUBLICATION_ID:-}'
+      THREADS_APP_ID: '${THREADS_APP_ID:-}'
+      THREADS_APP_SECRET: '${THREADS_APP_SECRET:-}'
+      YOUTUBE_CLIENT_ID: '${YOUTUBE_CLIENT_ID:-}'
+      YOUTUBE_CLIENT_SECRET: '${YOUTUBE_CLIENT_SECRET:-}'
+      TIKTOK_CLIENT_ID: '${TIKTOK_CLIENT_ID:-}'
+      TIKTOK_CLIENT_SECRET: '${TIKTOK_CLIENT_SECRET:-}'
+      PINTEREST_CLIENT_ID: '${PINTEREST_CLIENT_ID:-}'
+      PINTEREST_CLIENT_SECRET: '${PINTEREST_CLIENT_SECRET:-}'
+      DRIBBBLE_CLIENT_ID: '${DRIBBBLE_CLIENT_ID:-}'
+      DRIBBBLE_CLIENT_SECRET: '${DRIBBBLE_CLIENT_SECRET:-}'
+      DISCORD_CLIENT_ID: '${DISCORD_CLIENT_ID:-}'
+      DISCORD_CLIENT_SECRET: '${DISCORD_CLIENT_SECRET:-}'
+      DISCORD_BOT_TOKEN_ID: '${DISCORD_BOT_TOKEN_ID:-}'
+      SLACK_ID: '${SLACK_ID:-}'
+      SLACK_SECRET: '${SLACK_SECRET:-}'
+      SLACK_SIGNING_SECRET: '${SLACK_SIGNING_SECRET:-}'
+      MASTODON_URL: '${MASTODON_URL:-https://mastodon.social}'
+      MASTODON_CLIENT_ID: '${MASTODON_CLIENT_ID:-}'
+      MASTODON_CLIENT_SECRET: '${MASTODON_CLIENT_SECRET:-}'
+
+      # === Misc Settings
+      OPENAI_API_KEY: '${OPENAI_API_KEY:-}'
+      NEXT_PUBLIC_DISCORD_SUPPORT: '${NEXT_PUBLIC_DISCORD_SUPPORT:-}'
+      NEXT_PUBLIC_POLOTNO: '${NEXT_PUBLIC_POLOTNO:-}'
+      API_LIMIT: 30
+
+      # === Payment / Stripe Settings
+      FEE_AMOUNT: 0.05
+      STRIPE_PUBLISHABLE_KEY: '${STRIPE_PUBLISHABLE_KEY:-}'
+      STRIPE_SECRET_KEY: '${STRIPE_SECRET_KEY:-}'
+      STRIPE_SIGNING_KEY: '${STRIPE_SIGNING_KEY:-}'
+      STRIPE_SIGNING_KEY_CONNECT: '${STRIPE_SIGNING_KEY_CONNECT:-}'
+
+      # === Developer Settings
+      NX_ADD_PLUGINS: false
 
     volumes:
-      - ./v18/postiz_config:/config        # bind mount en lugar de volumen con nombre
-      - ./v18/postiz_uploads:/uploads      # bind mount
+      - ./v18/postiz_config:/config
+      - ./v18/postiz_uploads:/uploads
     ports:
       - "4007:5000"
     networks:
       - odoo_network_18
 
   # --------------------------------------------
-  # Temporal Stack
+  # Temporal Stack (usando BD compartida para metadata)
   # --------------------------------------------
   temporal-elasticsearch:
     image: elasticsearch:7.17.27
@@ -73,7 +121,7 @@ services:
     expose:
       - 9200
     volumes:
-      - ./v18/temporal_elasticsearch_data:/usr/share/elasticsearch/data   # bind mount
+      - ./v18/temporal_elasticsearch_data:/usr/share/elasticsearch/data
 
   temporal:
     image: temporalio/auto-setup:1.28.1
@@ -84,15 +132,13 @@ services:
       temporal-elasticsearch:
         condition: service_started
     environment:
-      # Configuración para usar PostgreSQL compartido (usuario 'odoo')
+      # Configuración para usar PostgreSQL compartido
       DB: postgres12
       DB_PORT: 5432
       POSTGRES_USER: odoo
       POSTGRES_PWD: ${POSTGRES_PASSWORD}
       POSTGRES_SEEDS: db
-      # Base de datos para Temporal (se creará automáticamente en la DB 'temporal')
       DYNAMIC_CONFIG_FILE_PATH: config/dynamicconfig/development-sql.yaml
-      # Elasticsearch
       ENABLE_ES: true
       ES_SEEDS: temporal-elasticsearch
       ES_VERSION: v7
@@ -102,7 +148,8 @@ services:
     ports:
       - "7233:7233"
     volumes:
-      - ./dynamicconfig:/etc/temporal/config/dynamicconfig   # opcional, crea la carpeta si la usas
+      # ✅ SOLO dynamicconfig queda fuera de v18/
+      - ./dynamicconfig:/etc/temporal/config/dynamicconfig
 
   temporal-admin-tools:
     image: temporalio/admin-tools:1.28.1-tctl-1.18.4-cli-1.4.1
@@ -139,7 +186,7 @@ services:
     networks:
       - odoo_network_18
 
-# Red compartida (externa)
+# Red compartida (externa - debe existir)
 networks:
   odoo_network_18:
     external: true
