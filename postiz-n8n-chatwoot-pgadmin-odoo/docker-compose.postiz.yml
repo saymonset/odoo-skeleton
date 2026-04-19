@@ -4,7 +4,7 @@ services:
   # Postiz App (usa la BD y Redis compartidos)
   # --------------------------------------------
   postiz:
-    image: ghcr.io/gitroomhq/postiz-app:latest
+    image: ghcr.io/gitroomhq/postiz-app:v2.21.6
     container_name: postiz
     restart: always
     depends_on:
