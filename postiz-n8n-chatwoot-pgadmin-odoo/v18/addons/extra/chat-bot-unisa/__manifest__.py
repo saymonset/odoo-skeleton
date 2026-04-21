@@ -6,26 +6,22 @@
     'author': 'Simon Alberto Rodriguez Pacheco',
     'website': '',
     'category': '',
-    'depends': ['base', 'web'],
+    'depends': ['base', 'crm', 'web'],
     "data": [
         "security/ir.model.access.csv",
+        "views/ChatBotWrapper.xml",  # AÑADIDO: El XML debe ir aquí
+        "views/partner_view.xml",  # AÑADIDO: El XML debe ir aquí
     ],
     'assets': {
-          "web.assets_frontend": [
-                  'chat-bot-unisa/static/src/css/chat-bot.css',
-                  'chat-bot-unisa/static/src/**/*.js',
-                  'chat-bot-unisa/static/src/**/*.xml',
-                ],
-              'web.assets_backend': [
-                  'chat-bot-unisa/static/src/css/chat-bot.css',
-                  'chat-bot-unisa/static/src/**/*.js',
-                  'chat-bot-unisa/static/src/**/*.xml',
-              ],
-              
-   
-            
-          
-          },
+        "web.assets_frontend": [
+            'chat-bot-unisa/static/src/css/chat-bot.css',
+            'chat-bot-unisa/static/src/js/ChatBotWrapper.js',  # Cambiado a ruta específica
+        ],
+        'web.assets_backend': [
+            'chat-bot-unisa/static/src/css/chat-bot.css',
+            'chat-bot-unisa/static/src/js/ChatBotWrapper.js',  # Cambiado a ruta específica
+        ],
+    },
     'application': True,
     'installable': True,
     'auto_install': False,

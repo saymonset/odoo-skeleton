@@ -8,12 +8,21 @@
     'version': '18.0',
 
     
-    'depends': ['base', 'calendar','website'],
+    'depends': ['base', 'calendar','website','chatter_voice_note'],
 
     'external_dependencies': {
         'python': [],
     },
-
+    'assets': {
+    'web.assets_backend': [
+        # Archivos de a_hospital
+        'a_hospital/static/src/views/diagnosis_form_controller.js',
+        'a_hospital/static/src/css/diagnosis_form.css',
+        
+        # Archivos de chatter_voice_note (ya incluidos)
+        'chatter_voice_note/static/src/components/voice_recorder/voice_recorder.js',
+            ],
+        },
     "data": [
         "security/a_hospital_groups.xml",
         "security/a_hospital_security.xml",
@@ -44,6 +53,7 @@
     'auto_install': False,
 
     'images': [
-        'static/description/icon.png'
+        'a_hospital/static/description/icon.png'
+        
     ],
 }

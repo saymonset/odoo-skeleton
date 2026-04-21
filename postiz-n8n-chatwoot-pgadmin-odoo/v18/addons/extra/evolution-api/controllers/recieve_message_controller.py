@@ -8,9 +8,6 @@ import logging
 _logger = logging.getLogger(__name__)
 
 class WhatsAppWebhook(http.Controller):
-    #https://n8n.integraia.lat/webhook/webhook0
-    #https://integraia.lat/webhook/n8n-messages-upsert
-    #@http.route('/webhook/n8n-messages-upsert', type='http', auth='public', methods=['POST'], csrf=False)
     @http.route('/webhook/n8n-messages-upsert', type='http', auth='public', methods=['POST'], csrf=False)
     def handle_n8n_messages_upsert(self, **kw):
         # Intenta obtener el JSON del cuerpo
@@ -43,7 +40,7 @@ class WhatsAppWebhook(http.Controller):
             
             
             # Ahora la URL usa tu instancia "odoosaymon"
-            evolution_url = f"https://evolution.integraia.lat/message/sendText/{info.get('instance')}"
+            evolution_url = f"https://evolution.jumpjibe.com/message/sendText/{info.get('instance')}"
             payload = {
             "number": info.get('client_phone'),
             "text": info.get('conversation_ia') 
