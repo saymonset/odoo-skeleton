@@ -114,7 +114,7 @@ CHATWOOT_ACTIVE_STORAGE_DIR=./v18/chatwoot_active_storage
 JWT_SECRET=pon_aqui_un_secreto_muy_largo_y_aleatorio
 MAIN_URL=https://postiz.integraia.lat
 FRONTEND_URL=https://postiz.integraia.lat
-POSTGRES_PASSWORD=123456 
+POSTGRES_PASSWORD=17326f9f3be433d1b04440d24008278713dcd56271be3cdadc7d967529efc275 
 OPENAI_API_KEY=
 
 INSTAGRAM_APP_ID='2010546012863720'

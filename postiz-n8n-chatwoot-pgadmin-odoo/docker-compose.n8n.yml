@@ -78,10 +78,13 @@ services:
 secrets:
   postgres_password:
     file: ./secrets/postgres_password.txt
+    mode: 0444
   n8n_password:
     file: ./secrets/n8n_password.txt
+    mode: 0444
   n8n_encryption_key:
     file: ./secrets/n8n_encryption_key.txt
+    mode: 0444
 
 networks:
   odoo_network_18:

@@ -1,92 +1,81 @@
 #!/bin/bash
-
-# entrypoint.sh mejorado para Odoo
 set -e
 
-echo "=== Iniciando Entrypoint de Odoo ==="
+echo "=== Iniciando Entrypoint de Odoo (root) ==="
 
-# Configuración
 CONFIG_FILE="/etc/odoo/odoo.conf"
 DB_HOST="${DB_HOST:-db}"
 DB_PORT="${DB_PORT:-5432}"
 DB_USER="${POSTGRES_USER:-odoo}"
 DB_NAME="${POSTGRES_DB:-dbodoo18}"
 
-# Leer contraseña desde el secret
 if [ -f "/run/secrets/postgres_password" ]; then
     DB_PASSWORD=$(cat /run/secrets/postgres_password)
 else
-    echo "ERROR: No se encontró el archivo de contraseña de PostgreSQL"
+    echo "ERROR: No se encontró el archivo de contraseña"
     exit 1
 fi
 
 export PGPASSWORD="$DB_PASSWORD"
 
-# Función para verificar si PostgreSQL está listo
 wait_for_postgres() {
-    echo "Esperando a que PostgreSQL esté listo en $DB_HOST:$DB_PORT..."
-    until pg_isready -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" >/dev/null 2>&1; do
-        echo "PostgreSQL no está disponible aún... reintentando en 5 segundos"
+    echo "Esperando a PostgreSQL en $DB_HOST:$DB_PORT..."
+    until pg_isready -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" >/dev/null 2>&1; do
         sleep 5
     done
     echo "PostgreSQL está listo!"
 }
 
-# Función para verificar si la base de datos existe
 database_exists() {
     psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -lqt | cut -d \| -f 1 | grep -qw "$DB_NAME"
 }
 
-# Función para verificar si Odoo está inicializado
-odoo_initialized() {
-    echo "Verificando si Odoo está inicializado en la base de datos..."
-    if psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" -c "SELECT COUNT(*) FROM ir_module_module WHERE state = 'installed';" >/dev/null 2>&1; then
-        COUNT=$(psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" -t -c "SELECT COUNT(*) FROM ir_module_module WHERE state = 'installed';" | tr -d ' \n')
-        if [ "$COUNT" -gt 0 ]; then
-            echo "Odoo ya está inicializado ($COUNT módulos instalados)"
-            return 0
-        fi
-    fi
-    echo "Odoo NO está inicializado"
-    return 1
+database_initialized() {
+    psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" -tAc "SELECT 1 FROM information_schema.tables WHERE table_name='res_users'" 2>/dev/null | grep -q 1
 }
 
-# Función para inicializar Odoo
-initialize_odoo() {
-    echo "=== INICIALIZANDO ODOO POR PRIMERA VEZ ==="
-    echo "Esto puede tomar varios minutos..."
-    
-    # Ejecutar Odoo en modo inicialización
-    /opt/odoo/odoo-core/odoo-bin -c "$CONFIG_FILE" -i base --stop-after-init
-}
-
-# Función para ejecutar Odoo normalmente
-run_odoo() {
-    echo "=== INICIANDO ODOO EN MODO PRODUCCIÓN ==="
-    # Usar exec para reemplazar el proceso actual
-    exec /opt/odoo/odoo-core/odoo-bin -c "$CONFIG_FILE" "$@"
-}
-
-# --- EJECUCIÓN PRINCIPAL ---
-
-# Esperar a que PostgreSQL esté listo
 wait_for_postgres
 
-# Verificar si la base de datos existe
+# ============================================
+# CORREGIR PERMISOS DEL FILESTORE (CRÍTICO)
+# ============================================
+FILESTORE_DIR="/var/lib/odoo/.local/share/Odoo"
+echo "Asegurando permisos de $FILESTORE_DIR..."
+mkdir -p "$FILESTORE_DIR"
+chown -R 1001:1001 "$FILESTORE_DIR"
+chmod 775 "$FILESTORE_DIR"
+
+# Crear la base de datos si no existe
 if ! database_exists; then
-    echo "ERROR: La base de datos '$DB_NAME' no existe."
-    echo "Asegúrate de que el contenedor de PostgreSQL esté configurado correctamente."
+    echo "INFO: La base de datos '$DB_NAME' no existe. Creándola..."
+    psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -c "CREATE DATABASE $DB_NAME OWNER $DB_USER;"
+    echo "INFO: Base de datos '$DB_NAME' creada."
+fi
+
+# Inicializar la base de datos si no está inicializada
+if ! database_initialized; then
+    echo "INFO: Base de datos no inicializada. Inicializando con módulo base (esto puede tomar 2-3 minutos)..."
+    cd /opt/odoo/odoo-core
+    python3 odoo-bin -c "$CONFIG_FILE" --database="$DB_NAME" --stop-after-init -i base --log-level=info --without-demo=True
+    echo "INFO: Base de datos inicializada correctamente."
+else
+    echo "INFO: Base de datos ya inicializada."
+fi
+
+# Buscar el binario de Odoo
+if [ -f "/opt/odoo/odoo-core/odoo-bin" ]; then
+    ODOO_BIN="/opt/odoo/odoo-core/odoo-bin"
+else
+    echo "ERROR: No se encontró odoo-bin"
     exit 1
 fi
 
-# Verificar si Odoo necesita inicialización
-if ! odoo_initialized; then
-    initialize_odoo
-    echo "=== INICIALIZACIÓN COMPLETADA ==="
-    echo "Reiniciando Odoo en modo producción..."
-    # Después de la inicialización, ejecutar normalmente
-    run_odoo "$@"
-else
-    # Ejecutar Odoo normalmente
-    run_odoo "$@"
-fi
+echo "Iniciando Odoo con usuario odoo..."
+# Cambiar al usuario odoo usando sudo (sin contraseña) y ejecutar en primer plano
+#exec sudo -u odoo bash -c "$ODOO_BIN -c $CONFIG_FILE --database=$DB_NAME --db_user=$DB_USER --db_host=$DB_HOST --db_port=$DB_PORT $*"
+
+# En lugar de:
+# exec sudo -u odoo bash -c "$ODOO_BIN -c $CONFIG_FILE ..."
+
+# Usa:
+exec sudo -u odoo /opt/venv/bin/python $ODOO_BIN -c $CONFIG_FILE --database=$DB_NAME --db_user=$DB_USER --db_host=$DB_HOST --db_port=$DB_PORT $*
